@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/scop.h"
+#include "../include/gomo.h"
 
 float		dist_btw_two_vec3(vec3_t a, vec3_t b)
 {

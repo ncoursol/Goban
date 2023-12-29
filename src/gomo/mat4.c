@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/scop.h"
+#include "../../include/gomo.h"
 
 GLfloat		*new_mat4(void)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/scop.h"
+#include "../include/gomo.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../include/stb_image.h"
 
@@ -43,9 +43,9 @@ GLuint load_image(char *path, int blend)
 	return textureID;
 }
 
-void	load_texture(scop_t *scop) {
-	scop->grid_text = load_image("resources/grid.png", 1);
-	scop->shaderID.textureID1 = glGetUniformLocation(scop->shader->shaderProgram, "grid_text");
-	scop->wood_text = load_image("resources/wood2.jpeg", 0);
-	scop->shaderID.textureID2 = glGetUniformLocation(scop->shader->shaderProgram, "wood_text");
+void	load_texture(gomo_t *gomo) {
+	gomo->grid_text = load_image("resources/grid.png", 1);
+	gomo->shaderID.textureID1 = glGetUniformLocation(gomo->shader->shaderProgram, "grid_text");
+	gomo->wood_text = load_image("resources/wood2.jpeg", 0);
+	gomo->shaderID.textureID2 = glGetUniformLocation(gomo->shader->shaderProgram, "wood_text");
 }
