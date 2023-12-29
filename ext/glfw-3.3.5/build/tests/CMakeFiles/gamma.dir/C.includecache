@@ -84,7 +84,7 @@ GL/gl.h
 GL/glext.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 stdio.h
 -
 stdlib.h
@@ -94,7 +94,7 @@ string.h
 glad/gl.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/tests/gamma.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/tests/gamma.c
 glad/gl.h
 -
 GLFW/glfw3.h

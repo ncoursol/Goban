@@ -6,7 +6,7 @@ C_FLAGS = -fPIC   -Wall -std=gnu99
 
 C_DEFINES = -D_GLFW_USE_CONFIG_H
 
-C_INCLUDES = -I/home/blue/Documents/scop/ext/glfw-3.3.5/include -I/home/blue/Documents/scop/ext/glfw-3.3.5/src -I/home/blue/Documents/scop/ext/glfw-3.3.5/build/src 
+C_INCLUDES = -I/home/blue/Documents/goban/ext/glfw-3.3.5/include -I/home/blue/Documents/goban/ext/glfw-3.3.5/src -I/home/blue/Documents/goban/ext/glfw-3.3.5/build/src 
 
 # Custom flags: src/CMakeFiles/glfw.dir/context.c.o_FLAGS = -Wdeclaration-after-statement
 

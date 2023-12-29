@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5
+CMAKE_SOURCE_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5/build
+CMAKE_BINARY_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5/build
 
 # Include any dependencies generated for this target.
 include examples/CMakeFiles/particles.dir/depend.make
@@ -59,55 +59,55 @@ include examples/CMakeFiles/particles.dir/flags.make
 
 examples/CMakeFiles/particles.dir/particles.c.o: examples/CMakeFiles/particles.dir/flags.make
 examples/CMakeFiles/particles.dir/particles.c.o: ../examples/particles.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object examples/CMakeFiles/particles.dir/particles.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/particles.dir/particles.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/examples/particles.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object examples/CMakeFiles/particles.dir/particles.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/particles.dir/particles.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/examples/particles.c
 
 examples/CMakeFiles/particles.dir/particles.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/particles.dir/particles.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/examples/particles.c > CMakeFiles/particles.dir/particles.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/examples/particles.c > CMakeFiles/particles.dir/particles.c.i
 
 examples/CMakeFiles/particles.dir/particles.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/particles.dir/particles.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/examples/particles.c -o CMakeFiles/particles.dir/particles.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/examples/particles.c -o CMakeFiles/particles.dir/particles.c.s
 
 examples/CMakeFiles/particles.dir/__/deps/tinycthread.c.o: examples/CMakeFiles/particles.dir/flags.make
 examples/CMakeFiles/particles.dir/__/deps/tinycthread.c.o: ../deps/tinycthread.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object examples/CMakeFiles/particles.dir/__/deps/tinycthread.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/particles.dir/__/deps/tinycthread.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/deps/tinycthread.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object examples/CMakeFiles/particles.dir/__/deps/tinycthread.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/particles.dir/__/deps/tinycthread.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/deps/tinycthread.c
 
 examples/CMakeFiles/particles.dir/__/deps/tinycthread.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/particles.dir/__/deps/tinycthread.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/deps/tinycthread.c > CMakeFiles/particles.dir/__/deps/tinycthread.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/deps/tinycthread.c > CMakeFiles/particles.dir/__/deps/tinycthread.c.i
 
 examples/CMakeFiles/particles.dir/__/deps/tinycthread.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/particles.dir/__/deps/tinycthread.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/deps/tinycthread.c -o CMakeFiles/particles.dir/__/deps/tinycthread.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/deps/tinycthread.c -o CMakeFiles/particles.dir/__/deps/tinycthread.c.s
 
 examples/CMakeFiles/particles.dir/__/deps/getopt.c.o: examples/CMakeFiles/particles.dir/flags.make
 examples/CMakeFiles/particles.dir/__/deps/getopt.c.o: ../deps/getopt.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object examples/CMakeFiles/particles.dir/__/deps/getopt.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/particles.dir/__/deps/getopt.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object examples/CMakeFiles/particles.dir/__/deps/getopt.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/particles.dir/__/deps/getopt.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.c
 
 examples/CMakeFiles/particles.dir/__/deps/getopt.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/particles.dir/__/deps/getopt.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.c > CMakeFiles/particles.dir/__/deps/getopt.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.c > CMakeFiles/particles.dir/__/deps/getopt.c.i
 
 examples/CMakeFiles/particles.dir/__/deps/getopt.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/particles.dir/__/deps/getopt.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.c -o CMakeFiles/particles.dir/__/deps/getopt.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.c -o CMakeFiles/particles.dir/__/deps/getopt.c.s
 
 examples/CMakeFiles/particles.dir/__/deps/glad_gl.c.o: examples/CMakeFiles/particles.dir/flags.make
 examples/CMakeFiles/particles.dir/__/deps/glad_gl.c.o: ../deps/glad_gl.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object examples/CMakeFiles/particles.dir/__/deps/glad_gl.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/particles.dir/__/deps/glad_gl.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object examples/CMakeFiles/particles.dir/__/deps/glad_gl.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/particles.dir/__/deps/glad_gl.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 
 examples/CMakeFiles/particles.dir/__/deps/glad_gl.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/particles.dir/__/deps/glad_gl.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/particles.dir/__/deps/glad_gl.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/particles.dir/__/deps/glad_gl.c.i
 
 examples/CMakeFiles/particles.dir/__/deps/glad_gl.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/particles.dir/__/deps/glad_gl.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/particles.dir/__/deps/glad_gl.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/particles.dir/__/deps/glad_gl.c.s
 
 # Object files for target particles
 particles_OBJECTS = \
@@ -129,8 +129,8 @@ examples/particles: /usr/lib/x86_64-linux-gnu/libm.so
 examples/particles: /usr/lib/x86_64-linux-gnu/librt.so
 examples/particles: /usr/lib/x86_64-linux-gnu/libX11.so
 examples/particles: examples/CMakeFiles/particles.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking C executable particles"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/particles.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking C executable particles"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/particles.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 examples/CMakeFiles/particles.dir/build: examples/particles
@@ -138,10 +138,10 @@ examples/CMakeFiles/particles.dir/build: examples/particles
 .PHONY : examples/CMakeFiles/particles.dir/build
 
 examples/CMakeFiles/particles.dir/clean:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && $(CMAKE_COMMAND) -P CMakeFiles/particles.dir/cmake_clean.cmake
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && $(CMAKE_COMMAND) -P CMakeFiles/particles.dir/cmake_clean.cmake
 .PHONY : examples/CMakeFiles/particles.dir/clean
 
 examples/CMakeFiles/particles.dir/depend:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/scop/ext/glfw-3.3.5 /home/blue/Documents/scop/ext/glfw-3.3.5/examples /home/blue/Documents/scop/ext/glfw-3.3.5/build /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples/CMakeFiles/particles.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/goban/ext/glfw-3.3.5 /home/blue/Documents/goban/ext/glfw-3.3.5/examples /home/blue/Documents/goban/ext/glfw-3.3.5/build /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples/CMakeFiles/particles.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : examples/CMakeFiles/particles.dir/depend
 

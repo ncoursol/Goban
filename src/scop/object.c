@@ -114,6 +114,11 @@ void	set_texture_xyz(scop_t *scop, int *k, int i)
 		scop->obj->obj[*k + 0] = scop->vertices[(scop->obj->faces[i]->vertex - 1) * 3];
 		scop->obj->obj[*k + 1] = scop->vertices[(scop->obj->faces[i]->vertex - 1) * 3 + 1];
 		scop->obj->obj[*k + 2] = scop->vertices[(scop->obj->faces[i]->vertex - 1) * 3 + 2];
+		if (scop->obj->id != 0) {
+			scop->obj->obj[*k + 0] += 2.14 * (scop->obj->id - 1);
+			scop->obj->obj[*k + 1] += 6.35;
+			scop->obj->obj[*k + 2] += 2.14 * (scop->obj->id - 1);
+		}
 		*k += 8;
 		if (scop->obj->faces[i]->next == NULL)
 			break;

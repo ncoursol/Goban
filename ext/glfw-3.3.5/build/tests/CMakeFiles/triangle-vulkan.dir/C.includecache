@@ -64,7 +64,7 @@ GL/gl.h
 GL/glext.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_vulkan.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_vulkan.c
 stdio.h
 -
 stdlib.h
@@ -74,7 +74,7 @@ string.h
 glad/vulkan.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/tests/triangle-vulkan.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/tests/triangle-vulkan.c
 stdio.h
 -
 stdlib.h

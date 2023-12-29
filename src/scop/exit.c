@@ -77,8 +77,12 @@ void	free_all(scop_t *scop, int step)
 {
 	if (step > 5) {
 		free_null((void*)scop->camera->mvp);
-		if (scop->texture)
-			glDeleteTextures(1, &scop->texture);
+		if (scop->texture1)
+			glDeleteTextures(1, &scop->texture1);
+		if (scop->grid_text)
+			glDeleteTextures(1, &scop->grid_text);
+		if (scop->wood_text)
+			glDeleteTextures(1, &scop->wood_text);
 		if (scop->obj)
 			free_obj(scop);
 		free_shader(scop);

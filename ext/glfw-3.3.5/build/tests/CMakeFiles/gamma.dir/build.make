@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5
+CMAKE_SOURCE_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5/build
+CMAKE_BINARY_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5/build
 
 # Include any dependencies generated for this target.
 include tests/CMakeFiles/gamma.dir/depend.make
@@ -59,29 +59,29 @@ include tests/CMakeFiles/gamma.dir/flags.make
 
 tests/CMakeFiles/gamma.dir/gamma.c.o: tests/CMakeFiles/gamma.dir/flags.make
 tests/CMakeFiles/gamma.dir/gamma.c.o: ../tests/gamma.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/gamma.dir/gamma.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/gamma.dir/gamma.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/tests/gamma.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/gamma.dir/gamma.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/gamma.dir/gamma.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/tests/gamma.c
 
 tests/CMakeFiles/gamma.dir/gamma.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/gamma.dir/gamma.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/tests/gamma.c > CMakeFiles/gamma.dir/gamma.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/tests/gamma.c > CMakeFiles/gamma.dir/gamma.c.i
 
 tests/CMakeFiles/gamma.dir/gamma.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/gamma.dir/gamma.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/tests/gamma.c -o CMakeFiles/gamma.dir/gamma.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/tests/gamma.c -o CMakeFiles/gamma.dir/gamma.c.s
 
 tests/CMakeFiles/gamma.dir/__/deps/glad_gl.c.o: tests/CMakeFiles/gamma.dir/flags.make
 tests/CMakeFiles/gamma.dir/__/deps/glad_gl.c.o: ../deps/glad_gl.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/gamma.dir/__/deps/glad_gl.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/gamma.dir/__/deps/glad_gl.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/gamma.dir/__/deps/glad_gl.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/gamma.dir/__/deps/glad_gl.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 
 tests/CMakeFiles/gamma.dir/__/deps/glad_gl.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/gamma.dir/__/deps/glad_gl.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/gamma.dir/__/deps/glad_gl.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/gamma.dir/__/deps/glad_gl.c.i
 
 tests/CMakeFiles/gamma.dir/__/deps/glad_gl.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/gamma.dir/__/deps/glad_gl.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/gamma.dir/__/deps/glad_gl.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/gamma.dir/__/deps/glad_gl.c.s
 
 # Object files for target gamma
 gamma_OBJECTS = \
@@ -100,8 +100,8 @@ tests/gamma: /usr/lib/x86_64-linux-gnu/librt.so
 tests/gamma: /usr/lib/x86_64-linux-gnu/libm.so
 tests/gamma: /usr/lib/x86_64-linux-gnu/libX11.so
 tests/gamma: tests/CMakeFiles/gamma.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable gamma"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/gamma.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable gamma"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/gamma.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 tests/CMakeFiles/gamma.dir/build: tests/gamma
@@ -109,10 +109,10 @@ tests/CMakeFiles/gamma.dir/build: tests/gamma
 .PHONY : tests/CMakeFiles/gamma.dir/build
 
 tests/CMakeFiles/gamma.dir/clean:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/gamma.dir/cmake_clean.cmake
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/gamma.dir/cmake_clean.cmake
 .PHONY : tests/CMakeFiles/gamma.dir/clean
 
 tests/CMakeFiles/gamma.dir/depend:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/scop/ext/glfw-3.3.5 /home/blue/Documents/scop/ext/glfw-3.3.5/tests /home/blue/Documents/scop/ext/glfw-3.3.5/build /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests/CMakeFiles/gamma.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/goban/ext/glfw-3.3.5 /home/blue/Documents/goban/ext/glfw-3.3.5/tests /home/blue/Documents/goban/ext/glfw-3.3.5/build /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests/CMakeFiles/gamma.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : tests/CMakeFiles/gamma.dir/depend
 
