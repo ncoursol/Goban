@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   scop.h                                             :+:      :+:    :+:   */
+/*   gomo.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncoursol <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SCOP_H
-#define SCOP_H
+#ifndef GOMO_H
+#define GOMO_H
 
 #include "../ext/glad/include/glad.h"
 #include "../ext/glfw-3.3.5/include/GLFW/glfw3.h"
@@ -28,9 +28,9 @@
 #define MSPEED 0.005f // Mouse speed
 #define PI 3.14159265359
 #define V_BUFF_SIZE 20000
-#define AXIS scop->camera->options & 1			  // top axis (y/z)
-#define LEFT_MOUSE scop->camera->options >> 5 & 1 // left mouse button press (yes/no)
-#define TOP_VIEW scop->camera->options >> 8 & 1	  // top view (yes/no)
+#define AXIS gomo->camera->options & 1			  // top axis (y/z)
+#define LEFT_MOUSE gomo->camera->options >> 5 & 1 // left mouse button press (yes/no)
+#define TOP_VIEW gomo->camera->options >> 8 & 1	  // top view (yes/no)
 
 #define ABS(x) (x >= 0 ? x : -x)
 #define RAD(x) (x * 0.0174533f)
@@ -82,7 +82,7 @@ typedef struct obj_s // Chained list of each object of the scene
 	int nb_triangles; // Number of triangles
 	int texCoord;	  // Texture coordinate
 	int faces_size;	  // Size of faces array
-	data_t **faces;	  // All indices (see arrays in scop_s below) of each faces
+	data_t **faces;	  // All indices (see arrays in gomo_s below) of each faces
 	float *obj;		  // All vertices data ready for render (x1,y1,z1,u1,v1,r1,g1,b1,x2,...)
 	float max[3];
 	float min[3];
@@ -123,7 +123,7 @@ typedef struct materials_s
 	float transparency;
 } materials_t;
 
-typedef struct scop_s
+typedef struct gomo_s
 {
 	GLFWwindow *window;
 	shader_t *shader;
@@ -144,34 +144,34 @@ typedef struct scop_s
 	float *normals;	 // Array of all normals in the scene (x1,y1,z1,x2,y2,z2,...)
 	obj_t *obj;
 	materials_t *materials;
-} scop_t;
+} gomo_t;
 
 // Callbacks fct
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void mouse_button_callback(GLFWwindow *window, int key, int action, int mods);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-void exit_callback(scop_t *scop, int state, char *description);
+void exit_callback(gomo_t *gomo, int state, char *description);
 char *getErrorString(int code);
 
 // Utils fct
 void *realloc_s(void **ptr, size_t taille);
 char *strjoin(const char *s1, const char *s2);
-float *float_copy(scop_t *scop, float *dest, int len, char *line, int *nb, int *nb_buff);
-char *string_copy(scop_t *scop, char *dest, char *line);
+float *float_copy(gomo_t *gomo, float *dest, int len, char *line, int *nb, int *nb_buff);
+char *string_copy(gomo_t *gomo, char *dest, char *line);
 data_t *data_copy(data_t *a, data_t *b);
 int count_space(char *a);
 
 // Init fct
-void init_all(scop_t *scop);
-void init_camera(scop_t *scop);
-void init_shader(scop_t *scop, shader_t *shader, char *vert_src, char *frag_src);
-void init_obj(scop_t *scop);
-void init_face_data(scop_t *scop, int nb_buff);
-void init_text(scop_t *scop);
-void load_obj(scop_t *scop, char *path);
-void load_texture(scop_t *scop);
-void VAOs(scop_t *scop, obj_t *obj);
+void init_all(gomo_t *gomo);
+void init_camera(gomo_t *gomo);
+void init_shader(gomo_t *gomo, shader_t *shader, char *vert_src, char *frag_src);
+void init_obj(gomo_t *gomo);
+void init_face_data(gomo_t *gomo, int nb_buff);
+void init_text(gomo_t *gomo);
+void load_obj(gomo_t *gomo, char *path);
+void load_texture(gomo_t *gomo);
+void VAOs(gomo_t *gomo, obj_t *obj);
 
 // Matrice4 fct
 GLfloat *new_mat4(void);
@@ -188,16 +188,16 @@ vec3_t sub_vec3(vec3_t a, vec3_t b);
 vec3_t add_vec3(vec3_t a, vec3_t b);
 
 // Parser fct
-void triangulate(scop_t *scop, int *f, int *b_f, int nb);
-void new_vertex(scop_t *scop, int f);
-void new_obj(scop_t *scop, char *line);
-void create_obj(scop_t *scop);
+void triangulate(gomo_t *gomo, int *f, int *b_f, int nb);
+void new_vertex(gomo_t *gomo, int f);
+void new_obj(gomo_t *gomo, char *line);
+void create_obj(gomo_t *gomo);
 
 // Render fct
-void camera(scop_t *scop, vec3_t eye, vec3_t center, vec3_t up);
+void camera(gomo_t *gomo, vec3_t eye, vec3_t center, vec3_t up);
 
 // Exit fct
-void free_all(scop_t *scop, int step);
+void free_all(gomo_t *gomo, int step);
 void free_null(void *a);
 
 #endif

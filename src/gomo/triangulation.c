@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/scop.h"
+#include "../../include/gomo.h"
 
 /*
 	Basic ear-clipping program:
@@ -21,28 +21,28 @@
 	tri4	 0->4->5->null
 */
 
-int			ear_clipping(scop_t *scop, int *f, int nb)
+int			ear_clipping(gomo_t *gomo, int *f, int nb)
 {
 	int 		i = 0;
 	int			k;
 	data_t	*tmp;
 
-	scop->obj->faces[*f] = scop->obj->faces[*f]->first;
-	tmp = scop->obj->faces[*f];
+	gomo->obj->faces[*f] = gomo->obj->faces[*f]->first;
+	tmp = gomo->obj->faces[*f];
 	while (tmp != NULL) {
 		k = 0;
 		if (i == 0) {
 			k++;
 			while (k < nb - 2) {
-				scop->obj->faces[*f + k] = data_copy(scop->obj->faces[*f + k], tmp);
-				scop->obj->faces[*f + k]->first = scop->obj->faces[*f + k];
+				gomo->obj->faces[*f + k] = data_copy(gomo->obj->faces[*f + k], tmp);
+				gomo->obj->faces[*f + k]->first = gomo->obj->faces[*f + k];
 				k++;
 			}
 			tmp = tmp->next->next;
 		} else {
 			while (k < 2) {
-				new_vertex(scop, *f + i);
-				scop->obj->faces[*f + i] = data_copy(scop->obj->faces[*f + i], tmp);
+				new_vertex(gomo, *f + i);
+				gomo->obj->faces[*f + i] = data_copy(gomo->obj->faces[*f + i], tmp);
 				if (tmp->next == NULL)
 					break;
 				if (k == 0)
@@ -58,15 +58,15 @@ int			ear_clipping(scop_t *scop, int *f, int nb)
 	return (1);
 }
 
-void    triangulate(scop_t *scop, int *f, int *b_f, int nb)
+void    triangulate(gomo_t *gomo, int *f, int *b_f, int nb)
 {
 	if (*f + (nb - 3) >= V_BUFF_SIZE * *b_f) {
 		*b_f += 1;
-		if (!(scop->obj->faces = (data_t**)realloc(scop->obj->faces, sizeof(data_t*) * (V_BUFF_SIZE * *b_f))))
-			exit_callback(scop, 18, "faces realloc failed");
-		scop->obj->faces_size = V_BUFF_SIZE * *b_f;
-		init_face_data(scop, *b_f);
+		if (!(gomo->obj->faces = (data_t**)realloc(gomo->obj->faces, sizeof(data_t*) * (V_BUFF_SIZE * *b_f))))
+			exit_callback(gomo, 18, "faces realloc failed");
+		gomo->obj->faces_size = V_BUFF_SIZE * *b_f;
+		init_face_data(gomo, *b_f);
 	}
-	ear_clipping(scop, f, nb);
-	scop->obj->nb_faces += nb - 3;
+	ear_clipping(gomo, f, nb);
+	gomo->obj->nb_faces += nb - 3;
 }

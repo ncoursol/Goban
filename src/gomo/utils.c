@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/scop.h"
+#include "../../include/gomo.h"
 
 void	free_null(void *a)
 {
@@ -67,7 +67,7 @@ char		*strjoin(const char *s1, const char *s2)
 	return (str);
 }
 
-float		*float_copy(scop_t *scop, float *dest, int len, char *line, int *nb, int *nb_buff)
+float		*float_copy(gomo_t *gomo, float *dest, int len, char *line, int *nb, int *nb_buff)
 {
 	char 	*tmp;
 
@@ -75,33 +75,33 @@ float		*float_copy(scop_t *scop, float *dest, int len, char *line, int *nb, int 
 	if (*nb + len >= V_BUFF_SIZE * *nb_buff) {
 		*nb_buff += 1;
 		if (!(dest = (float*)realloc(dest, sizeof(float) * (V_BUFF_SIZE * *nb_buff))))
-			exit_callback(scop, 12, "float_copy realloc failed");
+			exit_callback(gomo, 12, "float_copy realloc failed");
 		for (int i = (V_BUFF_SIZE * *nb_buff) - V_BUFF_SIZE; i < V_BUFF_SIZE * *nb_buff; i++) {
 			dest[i] = 0;
 		}
 	}
 	while (tmp[0] == ' ') {
 		if (!tmp[1])
-			exit_callback(scop, 13, "wrong .obj file");
+			exit_callback(gomo, 13, "wrong .obj file");
 		if (tmp[1] == '+' || tmp[1] == '-') {
 			if (!tmp[2] || tmp[2] < '0' || tmp[2] > '9')
-			exit_callback(scop, 14, "wrong .obj file");
+			exit_callback(gomo, 14, "wrong .obj file");
 		}
 		else if (tmp[1] < '0' || tmp[1] > '9')
-			exit_callback(scop, 15, "wrong .obj file");
+			exit_callback(gomo, 15, "wrong .obj file");
 		dest[*nb] = strtof(tmp, &tmp);
 		*nb += 1;
 	}
 	return (dest);
 }
 
-char	*string_copy(scop_t *scop, char *dest, char *line)
+char	*string_copy(gomo_t *gomo, char *dest, char *line)
 {
 	size_t 	len;
 
 	len = strlen(line);
 	if (!(dest = (char*)malloc(sizeof(char) * len)))
-		exit_callback(scop, 9, "string_copy malloc failed");
+		exit_callback(gomo, 9, "string_copy malloc failed");
 	memcpy(dest, line, len);
 	dest[len - 1] = '\0';
 	return (dest);
