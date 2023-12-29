@@ -80,17 +80,17 @@ GL/gl.h
 GL/glext.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.c
 getopt.h
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.h
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.h
 stddef.h
 -
 string.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.h
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.h
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 stdio.h
 -
 stdlib.h
@@ -100,7 +100,7 @@ string.h
 glad/gl.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_vulkan.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_vulkan.c
 stdio.h
 -
 stdlib.h
@@ -110,7 +110,7 @@ string.h
 glad/vulkan.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/tests/glfwinfo.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/tests/glfwinfo.c
 glad/gl.h
 -
 glad/vulkan.h
@@ -124,5 +124,5 @@ stdlib.h
 string.h
 -
 getopt.h
-/home/blue/Documents/scop/ext/glfw-3.3.5/tests/getopt.h
+/home/blue/Documents/goban/ext/glfw-3.3.5/tests/getopt.h
 

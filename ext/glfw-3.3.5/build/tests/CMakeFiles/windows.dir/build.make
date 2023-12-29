@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5
+CMAKE_SOURCE_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5/build
+CMAKE_BINARY_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5/build
 
 # Include any dependencies generated for this target.
 include tests/CMakeFiles/windows.dir/depend.make
@@ -59,42 +59,42 @@ include tests/CMakeFiles/windows.dir/flags.make
 
 tests/CMakeFiles/windows.dir/windows.c.o: tests/CMakeFiles/windows.dir/flags.make
 tests/CMakeFiles/windows.dir/windows.c.o: ../tests/windows.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/windows.dir/windows.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/windows.dir/windows.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/tests/windows.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/windows.dir/windows.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/windows.dir/windows.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/tests/windows.c
 
 tests/CMakeFiles/windows.dir/windows.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/windows.dir/windows.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/tests/windows.c > CMakeFiles/windows.dir/windows.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/tests/windows.c > CMakeFiles/windows.dir/windows.c.i
 
 tests/CMakeFiles/windows.dir/windows.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/windows.dir/windows.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/tests/windows.c -o CMakeFiles/windows.dir/windows.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/tests/windows.c -o CMakeFiles/windows.dir/windows.c.s
 
 tests/CMakeFiles/windows.dir/__/deps/getopt.c.o: tests/CMakeFiles/windows.dir/flags.make
 tests/CMakeFiles/windows.dir/__/deps/getopt.c.o: ../deps/getopt.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/windows.dir/__/deps/getopt.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/windows.dir/__/deps/getopt.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/windows.dir/__/deps/getopt.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/windows.dir/__/deps/getopt.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.c
 
 tests/CMakeFiles/windows.dir/__/deps/getopt.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/windows.dir/__/deps/getopt.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.c > CMakeFiles/windows.dir/__/deps/getopt.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.c > CMakeFiles/windows.dir/__/deps/getopt.c.i
 
 tests/CMakeFiles/windows.dir/__/deps/getopt.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/windows.dir/__/deps/getopt.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.c -o CMakeFiles/windows.dir/__/deps/getopt.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.c -o CMakeFiles/windows.dir/__/deps/getopt.c.s
 
 tests/CMakeFiles/windows.dir/__/deps/glad_gl.c.o: tests/CMakeFiles/windows.dir/flags.make
 tests/CMakeFiles/windows.dir/__/deps/glad_gl.c.o: ../deps/glad_gl.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object tests/CMakeFiles/windows.dir/__/deps/glad_gl.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/windows.dir/__/deps/glad_gl.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object tests/CMakeFiles/windows.dir/__/deps/glad_gl.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/windows.dir/__/deps/glad_gl.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 
 tests/CMakeFiles/windows.dir/__/deps/glad_gl.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/windows.dir/__/deps/glad_gl.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/windows.dir/__/deps/glad_gl.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/windows.dir/__/deps/glad_gl.c.i
 
 tests/CMakeFiles/windows.dir/__/deps/glad_gl.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/windows.dir/__/deps/glad_gl.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/windows.dir/__/deps/glad_gl.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/windows.dir/__/deps/glad_gl.c.s
 
 # Object files for target windows
 windows_OBJECTS = \
@@ -115,8 +115,8 @@ tests/windows: /usr/lib/x86_64-linux-gnu/librt.so
 tests/windows: /usr/lib/x86_64-linux-gnu/libm.so
 tests/windows: /usr/lib/x86_64-linux-gnu/libX11.so
 tests/windows: tests/CMakeFiles/windows.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable windows"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/windows.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable windows"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/windows.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 tests/CMakeFiles/windows.dir/build: tests/windows
@@ -124,10 +124,10 @@ tests/CMakeFiles/windows.dir/build: tests/windows
 .PHONY : tests/CMakeFiles/windows.dir/build
 
 tests/CMakeFiles/windows.dir/clean:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/windows.dir/cmake_clean.cmake
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/windows.dir/cmake_clean.cmake
 .PHONY : tests/CMakeFiles/windows.dir/clean
 
 tests/CMakeFiles/windows.dir/depend:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/scop/ext/glfw-3.3.5 /home/blue/Documents/scop/ext/glfw-3.3.5/tests /home/blue/Documents/scop/ext/glfw-3.3.5/build /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests/CMakeFiles/windows.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/goban/ext/glfw-3.3.5 /home/blue/Documents/goban/ext/glfw-3.3.5/tests /home/blue/Documents/goban/ext/glfw-3.3.5/build /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests/CMakeFiles/windows.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : tests/CMakeFiles/windows.dir/depend
 

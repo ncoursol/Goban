@@ -46,49 +46,76 @@ void	exit_callback(scop_t *scop, int state, char *description)
 
 void 	mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    (void)mods;
-    if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))
-		{
-			scop_t *scop = glfwGetWindowUserPointer(window);
-			scop->camera->options ^= 1 << 5;
-			if (action == GLFW_PRESS) {
-				glfwSetInputMode(scop->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-				glfwSetCursorPos(scop->window, scop->camera->ah / MSPEED, scop->camera->av / MSPEED);
+	(void)mods;
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && (action == GLFW_PRESS || action == GLFW_RELEASE))
+	{
+		double xpos, ypos;
+		scop_t *scop = glfwGetWindowUserPointer(window);
+		if (action == GLFW_PRESS && scop->nb_stones < 362) {
+			glfwGetCursorPos(scop->window, &xpos, &ypos);
+			while (scop->obj->next != NULL)
+				scop->obj = scop->obj->next;
+			if (scop->obj->id == 0) {
+				load_obj(scop, "resources/stone.obj");
+				VAOs(scop, scop->obj);
 			}
-			else if (action == GLFW_RELEASE) {
-				glfwSetInputMode(scop->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			}
+			scop->nb_stones++;
+			int i = scop->nb_stones * 3;
+			//float offset = 2.15f;
+			float xt, yt; 
+			xt = (2.0 * xpos) / WIDTH - 1.0;
+			yt = 1.0 - (2.0 * ypos) / HEIGHT;
+			float aspect_ratio = WIDTH / HEIGHT;
+
+			float camera_fov_vertical = 2.0 * atan(tan(0.5 * scop->camera->fov) / aspect_ratio);
+
+			float view_x = xt / aspect_ratio * tan(0.5 * scop->camera->fov);
+			float view_y = yt / tan(0.5 * camera_fov_vertical);
+
+			float world_x = view_x * cos(scop->camera->ah) - view_y * sin(scop->camera->ah);
+			float world_y = view_x * sin(scop->camera->ah) + view_y * cos(scop->camera->ah);
+
+			scop->stone_coord[i + 0] = world_x * scop->camera->dist / cos(scop->camera->av);
+			scop->stone_coord[i + 1] = 0.f;
+			scop->stone_coord[i + 2] = world_y * scop->camera->dist / cos(scop->camera->av);
+			printf("x[%f] y[%f]\n", scop->stone_coord[i + 0], scop->stone_coord[i + 2]);
+			glBindBuffer(GL_ARRAY_BUFFER, scop->stone_VBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 361, &scop->stone_coord[0], GL_STATIC_DRAW);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		}
-    if (button == GLFW_MOUSE_BUTTON_MIDDLE && (action == GLFW_PRESS || action == GLFW_RELEASE))
-		{
-			scop_t *scop = glfwGetWindowUserPointer(window);
-			scop->camera->options ^= 1 << 6;
-			if (action == GLFW_PRESS) {
-				glfwSetInputMode(scop->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-				glfwSetCursorPos(scop->window, scop->camera->gh / MSPEED / (scop->camera->dist / 10), scop->camera->gv / MSPEED / (scop->camera->dist / 10));
-			}
-			else if (action == GLFW_RELEASE) {
-				glfwSetInputMode(scop->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			}
+	}
+	if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))
+	{
+		scop_t *scop = glfwGetWindowUserPointer(window);
+		scop->camera->options ^= 1 << 5;
+		if (action == GLFW_PRESS) {
+			glfwSetInputMode(scop->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetCursorPos(scop->window, scop->camera->ah / MSPEED, scop->camera->av / MSPEED);
 		}
+		else if (action == GLFW_RELEASE) {
+			glfwSetInputMode(scop->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+	}
 }
 
 void	scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    (void)xoffset;
+	(void)xoffset;
 	if (yoffset)
 	{
 		scop_t *scop = glfwGetWindowUserPointer(window);
-		float zoom = yoffset * (log(scop->camera->dist + 7.5) - 2);
-		if (scop->camera->dist - zoom >= 0 && scop->camera->dist - zoom <= 100)
-			scop->camera->dist -= zoom;
+		if (!(TOP_VIEW)) {
+			float zoom = yoffset * (log(scop->camera->dist + 7.5) - 2);
+			if (scop->camera->dist - zoom >= 0 && scop->camera->dist - zoom <= 100)
+				scop->camera->dist -= zoom;
+		}
 	}
 }
 
 void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    (void)mods;
-    (void)scancode;
+	(void)mods;
+	(void)scancode;
 	if (action == GLFW_PRESS) {
 		scop_t *scop = glfwGetWindowUserPointer(window);
 		if (key == GLFW_KEY_ESCAPE)
@@ -103,20 +130,7 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			free_null((void*)scop->camera->mvp);
 			init_camera(scop);
 		}
-		else if (key == GLFW_KEY_A)
-			scop->camera->options ^= 1 << 0; // axis
-		else if (key == GLFW_KEY_R)
-			scop->camera->options ^= 1 << 1; // rotation
-		else if (key == GLFW_KEY_M)
-			scop->camera->options ^= 1 << 2; // movement
-		else if (key == GLFW_KEY_T) {
-			scop->camera->options ^= 1 << 3; // texture
-			scop->camera->options ^= 1 << 7; // texture transition
-			glUniform1i(scop->shaderID.textStateID, TEXTURE);
-		} else if (key == GLFW_KEY_C) {
-			scop->camera->options ^= 1 << 4; // color
-			glUniform1i(scop->shaderID.colorStateID, COLOR);
-		} else if (key == GLFW_KEY_V) {
+		else if (key == GLFW_KEY_V) {
 			scop->camera->options ^= 1 << 8; // top view
 		}
 	}
@@ -124,6 +138,6 @@ void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void	framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    (void)window;
+	(void)window;
 	glViewport(0, 0, width, height);
 }

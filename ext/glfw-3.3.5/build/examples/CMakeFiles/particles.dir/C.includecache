@@ -82,17 +82,17 @@ GL/gl.h
 GL/glext.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.c
 getopt.h
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.h
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.h
 stddef.h
 -
 string.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.h
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.h
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 stdio.h
 -
 stdlib.h
@@ -102,9 +102,9 @@ string.h
 glad/gl.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/tinycthread.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/tinycthread.c
 tinycthread.h
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/tinycthread.h
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/tinycthread.h
 stdlib.h
 -
 signal.h
@@ -122,7 +122,7 @@ process.h
 sys/timeb.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/tinycthread.h
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/tinycthread.h
 time.h
 -
 sys/time.h
@@ -132,7 +132,7 @@ pthread.h
 windows.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/examples/particles.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/examples/particles.c
 stdlib.h
 -
 stdio.h

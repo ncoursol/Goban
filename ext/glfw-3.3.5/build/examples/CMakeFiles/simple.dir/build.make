@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5
+CMAKE_SOURCE_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5/build
+CMAKE_BINARY_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5/build
 
 # Include any dependencies generated for this target.
 include examples/CMakeFiles/simple.dir/depend.make
@@ -59,29 +59,29 @@ include examples/CMakeFiles/simple.dir/flags.make
 
 examples/CMakeFiles/simple.dir/simple.c.o: examples/CMakeFiles/simple.dir/flags.make
 examples/CMakeFiles/simple.dir/simple.c.o: ../examples/simple.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object examples/CMakeFiles/simple.dir/simple.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/simple.dir/simple.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/examples/simple.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object examples/CMakeFiles/simple.dir/simple.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/simple.dir/simple.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/examples/simple.c
 
 examples/CMakeFiles/simple.dir/simple.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/simple.dir/simple.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/examples/simple.c > CMakeFiles/simple.dir/simple.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/examples/simple.c > CMakeFiles/simple.dir/simple.c.i
 
 examples/CMakeFiles/simple.dir/simple.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/simple.dir/simple.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/examples/simple.c -o CMakeFiles/simple.dir/simple.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/examples/simple.c -o CMakeFiles/simple.dir/simple.c.s
 
 examples/CMakeFiles/simple.dir/__/deps/glad_gl.c.o: examples/CMakeFiles/simple.dir/flags.make
 examples/CMakeFiles/simple.dir/__/deps/glad_gl.c.o: ../deps/glad_gl.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object examples/CMakeFiles/simple.dir/__/deps/glad_gl.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/simple.dir/__/deps/glad_gl.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object examples/CMakeFiles/simple.dir/__/deps/glad_gl.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/simple.dir/__/deps/glad_gl.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 
 examples/CMakeFiles/simple.dir/__/deps/glad_gl.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/simple.dir/__/deps/glad_gl.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/simple.dir/__/deps/glad_gl.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/simple.dir/__/deps/glad_gl.c.i
 
 examples/CMakeFiles/simple.dir/__/deps/glad_gl.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/simple.dir/__/deps/glad_gl.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/simple.dir/__/deps/glad_gl.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/simple.dir/__/deps/glad_gl.c.s
 
 # Object files for target simple
 simple_OBJECTS = \
@@ -100,8 +100,8 @@ examples/simple: /usr/lib/x86_64-linux-gnu/librt.so
 examples/simple: /usr/lib/x86_64-linux-gnu/libm.so
 examples/simple: /usr/lib/x86_64-linux-gnu/libX11.so
 examples/simple: examples/CMakeFiles/simple.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable simple"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/simple.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable simple"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/simple.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 examples/CMakeFiles/simple.dir/build: examples/simple
@@ -109,10 +109,10 @@ examples/CMakeFiles/simple.dir/build: examples/simple
 .PHONY : examples/CMakeFiles/simple.dir/build
 
 examples/CMakeFiles/simple.dir/clean:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples && $(CMAKE_COMMAND) -P CMakeFiles/simple.dir/cmake_clean.cmake
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples && $(CMAKE_COMMAND) -P CMakeFiles/simple.dir/cmake_clean.cmake
 .PHONY : examples/CMakeFiles/simple.dir/clean
 
 examples/CMakeFiles/simple.dir/depend:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/scop/ext/glfw-3.3.5 /home/blue/Documents/scop/ext/glfw-3.3.5/examples /home/blue/Documents/scop/ext/glfw-3.3.5/build /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples /home/blue/Documents/scop/ext/glfw-3.3.5/build/examples/CMakeFiles/simple.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/goban/ext/glfw-3.3.5 /home/blue/Documents/goban/ext/glfw-3.3.5/examples /home/blue/Documents/goban/ext/glfw-3.3.5/build /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples /home/blue/Documents/goban/ext/glfw-3.3.5/build/examples/CMakeFiles/simple.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : examples/CMakeFiles/simple.dir/depend
 

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5
+CMAKE_SOURCE_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5/build
+CMAKE_BINARY_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5/build
 
 # Include any dependencies generated for this target.
 include tests/CMakeFiles/threads.dir/depend.make
@@ -59,42 +59,42 @@ include tests/CMakeFiles/threads.dir/flags.make
 
 tests/CMakeFiles/threads.dir/threads.c.o: tests/CMakeFiles/threads.dir/flags.make
 tests/CMakeFiles/threads.dir/threads.c.o: ../tests/threads.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/threads.dir/threads.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/threads.dir/threads.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/tests/threads.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/threads.dir/threads.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/threads.dir/threads.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/tests/threads.c
 
 tests/CMakeFiles/threads.dir/threads.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/threads.dir/threads.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/tests/threads.c > CMakeFiles/threads.dir/threads.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/tests/threads.c > CMakeFiles/threads.dir/threads.c.i
 
 tests/CMakeFiles/threads.dir/threads.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/threads.dir/threads.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/tests/threads.c -o CMakeFiles/threads.dir/threads.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/tests/threads.c -o CMakeFiles/threads.dir/threads.c.s
 
 tests/CMakeFiles/threads.dir/__/deps/tinycthread.c.o: tests/CMakeFiles/threads.dir/flags.make
 tests/CMakeFiles/threads.dir/__/deps/tinycthread.c.o: ../deps/tinycthread.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/threads.dir/__/deps/tinycthread.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/threads.dir/__/deps/tinycthread.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/deps/tinycthread.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/threads.dir/__/deps/tinycthread.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/threads.dir/__/deps/tinycthread.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/deps/tinycthread.c
 
 tests/CMakeFiles/threads.dir/__/deps/tinycthread.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/threads.dir/__/deps/tinycthread.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/deps/tinycthread.c > CMakeFiles/threads.dir/__/deps/tinycthread.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/deps/tinycthread.c > CMakeFiles/threads.dir/__/deps/tinycthread.c.i
 
 tests/CMakeFiles/threads.dir/__/deps/tinycthread.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/threads.dir/__/deps/tinycthread.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/deps/tinycthread.c -o CMakeFiles/threads.dir/__/deps/tinycthread.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/deps/tinycthread.c -o CMakeFiles/threads.dir/__/deps/tinycthread.c.s
 
 tests/CMakeFiles/threads.dir/__/deps/glad_gl.c.o: tests/CMakeFiles/threads.dir/flags.make
 tests/CMakeFiles/threads.dir/__/deps/glad_gl.c.o: ../deps/glad_gl.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object tests/CMakeFiles/threads.dir/__/deps/glad_gl.c.o"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/threads.dir/__/deps/glad_gl.c.o   -c /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object tests/CMakeFiles/threads.dir/__/deps/glad_gl.c.o"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/threads.dir/__/deps/glad_gl.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 
 tests/CMakeFiles/threads.dir/__/deps/glad_gl.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/threads.dir/__/deps/glad_gl.c.i"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/threads.dir/__/deps/glad_gl.c.i
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/threads.dir/__/deps/glad_gl.c.i
 
 tests/CMakeFiles/threads.dir/__/deps/glad_gl.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/threads.dir/__/deps/glad_gl.c.s"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/threads.dir/__/deps/glad_gl.c.s
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/threads.dir/__/deps/glad_gl.c.s
 
 # Object files for target threads
 threads_OBJECTS = \
@@ -114,8 +114,8 @@ tests/threads: /usr/lib/x86_64-linux-gnu/libm.so
 tests/threads: /usr/lib/x86_64-linux-gnu/librt.so
 tests/threads: /usr/lib/x86_64-linux-gnu/libX11.so
 tests/threads: tests/CMakeFiles/threads.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable threads"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/threads.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable threads"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/threads.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 tests/CMakeFiles/threads.dir/build: tests/threads
@@ -123,10 +123,10 @@ tests/CMakeFiles/threads.dir/build: tests/threads
 .PHONY : tests/CMakeFiles/threads.dir/build
 
 tests/CMakeFiles/threads.dir/clean:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/threads.dir/cmake_clean.cmake
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/threads.dir/cmake_clean.cmake
 .PHONY : tests/CMakeFiles/threads.dir/clean
 
 tests/CMakeFiles/threads.dir/depend:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/scop/ext/glfw-3.3.5 /home/blue/Documents/scop/ext/glfw-3.3.5/tests /home/blue/Documents/scop/ext/glfw-3.3.5/build /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests /home/blue/Documents/scop/ext/glfw-3.3.5/build/tests/CMakeFiles/threads.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/goban/ext/glfw-3.3.5 /home/blue/Documents/goban/ext/glfw-3.3.5/tests /home/blue/Documents/goban/ext/glfw-3.3.5/build /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests /home/blue/Documents/goban/ext/glfw-3.3.5/build/tests/CMakeFiles/threads.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : tests/CMakeFiles/threads.dir/depend
 

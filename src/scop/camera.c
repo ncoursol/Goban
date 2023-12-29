@@ -110,17 +110,6 @@ void	camera(scop_t *scop, vec3_t eye, vec3_t center, vec3_t up)
 	free_null((void*)mv);
 }
 
-void	set_shader_var(scop_t *scop)
-{
-	glUseProgram(scop->shader->shaderProgram);
-	scop->shaderID.movementID = glGetUniformLocation(scop->shader->shaderProgram, "movement");
-	scop->shaderID.transitionID = glGetUniformLocation(scop->shader->shaderProgram, "alpha");
-	scop->shaderID.textStateID = glGetUniformLocation(scop->shader->shaderProgram, "texture_state");
-	glUniform1i(scop->shaderID.textStateID, TEXTURE);
-	scop->shaderID.colorStateID = glGetUniformLocation(scop->shader->shaderProgram, "color_state");
-	glUniform1i(scop->shaderID.colorStateID, COLOR);
-}
-
 void	init_camera(scop_t *scop)
 {
 	vec3_t 	eye;
@@ -150,8 +139,7 @@ void	init_camera(scop_t *scop)
 		scop->camera->dist * sinf(scop->camera->av) * sinf(scop->camera->ah),
 		scop->camera->dist * cosf(scop->camera->av)
 	};
-
-	set_shader_var(scop);
+	glUseProgram(scop->shader->shaderProgram);
 	glfwSetCursorPos(scop->window, scop->camera->ah, scop->camera->av);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 

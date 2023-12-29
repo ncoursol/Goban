@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5
+CMAKE_SOURCE_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5/build
+CMAKE_BINARY_DIR = /home/blue/Documents/goban/ext/glfw-3.3.5/build
 
 # Utility rule file for update_mappings.
 
@@ -54,8 +54,8 @@ CMAKE_BINARY_DIR = /home/blue/Documents/scop/ext/glfw-3.3.5/build
 include src/CMakeFiles/update_mappings.dir/progress.make
 
 src/CMakeFiles/update_mappings:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/blue/Documents/scop/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Updating gamepad mappings from upstream repository"
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/src && /usr/bin/cmake -P /home/blue/Documents/scop/ext/glfw-3.3.5/CMake/GenerateMappings.cmake mappings.h.in mappings.h
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Updating gamepad mappings from upstream repository"
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/src && /usr/bin/cmake -P /home/blue/Documents/goban/ext/glfw-3.3.5/CMake/GenerateMappings.cmake mappings.h.in mappings.h
 
 update_mappings: src/CMakeFiles/update_mappings
 update_mappings: src/CMakeFiles/update_mappings.dir/build.make
@@ -68,10 +68,10 @@ src/CMakeFiles/update_mappings.dir/build: update_mappings
 .PHONY : src/CMakeFiles/update_mappings.dir/build
 
 src/CMakeFiles/update_mappings.dir/clean:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build/src && $(CMAKE_COMMAND) -P CMakeFiles/update_mappings.dir/cmake_clean.cmake
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build/src && $(CMAKE_COMMAND) -P CMakeFiles/update_mappings.dir/cmake_clean.cmake
 .PHONY : src/CMakeFiles/update_mappings.dir/clean
 
 src/CMakeFiles/update_mappings.dir/depend:
-	cd /home/blue/Documents/scop/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/scop/ext/glfw-3.3.5 /home/blue/Documents/scop/ext/glfw-3.3.5/src /home/blue/Documents/scop/ext/glfw-3.3.5/build /home/blue/Documents/scop/ext/glfw-3.3.5/build/src /home/blue/Documents/scop/ext/glfw-3.3.5/build/src/CMakeFiles/update_mappings.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/blue/Documents/goban/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/blue/Documents/goban/ext/glfw-3.3.5 /home/blue/Documents/goban/ext/glfw-3.3.5/src /home/blue/Documents/goban/ext/glfw-3.3.5/build /home/blue/Documents/goban/ext/glfw-3.3.5/build/src /home/blue/Documents/goban/ext/glfw-3.3.5/build/src/CMakeFiles/update_mappings.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : src/CMakeFiles/update_mappings.dir/depend
 

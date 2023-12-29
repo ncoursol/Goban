@@ -4,10 +4,10 @@
 tests/CMakeFiles/cursor.dir/__/deps/glad_gl.c.o
  ../deps/glad/gl.h
  ../deps/glad/khrplatform.h
- /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+ /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 tests/CMakeFiles/cursor.dir/cursor.c.o
  ../deps/glad/gl.h
  ../deps/glad/khrplatform.h
  ../deps/linmath.h
  ../include/GLFW/glfw3.h
- /home/blue/Documents/scop/ext/glfw-3.3.5/tests/cursor.c
+ /home/blue/Documents/goban/ext/glfw-3.3.5/tests/cursor.c

@@ -53,58 +53,72 @@ void	init_gl(scop_t *scop)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void	VAOs(scop_t *scop, obj_t *obj)
+{
+	GLenum	errCode;
+	
+	// VAO
+	glGenVertexArrays(1, &obj->VAO);  
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(scop, 44, getErrorString(errCode));
+	glBindVertexArray(scop->obj->VAO);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(scop, 45, getErrorString(errCode));
+
+	// VBO
+	glGenBuffers(1, &scop->obj->VBO);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(scop, 46, getErrorString(errCode));
+	glBindBuffer(GL_ARRAY_BUFFER, scop->obj->VBO);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(scop, 47, getErrorString(errCode));
+	glBufferData(GL_ARRAY_BUFFER,
+			scop->obj->nb_triangles * 8 * sizeof(float),
+			&scop->obj->obj[0],
+			GL_STATIC_DRAW);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(scop, 48, getErrorString(errCode));
+
+	// Vertex format(Coordinate/TextureUV/Color): x1,y1,z1, u1,v1, r1,g1,b1, x2...
+
+	// Coordinate
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(scop, 49, getErrorString(errCode));
+	glEnableVertexAttribArray(0);
+	// TextureUV
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(scop, 50, getErrorString(errCode));
+	glEnableVertexAttribArray(1);
+	// Color
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(scop, 51, getErrorString(errCode));
+	glEnableVertexAttribArray(2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	if (scop->obj->id == 1) {
+		glGenBuffers(1, &scop->stone_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, scop->stone_VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 361, &scop->stone_coord[0], GL_STATIC_DRAW);
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glVertexAttribDivisor(3, 1);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+	glBindVertexArray(0);
 }
 
 void	init_VAOs(scop_t *scop)
 {
-	GLenum	errCode;
-	
 	scop->obj = scop->obj->first;
 	while (scop->obj != NULL) {
-		// VAO
-		glGenVertexArrays(1, &scop->obj->VAO);  
-		if ((errCode = glGetError()) != GL_NO_ERROR)
-			exit_callback(scop, 44, getErrorString(errCode));
-		glBindVertexArray(scop->obj->VAO);
-		if ((errCode = glGetError()) != GL_NO_ERROR)
-			exit_callback(scop, 45, getErrorString(errCode));
-
-		// VBO
-		glGenBuffers(1, &scop->obj->VBO);
-		if ((errCode = glGetError()) != GL_NO_ERROR)
-			exit_callback(scop, 46, getErrorString(errCode));
-		glBindBuffer(GL_ARRAY_BUFFER, scop->obj->VBO);
-		if ((errCode = glGetError()) != GL_NO_ERROR)
-			exit_callback(scop, 47, getErrorString(errCode));
-		glBufferData(GL_ARRAY_BUFFER,
-				scop->obj->nb_triangles * 8 * sizeof(float),
-				&scop->obj->obj[0],
-				GL_STATIC_DRAW);
-		if ((errCode = glGetError()) != GL_NO_ERROR)
-			exit_callback(scop, 48, getErrorString(errCode));
-
-		// Vertex format(Vertex/Texture/Color): x1,y1,z1, u1,v1, r1,g1,b1, x2...
-
-		// Vertex
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-		if ((errCode = glGetError()) != GL_NO_ERROR)
-			exit_callback(scop, 49, getErrorString(errCode));
-		glEnableVertexAttribArray(0);
-		// Texture
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		if ((errCode = glGetError()) != GL_NO_ERROR)
-			exit_callback(scop, 50, getErrorString(errCode));
-		glEnableVertexAttribArray(1);
-		// Color
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-		if ((errCode = glGetError()) != GL_NO_ERROR)
-			exit_callback(scop, 51, getErrorString(errCode));
-		glEnableVertexAttribArray(2);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-
+		VAOs(scop, scop->obj);
 		if (scop->obj->next == NULL)
 			break;
 		scop->obj = scop->obj->next;
@@ -162,6 +176,14 @@ void	init_scop(scop_t *scop)
 	scop->nb_vertices = 0;
 	scop->nb_textures = 0;
 	scop->nb_normals = 0;
+	scop->tmp_id.x = 0;
+	scop->tmp_id.y = 0;
+	scop->tmp_id.z = 0;
+	if (!(scop->stone_coord = (float*)malloc(sizeof(float) * 19 * 19 * 3)))
+		exit_callback(scop, 0, "stone_coord malloc failed");
+	for (int i = 0; i < 1083; i++)
+		scop->stone_coord[i] = 100;
+	scop->nb_stones = 0;
 	if (!(scop->vertices = (float*)malloc(sizeof(float) * V_BUFF_SIZE)))
 		exit_callback(scop, 1, "vertices malloc failed");
 	if (!(scop->textures = (float*)malloc(sizeof(float) * V_BUFF_SIZE)))
@@ -174,16 +196,16 @@ void	init_scop(scop_t *scop)
 		exit_callback(scop, 5, "camera malloc failed");
 }
 
-void	init_all(scop_t *scop, char **argv)
+void	init_all(scop_t *scop)
 {
 	init_scop(scop);
 	init_obj(scop);
 	scop->obj->first = scop->obj;
-	load_obj(scop, argv);
+	load_obj(scop, "resources/goban.obj");
 	init_glfw(scop);
 	init_gl(scop);
 	init_shader(scop, scop->shader, "./src/shader.vert", "./src/shader.frag");
 	init_VAOs(scop);
 	init_camera(scop);
-	load_texture(scop, argv[2]);
+	load_texture(scop);
 }

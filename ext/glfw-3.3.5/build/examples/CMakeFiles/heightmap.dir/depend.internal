@@ -4,9 +4,9 @@
 examples/CMakeFiles/heightmap.dir/__/deps/glad_gl.c.o
  ../deps/glad/gl.h
  ../deps/glad/khrplatform.h
- /home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+ /home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 examples/CMakeFiles/heightmap.dir/heightmap.c.o
  ../deps/glad/gl.h
  ../deps/glad/khrplatform.h
  ../include/GLFW/glfw3.h
- /home/blue/Documents/scop/ext/glfw-3.3.5/examples/heightmap.c
+ /home/blue/Documents/goban/ext/glfw-3.3.5/examples/heightmap.c

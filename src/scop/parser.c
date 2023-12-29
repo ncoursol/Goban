@@ -27,11 +27,11 @@ void	load_face(scop_t *scop, char *line, int *f, int *b_f)
 		if (scop->obj->faces[*f]->vertex)
 			new_vertex(scop, *f);
 		if (!scop->obj->faces[*f]->vertex)
-			scop->obj->faces[*f]->vertex = strtof(tmp, &tmp);
+			scop->obj->faces[*f]->vertex = strtof(tmp, &tmp) + scop->tmp_id.x;
 		if (tmp[0] == '/' && !scop->obj->faces[*f]->texture)
-			scop->obj->faces[*f]->texture = strtof(++tmp, &tmp);
+			scop->obj->faces[*f]->texture = strtof(++tmp, &tmp) + scop->tmp_id.y;
 		if (tmp[0] == '/' && !scop->obj->faces[*f]->normal)
-			scop->obj->faces[*f]->normal = strtof(++tmp, &tmp);
+			scop->obj->faces[*f]->normal = strtof(++tmp, &tmp) + scop->tmp_id.z;
 		while(tmp[0] == ' ' && tmp[1] && (tmp[1] < '0' || tmp[1] > '9'))
 			tmp = &tmp[1];
 		nb++;
@@ -72,17 +72,27 @@ void	load_new_object(scop_t *scop, char *line, int *f, int *b_f)
 	}
 }
 
-void	load_obj(scop_t *scop, char **argv)
+void	load_obj(scop_t *scop, char *argv)
 {
 	FILE 		*fp;
 	char 		*line = NULL;
 	size_t 	len = 0;
 	size_t 	read;
-	int			v = 0, vt = 0, vn = 0, f = 0;
+	int			v = scop->nb_vertices * 3, vt = scop->nb_textures * 2, vn = scop->nb_normals * 3, f = 0;
 	int			b_v = 1, b_vt = 1, b_vn = 1, b_f = 1;
 
-	if(!(fp = fopen(argv[1], "r")))
+	if(!(fp = fopen(argv, "r")))
 		exit_callback(scop, 8, "wrong .obj file, fopen failed");
+
+	if (scop->nb_vertices || scop->nb_textures || scop->nb_normals)
+	{
+		if (!(scop->vertices = (float*)realloc(scop->vertices, sizeof(float) * (v + V_BUFF_SIZE))))
+			exit_callback(scop, 1, "vertices malloc failed");
+		if (!(scop->textures = (float*)realloc(scop->textures, sizeof(float) * (vt + V_BUFF_SIZE))))
+			exit_callback(scop, 2, "textures malloc failed");
+		if (!(scop->normals = (float*)realloc(scop->normals, sizeof(float) * (vn + V_BUFF_SIZE))))
+			exit_callback(scop, 3, "normals malloc failed");
+	}
 
 	while ((read = getline(&line, &len, fp)) != (size_t)(-1)) {
 		if (line != NULL && line[0] != '#') {
@@ -122,6 +132,9 @@ void	load_obj(scop_t *scop, char **argv)
 	if (vn)
 		if (!(scop->normals = (float*)realloc(scop->normals, sizeof(float) * vn)))
 			exit_callback(scop, 22, "normals realloc failed");
+	scop->tmp_id.x = scop->nb_vertices;
+	scop->tmp_id.y = scop->nb_textures;
+	scop->tmp_id.z = scop->nb_normals;
 	scop->obj->nb_triangles = scop->obj->nb_faces * 3;
 	create_obj(scop);
 }

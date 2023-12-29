@@ -1,9 +1,9 @@
 
-if (NOT EXISTS "/home/blue/Documents/scop/ext/glfw-3.3.5/build/install_manifest.txt")
-  message(FATAL_ERROR "Cannot find install manifest: \"/home/blue/Documents/scop/ext/glfw-3.3.5/build/install_manifest.txt\"")
+if (NOT EXISTS "/home/blue/Documents/goban/ext/glfw-3.3.5/build/install_manifest.txt")
+  message(FATAL_ERROR "Cannot find install manifest: \"/home/blue/Documents/goban/ext/glfw-3.3.5/build/install_manifest.txt\"")
 endif()
 
-file(READ "/home/blue/Documents/scop/ext/glfw-3.3.5/build/install_manifest.txt" files)
+file(READ "/home/blue/Documents/goban/ext/glfw-3.3.5/build/install_manifest.txt" files)
 string(REGEX REPLACE "\n" ";" files "${files}")
 
 foreach (file ${files})

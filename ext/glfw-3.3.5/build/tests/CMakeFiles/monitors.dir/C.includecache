@@ -68,17 +68,17 @@ GL/gl.h
 GL/glext.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.c
 getopt.h
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.h
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.h
 stddef.h
 -
 string.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/getopt.h
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/getopt.h
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/deps/glad_gl.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_gl.c
 stdio.h
 -
 stdlib.h
@@ -88,7 +88,7 @@ string.h
 glad/gl.h
 -
 
-/home/blue/Documents/scop/ext/glfw-3.3.5/tests/monitors.c
+/home/blue/Documents/goban/ext/glfw-3.3.5/tests/monitors.c
 glad/gl.h
 -
 GLFW/glfw3.h
@@ -100,5 +100,5 @@ string.h
 stdlib.h
 -
 getopt.h
-/home/blue/Documents/scop/ext/glfw-3.3.5/tests/getopt.h
+/home/blue/Documents/goban/ext/glfw-3.3.5/tests/getopt.h
 
