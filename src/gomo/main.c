@@ -12,9 +12,8 @@
 
 #include "../include/gomo.h"
 
-vec3_t set_new_eye(gomo_t *gomo, vec3_t up)
+void set_new_eye(gomo_t *gomo, vec3_t up)
 {
-	vec3_t eye;
 	float d, ah, av;
 
 	if (!(TOP_VIEW))
@@ -33,20 +32,19 @@ vec3_t set_new_eye(gomo_t *gomo, vec3_t up)
 		av = 1.535f;
 	if (up.z)
 	{
-		eye = (vec3_t){
+		gomo->camera->eye = (vec3_t){
 			(d * -sinf(av) * cosf(ah)) + gomo->camera->center.x + gomo->camera->gap.x,
 			(d * -sinf(av) * sinf(ah)) + gomo->camera->center.y + gomo->camera->gap.y,
 			(d * -cosf(av)) + gomo->camera->center.z + gomo->camera->gap.z};
 	}
 	else
 	{
-		eye = (vec3_t){
+		gomo->camera->eye = (vec3_t){
 			(d * -sinf(av) * cosf(ah)) + gomo->camera->center.x + gomo->camera->gap.x,
 			(d * -cosf(av)) + gomo->camera->center.y + gomo->camera->gap.y,
 			(d * -sinf(av) * sinf(ah)) + gomo->camera->center.z + gomo->camera->gap.z,
 		};
 	}
-	return (eye);
 }
 
 vec3_t set_new_center(gomo_t *gomo, vec3_t up)
@@ -104,7 +102,6 @@ void set_new_camera_angles(gomo_t *gomo)
 
 void updateCamera(gomo_t *gomo)
 {
-	vec3_t eye;
 	vec3_t new_center;
 	vec3_t up;
 
@@ -113,13 +110,13 @@ void updateCamera(gomo_t *gomo)
 	if (LEFT_MOUSE && !(TOP_VIEW))
 		set_new_camera_angles(gomo);
 
-	eye = set_new_eye(gomo, up);
+	set_new_eye(gomo, up);
 
 	new_center = (vec3_t){
 		gomo->camera->center.x + gomo->camera->gap.x,
 		gomo->camera->center.y + gomo->camera->gap.y,
 		gomo->camera->center.z + gomo->camera->gap.z};
-	camera(gomo, eye, new_center, up);
+	camera(gomo, new_center, up);
 }
 
 int main(void)

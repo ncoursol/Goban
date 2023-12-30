@@ -42,6 +42,20 @@ typedef struct vec3_s
 	float z;
 } vec3_t;
 
+typedef struct hit_s
+{
+	int hit;
+	float t;
+	vec3_t point;
+	vec3_t normal;
+} hit_t;
+
+typedef struct ray_s
+{
+	vec3_t origin;
+	vec3_t direction;
+} ray_t;
+
 typedef struct data_s
 {
 	int vertex;
@@ -55,6 +69,7 @@ typedef struct camera_s
 {
 	vec3_t center;		  // Center of the scene
 	vec3_t gap;			  // Gap between the old and the new scene center
+	vec3_t eye;			  // Eye of the cameragt
 	unsigned int options; // See #define section
 	float gv;			  // Screen vertical gap
 	float gh;			  // Screen horizontal gap
@@ -138,6 +153,8 @@ typedef struct gomo_s
 	vec3_t tmp_id;
 	float *stone_coord;
 	unsigned int stone_VBO;
+	unsigned int tmpVBO;		  // Vertex Buffer Object
+	unsigned int tmpVAO;		  // Vertex Array Object
 	int nb_stones;
 	float *vertices; // Array of all vertices in the scene (x1,y1,z1,x2,y2,z2,...)
 	float *textures; // Array of all textures coordinate in the scene (u1,v1,u2,v2,...)
@@ -194,7 +211,7 @@ void new_obj(gomo_t *gomo, char *line);
 void create_obj(gomo_t *gomo);
 
 // Render fct
-void camera(gomo_t *gomo, vec3_t eye, vec3_t center, vec3_t up);
+void camera(gomo_t *gomo, vec3_t center, vec3_t up);
 
 // Exit fct
 void free_all(gomo_t *gomo, int step);
