@@ -56,6 +56,18 @@ typedef struct ray_s
 	vec3_t direction;
 } ray_t;
 
+typedef struct grid_s
+{
+	int state;
+	int color;
+	vec3_t pos;
+} grid_t;
+
+typedef struct instance_s
+{
+	vec3_t pos;
+} instance_t;
+
 typedef struct data_s
 {
 	int vertex;
@@ -101,11 +113,10 @@ typedef struct obj_s // Chained list of each object of the scene
 	float *obj;		  // All vertices data ready for render (x1,y1,z1,u1,v1,r1,g1,b1,x2,...)
 	float max[3];
 	float min[3];
-	unsigned int VBO;		  // Vertex Buffer Object
-	unsigned int VAO;		  // Vertex Array Object
-	unsigned int instanceVBO; // Vertex Buffer Object for instances go stones
-	struct obj_s *next;		  // Next object
-	struct obj_s *first;	  // First object
+	unsigned int VBO;	 // Vertex Buffer Object
+	unsigned int VAO;	 // Vertex Array Object
+	struct obj_s *next;	 // Next object
+	struct obj_s *first; // First object
 } obj_t;
 
 typedef struct shaderID_s
@@ -151,10 +162,9 @@ typedef struct gomo_s
 	int nb_textures;
 	int nb_normals;
 	vec3_t tmp_id;
-	float *stone_coord;
-	unsigned int stone_VBO;
-	unsigned int tmpVBO;		  // Vertex Buffer Object
-	unsigned int tmpVAO;		  // Vertex Array Object
+	instance_t *stone;
+	unsigned int instanceVBO; // Vertex Buffer Object for instances go stones
+	grid_t *board;
 	int nb_stones;
 	float *vertices; // Array of all vertices in the scene (x1,y1,z1,x2,y2,z2,...)
 	float *textures; // Array of all textures coordinate in the scene (u1,v1,u2,v2,...)

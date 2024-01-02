@@ -63,7 +63,6 @@ hit_t rayTriangle(ray_t ray, vec3_t triA, vec3_t triB, vec3_t triC)
 	hit_t hit;
 	hit.hit = determinant >= 1e-6 && dst >= 0 && u >= 0 && v >= 0 && w >= 0;
 	hit.point = add_vec3(ray.origin, prod_vec3(ray.direction, dst));
-	// hit.normal = normalize(triNormalA * w + triNormalB * u + triNormalC * v);
 	hit.t = dst;
 	return (hit);
 }
@@ -74,31 +73,28 @@ hit_t ray_intersect_obj(ray_t ray, obj_t *obj)
 	closest_hit.hit = 0;
 	closest_hit.t = INFINITY;
 
-	for (int i = 0; i < obj->nb_triangles; i++)
+	for (int i = 0; i < obj->nb_triangles / 3; i++)
 	{
 		vec3_t triA = {
-			obj->obj[i * 21 + 0],
-			obj->obj[i * 21 + 1],
-			obj->obj[i * 21 + 2]};
+			obj->obj[i * 24 + 0],
+			obj->obj[i * 24 + 1],
+			obj->obj[i * 24 + 2]};
 		vec3_t triB = {
-			obj->obj[i * 21 + 9],
-			obj->obj[i * 21 + 10],
-			obj->obj[i * 21 + 11]};
+			obj->obj[i * 24 + 8],
+			obj->obj[i * 24 + 9],
+			obj->obj[i * 24 + 10]};
 		vec3_t triC = {
-			obj->obj[i * 21 + 18],
-			obj->obj[i * 21 + 19],
-			obj->obj[i * 21 + 20]};
+			obj->obj[i * 24 + 16],
+			obj->obj[i * 24 + 17],
+			obj->obj[i * 24 + 18]};
 
 		curr = rayTriangle(ray, triA, triB, triC);
-		if (curr.hit)
+		if (curr.hit && curr.t < closest_hit.t)
 		{
-			if (curr.t < closest_hit.t)
-			{
-				closest_hit.hit = 1;
-				closest_hit.t = curr.t;
-				closest_hit.point = curr.point;
-				closest_hit.normal = curr.normal;
-			}
+			closest_hit.hit = 1;
+			closest_hit.t = curr.t;
+			closest_hit.point = curr.point;
+			closest_hit.normal = curr.normal;
 		}
 	}
 
@@ -107,8 +103,9 @@ hit_t ray_intersect_obj(ray_t ray, obj_t *obj)
 
 ray_t createRay(vec3_t cameraPos, double xpos, double ypos)
 {
-	// Assuming screenX and screenY are in the range [0, 1]
-	vec3_t screenPoint = {xpos * 2.0f - 1.0f, ypos * 2.0f - 1.0f, -1.0f}; // Assuming a near plane at z = -1
+	float normalizedX = (2.0f * xpos / WIDTH) - 1.0f;
+	float normalizedY = 1.0f - (2.0f * ypos / HEIGHT);
+	vec3_t screenPoint = {normalizedX * 2.0f - 1.0f, normalizedY * 2.0f - 1.0f, -1.0f}; // near plane z = -1
 
 	// Direction from camera position to screen point
 	vec3_t direction = {
@@ -133,9 +130,10 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 	(void)mods;
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && (action == GLFW_PRESS || action == GLFW_RELEASE))
 	{
+		GLenum errCode;
 		double xpos, ypos;
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
-		if (action == GLFW_PRESS && gomo->nb_stones < 362)
+		if (action == GLFW_PRESS && gomo->nb_stones < 361)
 		{
 			ray_t ray;
 			hit_t res;
@@ -143,26 +141,46 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 			ray = createRay(gomo->camera->eye, xpos, ypos);
 			gomo->obj = gomo->obj->first;
 			res = ray_intersect_obj(ray, gomo->obj);
+			gomo->obj = gomo->obj->next;
 			if (res.hit)
 			{
 				printf("Hit\n");
-				while (gomo->obj->next != NULL)
-					gomo->obj = gomo->obj->next;
-				if (gomo->obj->id == 0)
+				int closest_case = 0;
+				float shortest_dist = INFINITY;
+				float tmp_dist = 0;
+				for (int i = 0; i < 19 * 19; i++)
 				{
-					load_obj(gomo, "resources/stone.obj");
-					VAOs(gomo, gomo->obj);
+					tmp_dist = dist_btw_two_vec3(gomo->board[i].pos, res.point);
+
+					if (!gomo->board[i].state && tmp_dist < shortest_dist)
+					{
+						shortest_dist = dist_btw_two_vec3(gomo->board[i].pos, res.point);
+						closest_case = i;
+					}
 				}
+				gomo->board[closest_case].state = 1;
+				gomo->stone[gomo->nb_stones].pos = gomo->board[closest_case].pos;
 				gomo->nb_stones++;
-				int i = gomo->nb_stones * 3;
-				// float offset = 2.15f;
-				gomo->stone_coord[i + 0] = res.point.x;
-				gomo->stone_coord[i + 1] = res.point.y;
-				gomo->stone_coord[i + 2] = res.point.z;
-				printf("x[%f] y[%f]\n", gomo->stone_coord[i + 0], gomo->stone_coord[i + 2]);
-				glBindBuffer(GL_ARRAY_BUFFER, gomo->stone_VBO);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 361, &gomo->stone_coord[0], GL_STATIC_DRAW);
+				gomo->obj = gomo->obj->first->next;
+				glBindVertexArray(gomo->obj->VAO);
+				if ((errCode = glGetError()) != GL_NO_ERROR)
+					exit_callback(gomo, 218, getErrorString(errCode));
+				glBindBuffer(GL_ARRAY_BUFFER, gomo->instanceVBO);
+				if ((errCode = glGetError()) != GL_NO_ERROR)
+					exit_callback(gomo, 219, getErrorString(errCode));
+
+				instance_t *data = (instance_t *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+				if ((errCode = glGetError()) != GL_NO_ERROR)
+					exit_callback(gomo, 220, getErrorString(errCode));
+
+				memcpy(data, &gomo->stone[0], gomo->nb_stones * sizeof(instance_t));
+
+				glUnmapBuffer(GL_ARRAY_BUFFER);
+				if ((errCode = glGetError()) != GL_NO_ERROR)
+					exit_callback(gomo, 221, getErrorString(errCode));
+
 				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				glBindVertexArray(0);
 			}
 			else
 				printf("No hit\n");
