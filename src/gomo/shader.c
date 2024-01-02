@@ -12,29 +12,33 @@
 
 #include "../include/gomo.h"
 
-char		*parse_shader_src(char *path)
+char *parse_shader_src(char *path)
 {
-	char	buf[V_BUFF_SIZE + 1];
-	int		fd;
-	char	*str;
-	char	*tmp;
-	int		i;
+	char buf[V_BUFF_SIZE + 1];
+	int fd;
+	char *str;
+	char *tmp;
+	int i;
 
 	if ((fd = open(path, O_RDONLY)) > 2)
 	{
 		str = NULL;
 		while ((i = read(fd, buf, V_BUFF_SIZE)) > 0)
 		{
-			if (i > 0) {
+			if (i > 0)
+			{
 				buf[i] = '\0';
 				tmp = str;
 				if (!(str = strjoin(str, buf)))
 					return (NULL);
-				if (tmp) {
+				if (tmp)
+				{
 					free(tmp);
 					tmp = NULL;
 				}
-			} else {
+			}
+			else
+			{
 				break;
 			}
 		}
@@ -44,7 +48,7 @@ char		*parse_shader_src(char *path)
 	return (NULL);
 }
 
-void	init_vertexShader(gomo_t *gomo, shader_t *shader, char *vert_src)
+void init_vertexShader(gomo_t *gomo, shader_t *shader, char *vert_src)
 {
 	GLenum errCode;
 	int success;
@@ -66,10 +70,15 @@ void	init_vertexShader(gomo_t *gomo, shader_t *shader, char *vert_src)
 
 	glGetShaderiv(shader->vertexShader, GL_COMPILE_STATUS, &success);
 	if (!success)
+	{
 		exit_callback(gomo, 31, "Shader vertex compilation failed");
+		GLchar infoLog[512];
+		glGetShaderInfoLog(shader->vertexShader, sizeof(infoLog), NULL, infoLog);
+		printf("error: %s\n", infoLog);
+	}
 }
 
-void	init_fragmentShader(gomo_t *gomo, shader_t *shader, char *frag_src)
+void init_fragmentShader(gomo_t *gomo, shader_t *shader, char *frag_src)
 {
 	GLenum errCode;
 	int success;
@@ -91,10 +100,15 @@ void	init_fragmentShader(gomo_t *gomo, shader_t *shader, char *frag_src)
 
 	glGetShaderiv(shader->fragmentShader, GL_COMPILE_STATUS, &success);
 	if (!success)
+	{
 		exit_callback(gomo, 36, "Shader fragment compilation failed");
+		GLchar infoLog[512];
+		glGetShaderInfoLog(shader->fragmentShader, sizeof(infoLog), NULL, infoLog);
+		printf("error: %s\n", infoLog);
+	}
 }
 
-void	init_shaderProgram(gomo_t *gomo, shader_t *shader)
+void init_shaderProgram(gomo_t *gomo, shader_t *shader)
 {
 	GLenum errCode;
 	int success;
@@ -114,13 +128,18 @@ void	init_shaderProgram(gomo_t *gomo, shader_t *shader)
 	glLinkProgram(shader->shaderProgram);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 40, getErrorString(errCode));
-	
-	glGetProgramiv(shader->shaderProgram, GL_LINK_STATUS, &success); 	
+
+	glGetProgramiv(shader->shaderProgram, GL_LINK_STATUS, &success);
 	if (!success)
+	{
 		exit_callback(gomo, 41, "Shader program compilation failed");
+		GLchar infoLog[512];
+		glGetProgramInfoLog(shader->shaderProgram, sizeof(infoLog), NULL, infoLog);
+		printf("error: %s\n", infoLog);
+	}
 }
 
-void	init_shader(gomo_t *gomo, shader_t *shader, char *vert_src, char *frag_src)
+void init_shader(gomo_t *gomo, shader_t *shader, char *vert_src, char *frag_src)
 {
 	GLenum errCode;
 
