@@ -12,12 +12,12 @@
 
 #include "../include/gomo.h"
 
-float		dist_btw_two_vec3(vec3_t a, vec3_t b)
+float dist_btw_two_vec3(vec3_t a, vec3_t b)
 {
 	return (sqrtf(powf(a.x - b.x, 2) + powf(a.y - b.y, 2) + powf(a.z - b.z, 2)));
 }
 
-vec3_t	prod_vec3(vec3_t a, float b)
+vec3_t prod_vec3(vec3_t a, float b)
 {
 	vec3_t ret;
 
@@ -27,7 +27,7 @@ vec3_t	prod_vec3(vec3_t a, float b)
 	return (ret);
 }
 
-vec3_t	add_vec3(vec3_t a, vec3_t b)
+vec3_t add_vec3(vec3_t a, vec3_t b)
 {
 	vec3_t ret;
 
@@ -37,7 +37,7 @@ vec3_t	add_vec3(vec3_t a, vec3_t b)
 	return (ret);
 }
 
-vec3_t	sub_vec3(vec3_t a, vec3_t b)
+vec3_t sub_vec3(vec3_t a, vec3_t b)
 {
 	vec3_t ret;
 
@@ -47,7 +47,7 @@ vec3_t	sub_vec3(vec3_t a, vec3_t b)
 	return (ret);
 }
 
-vec3_t	norm_vec3(vec3_t a)
+vec3_t norm_vec3(vec3_t a)
 {
 	float w;
 
@@ -58,7 +58,7 @@ vec3_t	norm_vec3(vec3_t a)
 	return (a);
 }
 
-vec3_t	cross_vec3(vec3_t a, vec3_t b)
+vec3_t cross_vec3(vec3_t a, vec3_t b)
 {
 	vec3_t ret;
 
@@ -68,7 +68,7 @@ vec3_t	cross_vec3(vec3_t a, vec3_t b)
 	return (ret);
 }
 
-GLfloat	dot_vec3(vec3_t a, vec3_t b)
+GLfloat dot_vec3(vec3_t a, vec3_t b)
 {
-  return (a.x * b.x + a.y * b.y + a.z * b.z);
+	return (a.x * b.x + a.y * b.y + a.z * b.z);
 }

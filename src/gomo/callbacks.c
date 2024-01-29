@@ -44,85 +44,75 @@ void exit_callback(gomo_t *gomo, int state, char *description)
 	exit(1);
 }
 
-hit_t rayTriangle(ray_t ray, vec3_t triA, vec3_t triB, vec3_t triC)
+void updateData(gomo_t *gomo)
 {
-	vec3_t edgeAB = sub_vec3(triB, triA);
-	vec3_t edgeAC = sub_vec3(triC, triA);
-	vec3_t normal = cross_vec3(edgeAB, edgeAC);
-	vec3_t ao = sub_vec3(ray.origin, triA);
-	vec3_t dao = cross_vec3(ao, ray.direction);
+	GLenum errCode;
 
-	float determinant = -dot_vec3(ray.direction, normal);
-	float invDet = 1 / determinant;
+	gomo->obj = gomo->obj->first->next;
+	glBindVertexArray(gomo->obj->VAO);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 218, getErrorString(errCode));
+	glBindBuffer(GL_ARRAY_BUFFER, gomo->instanceVBO);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 219, getErrorString(errCode));
 
-	float dst = dot_vec3(ao, normal) * invDet;
-	float u = dot_vec3(edgeAC, dao) * invDet;
-	float v = -dot_vec3(edgeAB, dao) * invDet;
-	float w = 1 - u - v;
+	instance_t *data = (instance_t *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 220, getErrorString(errCode));
 
-	hit_t hit;
-	hit.hit = determinant >= 1e-6 && dst >= 0 && u >= 0 && v >= 0 && w >= 0;
-	hit.point = add_vec3(ray.origin, prod_vec3(ray.direction, dst));
-	hit.t = dst;
-	return (hit);
+	memcpy(data, &gomo->stone[0], gomo->nb_stones * sizeof(instance_t));
+
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 221, getErrorString(errCode));
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
-hit_t ray_intersect_obj(ray_t ray, obj_t *obj)
+int intersect(ray_t ray, hit_t *intersection)
 {
-	hit_t closest_hit, curr;
-	closest_hit.hit = 0;
-	closest_hit.t = INFINITY;
+	// First, check if we intersect direction and plane normal: d . n
+	float dDotN = dot_vec3(ray.direction, (vec3_t){0.0f, 1.0f, 0.0f});
 
-	for (int i = 0; i < obj->nb_triangles / 3; i++)
-	{
-		vec3_t triA = {
-			obj->obj[i * 24 + 0],
-			obj->obj[i * 24 + 1],
-			obj->obj[i * 24 + 2]};
-		vec3_t triB = {
-			obj->obj[i * 24 + 8],
-			obj->obj[i * 24 + 9],
-			obj->obj[i * 24 + 10]};
-		vec3_t triC = {
-			obj->obj[i * 24 + 16],
-			obj->obj[i * 24 + 17],
-			obj->obj[i * 24 + 18]};
+	// check if the ray is embedded to the plane
+	if (dDotN == 0.0f)
+		return 0;
 
-		curr = rayTriangle(ray, triA, triB, triC);
-		if (curr.hit && curr.t < closest_hit.t)
-		{
-			closest_hit.hit = 1;
-			closest_hit.t = curr.t;
-			closest_hit.point = curr.point;
-			closest_hit.normal = curr.normal;
-		}
-	}
+	// Find distance point of intersection
+	float t = dot_vec3(sub_vec3((vec3_t){0.0f, 0.0f, 0.0f}, ray.origin), (vec3_t){0.0f, 1.0f, 0.0f}) / dDotN;
 
-	return closest_hit;
+	if (t <= RAY_T_MIN || t >= INFINITY)
+		return 0;
+
+	intersection->t = t;
+	intersection->point = add_vec3(ray.origin, prod_vec3(ray.direction, t));
+
+	return 1;
 }
 
-ray_t createRay(vec3_t cameraPos, double xpos, double ypos)
+ray_t createRay(gomo_t *gomo, double xpos, double ypos)
 {
+	ray_t ray;
+	vec3_t direction, forward, right, up;
+	float h, w;
+
 	float normalizedX = (2.0f * xpos / WIDTH) - 1.0f;
 	float normalizedY = 1.0f - (2.0f * ypos / HEIGHT);
-	vec3_t screenPoint = {normalizedX * 2.0f - 1.0f, normalizedY * 2.0f - 1.0f, -1.0f}; // near plane z = -1
 
-	// Direction from camera position to screen point
-	vec3_t direction = {
-		screenPoint.x - cameraPos.x,
-		screenPoint.y - cameraPos.y,
-		screenPoint.z - cameraPos.z};
+	forward = norm_vec3(sub_vec3(gomo->camera->center, gomo->camera->eye));
+	right = sub_vec3((vec3_t){0.0f, 0.0f, 0.0f}, norm_vec3(cross_vec3(forward, (vec3_t){0.0f, 1.0f, 0.0f})));
+	up = sub_vec3((vec3_t){0.0f, 0.0f, 0.0f}, cross_vec3(right, forward));
 
-	// Normalize the direction vector
-	float length = sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-	direction.x /= length;
-	direction.y /= length;
-	direction.z /= length;
+	h = tanf(gomo->camera->fov);
+	w = h * (WIDTH / HEIGHT);
 
-	// Create and return the ray
-	ray_t ray = {cameraPos, direction};
-	printf("Ray Direction: (%f, %f, %f)\n", ray.direction.x, ray.direction.y, ray.direction.z);
-	return ray;
+	// direction = forward + x * w * right + y * h * up;
+	direction = add_vec3(add_vec3(forward, prod_vec3(right, normalizedX * w)), prod_vec3(up, normalizedY * h));
+
+	ray.origin = gomo->camera->eye;
+	ray.direction = norm_vec3(direction);
+	return (ray);
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
@@ -130,7 +120,6 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 	(void)mods;
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && (action == GLFW_PRESS || action == GLFW_RELEASE))
 	{
-		GLenum errCode;
 		double xpos, ypos;
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
 		if (action == GLFW_PRESS && gomo->nb_stones < 361)
@@ -138,13 +127,12 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 			ray_t ray;
 			hit_t res;
 			glfwGetCursorPos(gomo->window, &xpos, &ypos);
-			ray = createRay(gomo->camera->eye, xpos, ypos);
+			ray = createRay(gomo, xpos, ypos);
 			gomo->obj = gomo->obj->first;
-			res = ray_intersect_obj(ray, gomo->obj);
-			gomo->obj = gomo->obj->next;
-			if (res.hit)
+			if (intersect(ray, &res))
 			{
-				printf("Hit\n");
+				gomo->tmp_stone = -1;
+				gomo->obj = gomo->obj->next;
 				int closest_case = 0;
 				float shortest_dist = INFINITY;
 				float tmp_dist = 0;
@@ -159,28 +147,9 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 					}
 				}
 				gomo->board[closest_case].state = 1;
-				gomo->stone[gomo->nb_stones].pos = gomo->board[closest_case].pos;
-				gomo->nb_stones++;
-				gomo->obj = gomo->obj->first->next;
-				glBindVertexArray(gomo->obj->VAO);
-				if ((errCode = glGetError()) != GL_NO_ERROR)
-					exit_callback(gomo, 218, getErrorString(errCode));
-				glBindBuffer(GL_ARRAY_BUFFER, gomo->instanceVBO);
-				if ((errCode = glGetError()) != GL_NO_ERROR)
-					exit_callback(gomo, 219, getErrorString(errCode));
-
-				instance_t *data = (instance_t *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-				if ((errCode = glGetError()) != GL_NO_ERROR)
-					exit_callback(gomo, 220, getErrorString(errCode));
-
-				memcpy(data, &gomo->stone[0], gomo->nb_stones * sizeof(instance_t));
-
-				glUnmapBuffer(GL_ARRAY_BUFFER);
-				if ((errCode = glGetError()) != GL_NO_ERROR)
-					exit_callback(gomo, 221, getErrorString(errCode));
-
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-				glBindVertexArray(0);
+				gomo->stone[gomo->nb_stones - 1].pos = gomo->board[closest_case].pos;
+				gomo->stone[gomo->nb_stones - 1].color = gomo->board[closest_case].color;
+				updateData(gomo);
 			}
 			else
 				printf("No hit\n");
@@ -215,6 +184,30 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 				gomo->camera->dist -= zoom;
 		}
 	}
+}
+
+void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
+{
+	// if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) != GLFW_PRESS)
+	//{
+	gomo_t *gomo = glfwGetWindowUserPointer(window);
+	ray_t ray;
+	hit_t res;
+	ray = createRay(gomo, xpos, ypos);
+	gomo->obj = gomo->obj->first;
+	if (intersect(ray, &res))
+	{
+		gomo->obj = gomo->obj->next;
+		if (gomo->tmp_stone == -1)
+		{
+			gomo->nb_stones++;
+			gomo->tmp_stone = 1;
+		}
+		gomo->stone[gomo->nb_stones - 1].pos = res.point;
+		gomo->stone[gomo->nb_stones - 1].color = (vec3_t){1.0f, 0.0f, 0.0f};
+		updateData(gomo);
+	}
+	//}
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)

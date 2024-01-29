@@ -164,13 +164,13 @@ int main(void)
 			if (gomo.obj->id != 0)
 			{
 				glBindTexture(GL_TEXTURE_2D, 0);
-				glDrawArraysInstanced(GL_TRIANGLES, 0, gomo.obj->nb_triangles, gomo.nb_stones);
+				glDrawArraysInstanced(GL_TRIANGLES, 0, gomo.obj->nb_vertices, gomo.nb_stones);
 			}
 			else
 			{
 				glBindTexture(GL_TEXTURE_2D, gomo.grid_text);
 				glBindTexture(GL_TEXTURE_2D, gomo.wood_text);
-				glDrawArrays(GL_TRIANGLES, 0, gomo.obj->nb_triangles);
+				glDrawArrays(GL_TRIANGLES, 0, gomo.obj->nb_vertices);
 			}
 			if (gomo.obj->next == NULL)
 				break;
