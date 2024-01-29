@@ -31,6 +31,7 @@
 #define AXIS gomo->camera->options & 1			  // top axis (y/z)
 #define LEFT_MOUSE gomo->camera->options >> 5 & 1 // left mouse button press (yes/no)
 #define TOP_VIEW gomo->camera->options >> 8 & 1	  // top view (yes/no)
+#define RAY_T_MIN 0.0001f // Minimum ray t value
 
 #define ABS(x) (x >= 0 ? x : -x)
 #define RAD(x) (x * 0.0174533f)
@@ -41,6 +42,14 @@ typedef struct vec3_s
 	float y;
 	float z;
 } vec3_t;
+
+typedef struct vect4_s
+{
+	float x;
+	float y;
+	float z;
+	float w;
+} vec4_t;
 
 typedef struct hit_s
 {
@@ -59,13 +68,14 @@ typedef struct ray_s
 typedef struct grid_s
 {
 	int state;
-	int color;
+	vec3_t color;
 	vec3_t pos;
 } grid_t;
 
 typedef struct instance_s
 {
 	vec3_t pos;
+	vec3_t color;
 } instance_t;
 
 typedef struct data_s
@@ -100,17 +110,14 @@ typedef struct camera_s
 
 typedef struct obj_s // Chained list of each object of the scene
 {
-	int id;			  // Id of the object
-	char *name;		  // Name of the object
-	char *matName;	  // Name of the material
-	char *matDef;	  // Definition of the material
-	int smooth;		  // Smooth value
-	int nb_faces;	  // Number of faces
-	int nb_triangles; // Number of triangles
-	int texCoord;	  // Texture coordinate
-	int faces_size;	  // Size of faces array
-	data_t **faces;	  // All indices (see arrays in gomo_s below) of each faces
-	float *obj;		  // All vertices data ready for render (x1,y1,z1,u1,v1,r1,g1,b1,x2,...)
+	int id;			 // Id of the object
+	int smooth;		 // Smooth value
+	int nb_faces;	 // Number of faces
+	int nb_vertices; // Number of triangles
+	int texCoord;	 // Texture coordinate
+	int faces_size;	 // Size of faces array
+	data_t **faces;	 // All indices (see arrays in gomo_s below) of each faces
+	float *obj;		 // All vertices data ready for render (x1,y1,z1,u1,v1,r1,g1,b1,x2,...)
 	float max[3];
 	float min[3];
 	unsigned int VBO;	 // Vertex Buffer Object
@@ -136,19 +143,6 @@ typedef struct shader_s
 	unsigned int shaderProgram;	   // Shader program
 } shader_t;
 
-typedef struct materials_s
-{
-	char *name;
-	int illum;
-	float specular_h;
-	float specular_c;
-	float ambient_c;
-	float diffuse_c;
-	float emit_c;
-	float optic_d;
-	float transparency;
-} materials_t;
-
 typedef struct gomo_s
 {
 	GLFWwindow *window;
@@ -158,19 +152,13 @@ typedef struct gomo_s
 	GLuint texture1;
 	GLuint grid_text;
 	GLuint wood_text;
-	int nb_vertices;
-	int nb_textures;
-	int nb_normals;
-	vec3_t tmp_id;
 	instance_t *stone;
 	unsigned int instanceVBO; // Vertex Buffer Object for instances go stones
 	grid_t *board;
 	int nb_stones;
-	float *vertices; // Array of all vertices in the scene (x1,y1,z1,x2,y2,z2,...)
-	float *textures; // Array of all textures coordinate in the scene (u1,v1,u2,v2,...)
-	float *normals;	 // Array of all normals in the scene (x1,y1,z1,x2,y2,z2,...)
+	int tmp_stone;
+	hit_t tmp_hit;
 	obj_t *obj;
-	materials_t *materials;
 } gomo_t;
 
 // Callbacks fct
@@ -178,6 +166,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 void mouse_button_callback(GLFWwindow *window, int key, int action, int mods);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+void mouse_move_callback(GLFWwindow *window, double xpos, double ypos);
 void exit_callback(gomo_t *gomo, int state, char *description);
 char *getErrorString(int code);
 
@@ -204,6 +193,8 @@ void VAOs(gomo_t *gomo, obj_t *obj);
 GLfloat *new_mat4(void);
 GLfloat *new_mat4_model(void);
 GLfloat *prod_mat4(float *a, float *b);
+vec4_t mulv_mat4(float *m, vec4_t v);
+float *inv_mat4(float *m);
 
 // Vector3 fct
 GLfloat dot_vec3(vec3_t a, vec3_t b);
@@ -217,8 +208,7 @@ vec3_t add_vec3(vec3_t a, vec3_t b);
 // Parser fct
 void triangulate(gomo_t *gomo, int *f, int *b_f, int nb);
 void new_vertex(gomo_t *gomo, int f);
-void new_obj(gomo_t *gomo, char *line);
-void create_obj(gomo_t *gomo);
+void create_obj(gomo_t *gomo, float *vertices, float *normals, float *textures);
 
 // Render fct
 void camera(gomo_t *gomo, vec3_t center, vec3_t up);

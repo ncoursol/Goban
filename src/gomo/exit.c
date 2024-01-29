@@ -34,9 +34,6 @@ void	free_obj(gomo_t *gomo)
 	data_t	*tmp2;
 	gomo->obj = gomo->obj->first;
 	while (gomo->obj != NULL) {
-		free_null((void*)gomo->obj->name);
-		free_null((void*)gomo->obj->matName);
-		free_null((void*)gomo->obj->matDef);
 		free_null((void*)gomo->obj->obj);
 		if (gomo->obj->VBO)
 			glDeleteBuffers(1, &gomo->obj->VBO);
@@ -68,9 +65,6 @@ void	free_gomo(gomo_t *gomo)
 	free_null((void*)gomo->obj);
 	free_null((void*)gomo->shader);
 	free_null((void*)gomo->camera);
-	free_null((void*)gomo->vertices);
-	free_null((void*)gomo->textures);
-	free_null((void*)gomo->normals);
 }
 
 void	free_all(gomo_t *gomo, int step)

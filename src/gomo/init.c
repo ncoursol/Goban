@@ -32,6 +32,7 @@ void init_glfw(gomo_t *gomo)
 	glfwSetKeyCallback(gomo->window, key_callback);
 	glfwSetScrollCallback(gomo->window, scroll_callback);
 	glfwSetMouseButtonCallback(gomo->window, mouse_button_callback);
+	glfwSetCursorPosCallback(gomo->window, mouse_move_callback);
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(gomo->window);
@@ -69,6 +70,15 @@ void init_VAO(gomo_t *gomo)
 		exit_callback(gomo, 45, getErrorString(errCode));
 
 	// VBO
+	/*
+	printf("id: %d\n", gomo->obj->id);
+	for (int i = 0; i < gomo->obj->nb_vertices; i++) {
+		printf("obj[%d]\t%f / %f / %f\t   %f / %f\t   %f / %f / %f\n", i,
+			   gomo->obj->obj[i * 8], gomo->obj->obj[i * 8 + 1], gomo->obj->obj[i * 8 + 2],
+			   gomo->obj->obj[i * 8 + 3], gomo->obj->obj[i * 8 + 4],
+			   gomo->obj->obj[i * 8 + 5], gomo->obj->obj[i * 8 + 6], gomo->obj->obj[i * 8 + 7]);
+	}
+	*/
 	glGenBuffers(1, &gomo->obj->VBO);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 46, getErrorString(errCode));
@@ -76,7 +86,7 @@ void init_VAO(gomo_t *gomo)
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 47, getErrorString(errCode));
 	glBufferData(GL_ARRAY_BUFFER,
-				 gomo->obj->nb_triangles * 8 * sizeof(float),
+				 gomo->obj->nb_vertices * 8 * sizeof(float),
 				 &gomo->obj->obj[0],
 				 GL_STATIC_DRAW);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
@@ -85,38 +95,24 @@ void init_VAO(gomo_t *gomo)
 	// Vertex format(Coordinate/TextureUV/Color): x1,y1,z1, u1,v1, r1,g1,b1, x2...
 
 	// Coordinate
-	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 49, getErrorString(errCode));
+	glEnableVertexAttribArray(0);
 	// TextureUV
-	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 50, getErrorString(errCode));
+	glEnableVertexAttribArray(1);
 	// Color
-	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(5 * sizeof(float)));
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 51, getErrorString(errCode));
+	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	if (gomo->obj->id)
 	{
-		/*
-		int index = 0;
-		for (int z = -19; z < 19; z += 2)
-		{
-			for (int x = -19; x < 19; x += 2)
-			{
-				gomo->stone[index].pos.x = (float)x + 1.0f + (0.07 * (x + 1));
-				gomo->stone[index].pos.y = 0.0f;
-				gomo->stone[index].pos.z = (float)z + 1.0f + (0.07 * (z + 1));
-				index++;
-				gomo->nb_stones++;
-			}
-		}
-		*/
 		// Stone instance VBO
 		glGenBuffers(1, &gomo->instanceVBO);
 		glBindBuffer(GL_ARRAY_BUFFER, gomo->instanceVBO);
@@ -125,11 +121,20 @@ void init_VAO(gomo_t *gomo)
 		glBufferData(GL_ARRAY_BUFFER, sizeof(instance_t) * 19 * 19, &gomo->stone[0], GL_STATIC_DRAW);
 		if ((errCode = glGetError()) != GL_NO_ERROR)
 			exit_callback(gomo, 201, getErrorString(errCode));
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void *)0);
+		// Coordinate
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(instance_t), (void *)0);
 		if ((errCode = glGetError()) != GL_NO_ERROR)
 			exit_callback(gomo, 202, getErrorString(errCode));
+		glEnableVertexAttribArray(3);
 		glVertexAttribDivisor(3, 1);
+		if ((errCode = glGetError()) != GL_NO_ERROR)
+			exit_callback(gomo, 203, getErrorString(errCode));
+		// Color
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(instance_t), (void*)offsetof(instance_t, color));
+		if ((errCode = glGetError()) != GL_NO_ERROR)
+			exit_callback(gomo, 202, getErrorString(errCode));
+		glEnableVertexAttribArray(4);
+		glVertexAttribDivisor(4, 1);
 		if ((errCode = glGetError()) != GL_NO_ERROR)
 			exit_callback(gomo, 203, getErrorString(errCode));
 
@@ -162,15 +167,12 @@ void init_face_data(gomo_t *gomo, int nb_buff)
 
 void init_obj(gomo_t *gomo)
 {
-	gomo->obj->name = NULL;
-	gomo->obj->matName = NULL;
-	gomo->obj->matDef = NULL;
 	gomo->obj->faces = NULL;
 	gomo->obj->smooth = 0;
 	gomo->obj->texCoord = 0;
 	gomo->obj->faces_size = 0;
 	gomo->obj->nb_faces = 0;
-	gomo->obj->nb_triangles = 0;
+	gomo->obj->nb_vertices = 0;
 	if (!(gomo->obj->faces = (data_t **)malloc(sizeof(data_t *) * V_BUFF_SIZE)))
 		exit_callback(gomo, 6, "faces malloc failed");
 	gomo->obj->faces_size = V_BUFF_SIZE;
@@ -192,7 +194,7 @@ void init_board(gomo_t *gomo)
 		for (int x = -19; x < 19; x += 2)
 		{
 			gomo->board[index].state = 0;
-			gomo->board[index].color = 0;
+			gomo->board[index].color = index % 2 ? (vec3_t){0.0f, 0.0f, 0.0f} : (vec3_t){1.0f, 1.0f, 1.0f};
 			gomo->board[index].pos.x = (float)x + 1.0f + (0.07 * (x + 1));
 			gomo->board[index].pos.y = 0.0f;
 			gomo->board[index].pos.z = (float)z + 1.0f + (0.07 * (z + 1));
@@ -204,29 +206,16 @@ void init_board(gomo_t *gomo)
 void init_gomo(gomo_t *gomo)
 {
 	gomo->obj = NULL;
-	gomo->vertices = NULL;
-	gomo->textures = NULL;
-	gomo->normals = NULL;
 	gomo->shader = NULL;
 	gomo->camera = NULL;
+	gomo->tmp_stone = -1;
+	gomo->tmp_hit = (hit_t){0, 0, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}};
 	if (!(gomo->obj = (obj_t *)malloc(sizeof(obj_t))))
 		exit_callback(gomo, 0, "object malloc failed");
 	gomo->obj->id = 0;
-	gomo->nb_vertices = 0;
-	gomo->nb_textures = 0;
-	gomo->nb_normals = 0;
-	gomo->tmp_id.x = 0;
-	gomo->tmp_id.y = 0;
-	gomo->tmp_id.z = 0;
 	if (!(gomo->stone = (instance_t *)malloc(sizeof(instance_t) * 19 * 19)))
 		exit_callback(gomo, 0, "stone malloc failed");
 	gomo->nb_stones = 0;
-	if (!(gomo->vertices = (float *)malloc(sizeof(float) * V_BUFF_SIZE)))
-		exit_callback(gomo, 1, "vertices malloc failed");
-	if (!(gomo->textures = (float *)malloc(sizeof(float) * V_BUFF_SIZE)))
-		exit_callback(gomo, 2, "textures malloc failed");
-	if (!(gomo->normals = (float *)malloc(sizeof(float) * V_BUFF_SIZE)))
-		exit_callback(gomo, 3, "normals malloc failed");
 	if (!(gomo->shader = (shader_t *)malloc(sizeof(shader_t))))
 		exit_callback(gomo, 4, "vertices malloc failed");
 	if (!(gomo->camera = (camera_t *)malloc(sizeof(camera_t))))
@@ -236,13 +225,29 @@ void init_gomo(gomo_t *gomo)
 	init_board(gomo);
 }
 
+void	new_obj(gomo_t *gomo) {
+	obj_t *new;
+	obj_t *first;
+
+	first = gomo->obj->first;
+	if (!(new = (obj_t*)malloc(sizeof(obj_t))))
+		exit_callback(gomo, 10, "new object malloc failed");
+	new->id = gomo->obj->id + 1;
+	gomo->obj->next = new;
+	gomo->obj = gomo->obj->next;
+	init_obj(gomo);
+	gomo->obj->first = first;
+}
+
 void init_all(gomo_t *gomo)
 {
 	init_gomo(gomo);
 	init_obj(gomo);
 	gomo->obj->first = gomo->obj;
 	load_obj(gomo, "resources/goban.obj");
+	new_obj(gomo);
 	load_obj(gomo, "resources/stone.obj");
+	gomo->obj = gomo->obj->first;
 	init_glfw(gomo);
 	init_gl(gomo);
 	init_shader(gomo, gomo->shader, "./src/shader.vert", "./src/shader.frag");
