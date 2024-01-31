@@ -46,6 +46,6 @@ GLuint load_image(char *path, int blend)
 void	load_texture(gomo_t *gomo) {
 	gomo->grid_text = load_image("resources/grid.png", 1);
 	gomo->shaderID.textureID1 = glGetUniformLocation(gomo->shader->shaderProgram, "grid_text");
-	gomo->wood_text = load_image("resources/test.png", 0);
+	gomo->wood_text = load_image("resources/wood.jpeg", 0);
 	gomo->shaderID.textureID2 = glGetUniformLocation(gomo->shader->shaderProgram, "wood_text");
 }
