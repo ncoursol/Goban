@@ -1,4 +1,4 @@
-# Install script for directory: /home/blue/Documents/goban/ext/glfw-3.3.5/tests
+# Install script for directory: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -35,5 +35,10 @@ endif()
 # Is this installation the result of a crosscompile?
 if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
+endif()
+
+# Set default install directory permissions.
+if(NOT DEFINED CMAKE_OBJDUMP)
+  set(CMAKE_OBJDUMP "/usr/bin/objdump")
 endif()
 

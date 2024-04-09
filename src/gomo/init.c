@@ -194,10 +194,10 @@ void init_board(gomo_t *gomo)
 		for (int x = -19; x < 19; x += 2)
 		{
 			gomo->board[index].state = 0;
-			gomo->board[index].color = index % 2 ? (vec3_t){0.0f, 0.0f, 0.0f} : (vec3_t){1.0f, 1.0f, 1.0f};
-			gomo->board[index].pos.x = (float)x + 1.0f + (0.07 * (x + 1));
-			gomo->board[index].pos.y = 0.0f;
-			gomo->board[index].pos.z = (float)z + 1.0f + (0.07 * (z + 1));
+			gomo->board[index].color = (vec3_t){1.0f, 0.0f, 1.0f};
+			gomo->board[index].pos.x = (float)x + 1.0f;
+			gomo->board[index].pos.y = -0.26f;	// magic number for the gap btw goban and stones
+			gomo->board[index].pos.z = (float)z + 1.0f;
 			index++;
 		}
 	}
@@ -208,7 +208,7 @@ void init_gomo(gomo_t *gomo)
 	gomo->obj = NULL;
 	gomo->shader = NULL;
 	gomo->camera = NULL;
-	gomo->tmp_stone = -1;
+	gomo->tmp_stone = 0;
 	gomo->tmp_hit = (hit_t){0, 0, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}};
 	if (!(gomo->obj = (obj_t *)malloc(sizeof(obj_t))))
 		exit_callback(gomo, 0, "object malloc failed");

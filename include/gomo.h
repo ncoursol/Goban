@@ -43,7 +43,7 @@ typedef struct vec3_s
 	float z;
 } vec3_t;
 
-typedef struct vect4_s
+typedef struct vec4_t
 {
 	float x;
 	float y;
@@ -149,7 +149,6 @@ typedef struct gomo_s
 	shader_t *shader;
 	camera_t *camera;
 	shaderID_t shaderID;
-	GLuint texture1;
 	GLuint grid_text;
 	GLuint wood_text;
 	instance_t *stone;
@@ -206,7 +205,6 @@ vec3_t sub_vec3(vec3_t a, vec3_t b);
 vec3_t add_vec3(vec3_t a, vec3_t b);
 
 // Parser fct
-void triangulate(gomo_t *gomo, int *f, int *b_f, int nb);
 void new_vertex(gomo_t *gomo, int f);
 void create_obj(gomo_t *gomo, float *vertices, float *normals, float *textures);
 
