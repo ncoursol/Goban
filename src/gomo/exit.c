@@ -71,8 +71,6 @@ void	free_all(gomo_t *gomo, int step)
 {
 	if (step > 5) {
 		free_null((void*)gomo->camera->mvp);
-		if (gomo->texture1)
-			glDeleteTextures(1, &gomo->texture1);
 		if (gomo->grid_text)
 			glDeleteTextures(1, &gomo->grid_text);
 		if (gomo->wood_text)

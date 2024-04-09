@@ -10,334 +10,335 @@ The output was:
 
 Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
 
-The C compiler identification is GNU, found in "/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/3.16.3/CompilerIdC/a.out"
-
-Determining if the C compiler works passed with the following output:
-Change Dir: /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
-
-Run Build Command(s):/usr/bin/make cmTC_cd568/fast && make[1] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-/usr/bin/make -f CMakeFiles/cmTC_cd568.dir/build.make CMakeFiles/cmTC_cd568.dir/build
-make[2] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-Building C object CMakeFiles/cmTC_cd568.dir/testCCompiler.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_cd568.dir/testCCompiler.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_cd568
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cd568.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_cd568.dir/testCCompiler.c.o  -o cmTC_cd568 
-make[2] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-make[1] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-
-
+The C compiler identification is Clang, found in "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/3.22.1/CompilerIdC/a.out"
 
 Detecting C compiler ABI info compiled with the following output:
-Change Dir: /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
+Change Dir: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_fc9dd/fast && make[1]: Entering directory '/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
-/usr/bin/make -f CMakeFiles/cmTC_fc9dd.dir/build.make CMakeFiles/cmTC_fc9dd.dir/build
-make[2]: Entering directory '/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o
-/usr/bin/cc   -v -o CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.16/Modules/CMakeCCompilerABI.c
-Using built-in specs.
-COLLECT_GCC=/usr/bin/cc
-OFFLOAD_TARGET_NAMES=nvptx-none:hsa
-OFFLOAD_TARGET_DEFAULT=1
-Target: x86_64-linux-gnu
-Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.2' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-9QDOt0/gcc-9-9.4.0/debian/tmp-nvptx/usr,hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_28435/fast && gmake[1]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_28435.dir/build.make CMakeFiles/cmTC_28435.dir/build
+gmake[2]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc   -v -MD -MT CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -MF CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o.d -o CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c
+Ubuntu clang version 12.0.1-19ubuntu3
+Target: x86_64-pc-linux-gnu
 Thread model: posix
-gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.2) 
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -quiet -v -imultiarch x86_64-linux-gnu /usr/share/cmake-3.16/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/cc6b8gJC.s
-GNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.2) version 9.4.0 (x86_64-linux-gnu)
-	compiled by GNU C version 9.4.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP
-
-GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
-ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"
-ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"
-ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/9/../../../../x86_64-linux-gnu/include"
+InstalledDir: /usr/bin
+Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/10
+Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/11
+Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/10
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/11
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/12
+Selected GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ (in-process)
+ "/usr/lib/llvm-12/bin/clang" -cc1 -triple x86_64-pc-linux-gnu -emit-obj -mrelax-all --mrelax-relocations -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model static -mframe-pointer=all -fmath-errno -fno-rounding-math -mconstructor-aliases -munwind-tables -target-cpu x86-64 -tune-cpu generic -fno-split-dwarf-inlining -debugger-tuning=gdb -v -resource-dir /usr/lib/llvm-12/lib/clang/12.0.1 -dependency-file CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -sys-header-deps -internal-isystem /usr/local/include -internal-isystem /usr/lib/llvm-12/lib/clang/12.0.1/include -internal-externc-isystem /usr/include/x86_64-linux-gnu -internal-externc-isystem /include -internal-externc-isystem /usr/include -fdebug-compilation-dir /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp -ferror-limit 19 -fgnuc-version=4.2.1 -faddrsig -o CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -x c /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c
+clang -cc1 version 12.0.1 based upon LLVM 12.0.1 default target x86_64-pc-linux-gnu
+ignoring nonexistent directory "/include"
 #include "..." search starts here:
 #include <...> search starts here:
- /usr/lib/gcc/x86_64-linux-gnu/9/include
  /usr/local/include
+ /usr/lib/llvm-12/lib/clang/12.0.1/include
  /usr/include/x86_64-linux-gnu
  /usr/include
 End of search list.
-GNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.2) version 9.4.0 (x86_64-linux-gnu)
-	compiled by GNU C version 9.4.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP
-
-GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
-Compiler executable checksum: 01da938ff5dc2163489aa33cb3b747a7
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
- as -v --64 -o CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o /tmp/cc6b8gJC.s
-GNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34
-COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/
-LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64'
-Linking C executable cmTC_fc9dd
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fc9dd.dir/link.txt --verbose=1
-/usr/bin/cc     -v CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o  -o cmTC_fc9dd 
-Using built-in specs.
-COLLECT_GCC=/usr/bin/cc
-COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper
-OFFLOAD_TARGET_NAMES=nvptx-none:hsa
-OFFLOAD_TARGET_DEFAULT=1
-Target: x86_64-linux-gnu
-Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.2' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-9QDOt0/gcc-9-9.4.0/debian/tmp-nvptx/usr,hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+Linking C executable cmTC_28435
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_28435.dir/link.txt --verbose=1
+/usr/bin/cc  -v CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -o cmTC_28435 
+Ubuntu clang version 12.0.1-19ubuntu3
+Target: x86_64-pc-linux-gnu
 Thread model: posix
-gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.2) 
-COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/
-LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_fc9dd' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccAOJFo2.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_fc9dd /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_fc9dd' '-mtune=generic' '-march=x86-64'
-make[2]: Leaving directory '/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
-make[1]: Leaving directory '/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+InstalledDir: /usr/bin
+Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/10
+Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/11
+Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/10
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/11
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/12
+Selected GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ "/usr/bin/ld" --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_28435 /usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crt1.o /usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o /usr/bin/../lib/gcc/x86_64-linux-gnu/12/crtbegin.o -L/usr/bin/../lib/gcc/x86_64-linux-gnu/12 -L/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu -L/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../../lib64 -L/lib/x86_64-linux-gnu -L/lib/../lib64 -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib64 -L/usr/lib/x86_64-linux-gnu/../../lib64 -L/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../.. -L/usr/lib/llvm-12/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/bin/../lib/gcc/x86_64-linux-gnu/12/crtend.o /usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o
+gmake[2]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
 
 
 
 Parsed C implicit include dir info from above output: rv=done
   found start of include info
   found start of implicit include info
-    add: [/usr/lib/gcc/x86_64-linux-gnu/9/include]
     add: [/usr/local/include]
+    add: [/usr/lib/llvm-12/lib/clang/12.0.1/include]
     add: [/usr/include/x86_64-linux-gnu]
     add: [/usr/include]
   end of search list found
-  collapse include dir [/usr/lib/gcc/x86_64-linux-gnu/9/include] ==> [/usr/lib/gcc/x86_64-linux-gnu/9/include]
   collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/usr/lib/llvm-12/lib/clang/12.0.1/include] ==> [/usr/lib/llvm-12/lib/clang/12.0.1/include]
   collapse include dir [/usr/include/x86_64-linux-gnu] ==> [/usr/include/x86_64-linux-gnu]
   collapse include dir [/usr/include] ==> [/usr/include]
-  implicit include dirs: [/usr/lib/gcc/x86_64-linux-gnu/9/include;/usr/local/include;/usr/include/x86_64-linux-gnu;/usr/include]
+  implicit include dirs: [/usr/local/include;/usr/lib/llvm-12/lib/clang/12.0.1/include;/usr/include/x86_64-linux-gnu;/usr/include]
 
 
 Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command(s):/usr/bin/make cmTC_fc9dd/fast && make[1]: Entering directory '/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp']
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_fc9dd.dir/build.make CMakeFiles/cmTC_fc9dd.dir/build]
-  ignore line: [make[2]: Entering directory '/home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/usr/bin/cc   -v -o CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.16/Modules/CMakeCCompilerABI.c]
-  ignore line: [Using built-in specs.]
-  ignore line: [COLLECT_GCC=/usr/bin/cc]
-  ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:hsa]
-  ignore line: [OFFLOAD_TARGET_DEFAULT=1]
-  ignore line: [Target: x86_64-linux-gnu]
-  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.2' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c ada c++ go brig d fortran objc obj-c++ gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-9QDOt0/gcc-9-9.4.0/debian/tmp-nvptx/usr hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+  ignore line: [Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_28435/fast && gmake[1]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_28435.dir/build.make CMakeFiles/cmTC_28435.dir/build]
+  ignore line: [gmake[2]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc   -v -MD -MT CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -MF CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o.d -o CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c]
+  ignore line: [Ubuntu clang version 12.0.1-19ubuntu3]
+  ignore line: [Target: x86_64-pc-linux-gnu]
   ignore line: [Thread model: posix]
-  ignore line: [gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.2) ]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
-  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -quiet -v -imultiarch x86_64-linux-gnu /usr/share/cmake-3.16/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=x86-64 -auxbase-strip CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/cc6b8gJC.s]
-  ignore line: [GNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.2) version 9.4.0 (x86_64-linux-gnu)]
-  ignore line: [	compiled by GNU C version 9.4.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22.1-GMP]
-  ignore line: []
-  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
-  ignore line: [ignoring nonexistent directory "/usr/local/include/x86_64-linux-gnu"]
-  ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"]
-  ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-linux-gnu/9/../../../../x86_64-linux-gnu/include"]
+  ignore line: [InstalledDir: /usr/bin]
+  ignore line: [Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/10]
+  ignore line: [Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/11]
+  ignore line: [Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/10]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/11]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/12]
+  ignore line: [Selected GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  ignore line: [ (in-process)]
+  ignore line: [ "/usr/lib/llvm-12/bin/clang" -cc1 -triple x86_64-pc-linux-gnu -emit-obj -mrelax-all --mrelax-relocations -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model static -mframe-pointer=all -fmath-errno -fno-rounding-math -mconstructor-aliases -munwind-tables -target-cpu x86-64 -tune-cpu generic -fno-split-dwarf-inlining -debugger-tuning=gdb -v -resource-dir /usr/lib/llvm-12/lib/clang/12.0.1 -dependency-file CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -sys-header-deps -internal-isystem /usr/local/include -internal-isystem /usr/lib/llvm-12/lib/clang/12.0.1/include -internal-externc-isystem /usr/include/x86_64-linux-gnu -internal-externc-isystem /include -internal-externc-isystem /usr/include -fdebug-compilation-dir /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp -ferror-limit 19 -fgnuc-version=4.2.1 -faddrsig -o CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -x c /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c]
+  ignore line: [clang -cc1 version 12.0.1 based upon LLVM 12.0.1 default target x86_64-pc-linux-gnu]
+  ignore line: [ignoring nonexistent directory "/include"]
   ignore line: [#include "..." search starts here:]
   ignore line: [#include <...> search starts here:]
-  ignore line: [ /usr/lib/gcc/x86_64-linux-gnu/9/include]
   ignore line: [ /usr/local/include]
+  ignore line: [ /usr/lib/llvm-12/lib/clang/12.0.1/include]
   ignore line: [ /usr/include/x86_64-linux-gnu]
   ignore line: [ /usr/include]
   ignore line: [End of search list.]
-  ignore line: [GNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.2) version 9.4.0 (x86_64-linux-gnu)]
-  ignore line: [	compiled by GNU C version 9.4.0  GMP version 6.2.0  MPFR version 4.0.2  MPC version 1.1.0  isl version isl-0.22.1-GMP]
-  ignore line: []
-  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
-  ignore line: [Compiler executable checksum: 01da938ff5dc2163489aa33cb3b747a7]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
-  ignore line: [ as -v --64 -o CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o /tmp/cc6b8gJC.s]
-  ignore line: [GNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34]
-  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/]
-  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64']
-  ignore line: [Linking C executable cmTC_fc9dd]
-  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fc9dd.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/cc     -v CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o  -o cmTC_fc9dd ]
-  ignore line: [Using built-in specs.]
-  ignore line: [COLLECT_GCC=/usr/bin/cc]
-  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper]
-  ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:hsa]
-  ignore line: [OFFLOAD_TARGET_DEFAULT=1]
-  ignore line: [Target: x86_64-linux-gnu]
-  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.2' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c ada c++ go brig d fortran objc obj-c++ gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-9QDOt0/gcc-9-9.4.0/debian/tmp-nvptx/usr hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+  ignore line: [Linking C executable cmTC_28435]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_28435.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc  -v CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -o cmTC_28435 ]
+  ignore line: [Ubuntu clang version 12.0.1-19ubuntu3]
+  ignore line: [Target: x86_64-pc-linux-gnu]
   ignore line: [Thread model: posix]
-  ignore line: [gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.2) ]
-  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/]
-  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_fc9dd' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccAOJFo2.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_fc9dd /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o]
-    arg [/usr/lib/gcc/x86_64-linux-gnu/9/collect2] ==> ignore
-    arg [-plugin] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so] ==> ignore
-    arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccAOJFo2.res] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
-    arg [-plugin-opt=-pass-through=-lc] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+  ignore line: [InstalledDir: /usr/bin]
+  ignore line: [Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/10]
+  ignore line: [Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/11]
+  ignore line: [Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/10]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/11]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/12]
+  ignore line: [Selected GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/12]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  link line: [ "/usr/bin/ld" --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_28435 /usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crt1.o /usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o /usr/bin/../lib/gcc/x86_64-linux-gnu/12/crtbegin.o -L/usr/bin/../lib/gcc/x86_64-linux-gnu/12 -L/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu -L/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../../lib64 -L/lib/x86_64-linux-gnu -L/lib/../lib64 -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib64 -L/usr/lib/x86_64-linux-gnu/../../lib64 -L/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../.. -L/usr/lib/llvm-12/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/bin/../lib/gcc/x86_64-linux-gnu/12/crtend.o /usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o]
+    arg [/usr/bin/ld] ==> ignore
     arg [--build-id] ==> ignore
     arg [--eh-frame-hdr] ==> ignore
     arg [-m] ==> ignore
     arg [elf_x86_64] ==> ignore
-    arg [--hash-style=gnu] ==> ignore
-    arg [--as-needed] ==> ignore
     arg [-dynamic-linker] ==> ignore
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
-    arg [-pie] ==> ignore
-    arg [-znow] ==> ignore
-    arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_fc9dd] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o] ==> ignore
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9]
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu]
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib]
+    arg [cmTC_28435] ==> ignore
+    arg [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crt1.o] ==> obj [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crt1.o]
+    arg [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o]
+    arg [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/crtbegin.o] ==> obj [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/crtbegin.o]
+    arg [-L/usr/bin/../lib/gcc/x86_64-linux-gnu/12] ==> dir [/usr/bin/../lib/gcc/x86_64-linux-gnu/12]
+    arg [-L/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu] ==> dir [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu]
+    arg [-L/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../../lib64] ==> dir [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../../lib64]
     arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
-    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
-    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/9/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../..]
-    arg [CMakeFiles/cmTC_fc9dd.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+    arg [-L/usr/lib/x86_64-linux-gnu/../../lib64] ==> dir [/usr/lib/x86_64-linux-gnu/../../lib64]
+    arg [-L/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../..] ==> dir [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../..]
+    arg [-L/usr/lib/llvm-12/bin/../lib] ==> dir [/usr/lib/llvm-12/bin/../lib]
+    arg [-L/lib] ==> dir [/lib]
+    arg [-L/usr/lib] ==> dir [/usr/lib]
+    arg [CMakeFiles/cmTC_28435.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
-    arg [--push-state] ==> ignore
     arg [--as-needed] ==> ignore
     arg [-lgcc_s] ==> lib [gcc_s]
-    arg [--pop-state] ==> ignore
+    arg [--no-as-needed] ==> ignore
     arg [-lc] ==> lib [c]
     arg [-lgcc] ==> lib [gcc]
-    arg [--push-state] ==> ignore
     arg [--as-needed] ==> ignore
     arg [-lgcc_s] ==> lib [gcc_s]
-    arg [--pop-state] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o] ==> ignore
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9] ==> [/usr/lib/gcc/x86_64-linux-gnu/9]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib] ==> [/usr/lib]
+    arg [--no-as-needed] ==> ignore
+    arg [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/crtend.o] ==> obj [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/crtend.o]
+    arg [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o] ==> obj [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o]
+  collapse obj [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crt1.o] ==> [/usr/lib/x86_64-linux-gnu/crt1.o]
+  collapse obj [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crti.o] ==> [/usr/lib/x86_64-linux-gnu/crti.o]
+  collapse obj [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/crtbegin.o] ==> [/usr/lib/gcc/x86_64-linux-gnu/12/crtbegin.o]
+  collapse obj [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/crtend.o] ==> [/usr/lib/gcc/x86_64-linux-gnu/12/crtend.o]
+  collapse obj [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu/crtn.o] ==> [/usr/lib/x86_64-linux-gnu/crtn.o]
+  collapse library dir [/usr/bin/../lib/gcc/x86_64-linux-gnu/12] ==> [/usr/lib/gcc/x86_64-linux-gnu/12]
+  collapse library dir [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../../../lib64] ==> [/usr/lib64]
   collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
-  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
   collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
-  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/9/../../..] ==> [/usr/lib]
+  collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+  collapse library dir [/usr/lib/x86_64-linux-gnu/../../lib64] ==> [/usr/lib64]
+  collapse library dir [/usr/bin/../lib/gcc/x86_64-linux-gnu/12/../../..] ==> [/usr/lib]
+  collapse library dir [/usr/lib/llvm-12/bin/../lib] ==> [/usr/lib/llvm-12/lib]
+  collapse library dir [/lib] ==> [/lib]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
   implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
-  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/9;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+  implicit objs: [/usr/lib/x86_64-linux-gnu/crt1.o;/usr/lib/x86_64-linux-gnu/crti.o;/usr/lib/gcc/x86_64-linux-gnu/12/crtbegin.o;/usr/lib/gcc/x86_64-linux-gnu/12/crtend.o;/usr/lib/x86_64-linux-gnu/crtn.o]
+  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/12;/usr/lib/x86_64-linux-gnu;/usr/lib64;/lib/x86_64-linux-gnu;/lib64;/usr/lib;/usr/lib/llvm-12/lib;/lib]
   implicit fwks: []
 
 
 Determining if the include file pthread.h exists passed with the following output:
-Change Dir: /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
+Change Dir: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_9aacd/fast && make[1] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-/usr/bin/make -f CMakeFiles/cmTC_9aacd.dir/build.make CMakeFiles/cmTC_9aacd.dir/build
-make[2] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-Building C object CMakeFiles/cmTC_9aacd.dir/CheckIncludeFile.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_9aacd.dir/CheckIncludeFile.c.o   -c /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_9aacd
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9aacd.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_9aacd.dir/CheckIncludeFile.c.o  -o cmTC_9aacd 
-make[2] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-make[1] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-
-
-
-Determining if the function pthread_create exists in the pthread passed with the following output:
-Change Dir: /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
-
-Run Build Command(s):/usr/bin/make cmTC_237aa/fast && make[1] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-/usr/bin/make -f CMakeFiles/cmTC_237aa.dir/build.make CMakeFiles/cmTC_237aa.dir/build
-make[2] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-Building C object CMakeFiles/cmTC_237aa.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_237aa.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
-Linking C executable cmTC_237aa
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_237aa.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_237aa.dir/CheckFunctionExists.c.o  -o cmTC_237aa  -lpthread 
-make[2] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-make[1] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_61c69/fast && gmake[1]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_61c69.dir/build.make CMakeFiles/cmTC_61c69.dir/build
+gmake[2]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_61c69.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -MD -MT CMakeFiles/cmTC_61c69.dir/CheckIncludeFile.c.o -MF CMakeFiles/cmTC_61c69.dir/CheckIncludeFile.c.o.d -o CMakeFiles/cmTC_61c69.dir/CheckIncludeFile.c.o -c /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_61c69
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_61c69.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_61c69.dir/CheckIncludeFile.c.o -o cmTC_61c69 
+gmake[2]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
 
 
+
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD succeeded with the following output:
+Change Dir: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_ccd9a/fast && gmake[1]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_ccd9a.dir/build.make CMakeFiles/cmTC_ccd9a.dir/build
+gmake[2]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ccd9a.dir/src.c.o
+/usr/bin/cc -DCMAKE_HAVE_LIBC_PTHREAD   -MD -MT CMakeFiles/cmTC_ccd9a.dir/src.c.o -MF CMakeFiles/cmTC_ccd9a.dir/src.c.o.d -o CMakeFiles/cmTC_ccd9a.dir/src.c.o -c /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_ccd9a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ccd9a.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_ccd9a.dir/src.c.o -o cmTC_ccd9a 
+gmake[2]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
 
 Determining if the function XOpenDisplay exists in the /usr/lib/x86_64-linux-gnu/libX11.so;/usr/lib/x86_64-linux-gnu/libXext.so passed with the following output:
-Change Dir: /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
+Change Dir: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_5835b/fast && make[1] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-/usr/bin/make -f CMakeFiles/cmTC_5835b.dir/build.make CMakeFiles/cmTC_5835b.dir/build
-make[2] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-Building C object CMakeFiles/cmTC_5835b.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=XOpenDisplay   -o CMakeFiles/cmTC_5835b.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
-Linking C executable cmTC_5835b
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5835b.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=XOpenDisplay    CMakeFiles/cmTC_5835b.dir/CheckFunctionExists.c.o  -o cmTC_5835b  /usr/lib/x86_64-linux-gnu/libX11.so /usr/lib/x86_64-linux-gnu/libXext.so 
-make[2] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-make[1] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_6a3e9/fast && gmake[1]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_6a3e9.dir/build.make CMakeFiles/cmTC_6a3e9.dir/build
+gmake[2]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6a3e9.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=XOpenDisplay -MD -MT CMakeFiles/cmTC_6a3e9.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_6a3e9.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_6a3e9.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_6a3e9
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6a3e9.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=XOpenDisplay CMakeFiles/cmTC_6a3e9.dir/CheckFunctionExists.c.o -o cmTC_6a3e9  /usr/lib/x86_64-linux-gnu/libX11.so /usr/lib/x86_64-linux-gnu/libXext.so 
+gmake[2]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
 
 
 
 Determining if the function gethostbyname exists passed with the following output:
-Change Dir: /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
+Change Dir: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_45bb2/fast && make[1] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-/usr/bin/make -f CMakeFiles/cmTC_45bb2.dir/build.make CMakeFiles/cmTC_45bb2.dir/build
-make[2] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-Building C object CMakeFiles/cmTC_45bb2.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=gethostbyname   -o CMakeFiles/cmTC_45bb2.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
-Linking C executable cmTC_45bb2
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_45bb2.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=gethostbyname    CMakeFiles/cmTC_45bb2.dir/CheckFunctionExists.c.o  -o cmTC_45bb2 
-make[2] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-make[1] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_41aa3/fast && gmake[1]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_41aa3.dir/build.make CMakeFiles/cmTC_41aa3.dir/build
+gmake[2]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_41aa3.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=gethostbyname -MD -MT CMakeFiles/cmTC_41aa3.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_41aa3.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_41aa3.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_41aa3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_41aa3.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=gethostbyname CMakeFiles/cmTC_41aa3.dir/CheckFunctionExists.c.o -o cmTC_41aa3 
+gmake[2]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
 
 
 
 Determining if the function connect exists passed with the following output:
-Change Dir: /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
+Change Dir: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_d2869/fast && make[1] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-/usr/bin/make -f CMakeFiles/cmTC_d2869.dir/build.make CMakeFiles/cmTC_d2869.dir/build
-make[2] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-Building C object CMakeFiles/cmTC_d2869.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=connect   -o CMakeFiles/cmTC_d2869.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
-Linking C executable cmTC_d2869
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d2869.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=connect    CMakeFiles/cmTC_d2869.dir/CheckFunctionExists.c.o  -o cmTC_d2869 
-make[2] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-make[1] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_76d3e/fast && gmake[1]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_76d3e.dir/build.make CMakeFiles/cmTC_76d3e.dir/build
+gmake[2]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_76d3e.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=connect -MD -MT CMakeFiles/cmTC_76d3e.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_76d3e.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_76d3e.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_76d3e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_76d3e.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=connect CMakeFiles/cmTC_76d3e.dir/CheckFunctionExists.c.o -o cmTC_76d3e 
+gmake[2]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
 
 
 
 Determining if the function remove exists passed with the following output:
-Change Dir: /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
+Change Dir: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_95a4c/fast && make[1] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-/usr/bin/make -f CMakeFiles/cmTC_95a4c.dir/build.make CMakeFiles/cmTC_95a4c.dir/build
-make[2] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-Building C object CMakeFiles/cmTC_95a4c.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=remove   -o CMakeFiles/cmTC_95a4c.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
-Linking C executable cmTC_95a4c
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_95a4c.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=remove    CMakeFiles/cmTC_95a4c.dir/CheckFunctionExists.c.o  -o cmTC_95a4c 
-make[2] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-make[1] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_3ef33/fast && gmake[1]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_3ef33.dir/build.make CMakeFiles/cmTC_3ef33.dir/build
+gmake[2]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_3ef33.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=remove -MD -MT CMakeFiles/cmTC_3ef33.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_3ef33.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_3ef33.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_3ef33
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3ef33.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=remove CMakeFiles/cmTC_3ef33.dir/CheckFunctionExists.c.o -o cmTC_3ef33 
+gmake[2]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
 
 
 
 Determining if the function shmat exists passed with the following output:
-Change Dir: /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
+Change Dir: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_2a463/fast && make[1] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-/usr/bin/make -f CMakeFiles/cmTC_2a463.dir/build.make CMakeFiles/cmTC_2a463.dir/build
-make[2] : on entre dans le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-Building C object CMakeFiles/cmTC_2a463.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=shmat   -o CMakeFiles/cmTC_2a463.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
-Linking C executable cmTC_2a463
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2a463.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=shmat    CMakeFiles/cmTC_2a463.dir/CheckFunctionExists.c.o  -o cmTC_2a463 
-make[2] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
-make[1] : on quitte le répertoire « /home/blue/Documents/goban/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp »
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_705f6/fast && gmake[1]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_705f6.dir/build.make CMakeFiles/cmTC_705f6.dir/build
+gmake[2]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_705f6.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=shmat -MD -MT CMakeFiles/cmTC_705f6.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_705f6.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_705f6.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_705f6
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_705f6.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=shmat CMakeFiles/cmTC_705f6.dir/CheckFunctionExists.c.o -o cmTC_705f6 
+gmake[2]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function IceConnectionNumber exists in the ICE passed with the following output:
+Change Dir: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_e630a/fast && gmake[1]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_e630a.dir/build.make CMakeFiles/cmTC_e630a.dir/build
+gmake[2]: Entering directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e630a.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=IceConnectionNumber -MD -MT CMakeFiles/cmTC_e630a.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_e630a.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_e630a.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_e630a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e630a.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=IceConnectionNumber CMakeFiles/cmTC_e630a.dir/CheckFunctionExists.c.o -o cmTC_e630a  -lICE 
+gmake[2]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles/CMakeTmp'
 
 
 

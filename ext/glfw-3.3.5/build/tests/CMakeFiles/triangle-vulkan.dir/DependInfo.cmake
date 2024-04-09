@@ -1,23 +1,20 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
-  "C"
   )
-# The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_C
-  "/home/blue/Documents/goban/ext/glfw-3.3.5/deps/glad_vulkan.c" "/home/blue/Documents/goban/ext/glfw-3.3.5/build/tests/CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.o"
-  "/home/blue/Documents/goban/ext/glfw-3.3.5/tests/triangle-vulkan.c" "/home/blue/Documents/goban/ext/glfw-3.3.5/build/tests/CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.o"
-  )
-set(CMAKE_C_COMPILER_ID "GNU")
 
-# The include file search paths:
-set(CMAKE_C_TARGET_INCLUDE_PATH
-  "../deps"
-  "../include"
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_vulkan.c" "tests/CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.o" "gcc" "tests/CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.o.d"
+  "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/triangle-vulkan.c" "tests/CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.o" "gcc" "tests/CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.o.d"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/blue/Documents/goban/ext/glfw-3.3.5/build/src/CMakeFiles/glfw.dir/DependInfo.cmake"
+  "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/src/CMakeFiles/glfw.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.
