@@ -46,6 +46,9 @@ void init_gl(gomo_t *gomo)
 	/* Load the openGL librarie */
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		exit_callback(gomo, 26, "gladLoadGLLoader failed");
+	
+	if (FT_Init_FreeType(&gomo->ft))
+		exit_callback(gomo, 27, "FT_Init_FreeType failed");
 
 	glfwSetFramebufferSizeCallback(gomo->window, framebuffer_size_callback);
 
@@ -54,7 +57,7 @@ void init_gl(gomo_t *gomo)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
-	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void init_VAO(gomo_t *gomo)
@@ -165,6 +168,25 @@ void init_face_data(gomo_t *gomo, int nb_buff)
 	}
 }
 
+void init_fonts(gomo_t *gomo)
+{
+	if (!(gomo->fonts->characters = (charact_t *)malloc(sizeof(charact_t) * 128)))
+		exit_callback(gomo, 8, "characters malloc failed");
+	gomo->fonts->path = NULL;
+	gomo->fonts->next = NULL;
+	gomo->fonts->first = gomo->fonts;
+
+	for (int i = 0; i < NB_TEXT; i++)
+	{
+		gomo->text[i].id = i;
+		gomo->text[i].font = NULL;
+		gomo->text[i].text = NULL;
+		gomo->text[i].scale = 0.0f;
+		gomo->text[i].pos = (vec3_t){0.0f, 0.0f, 0.0f};
+		gomo->text[i].color = (vec3_t){0.0f, 0.0f, 0.0f};
+	}
+}
+
 void init_obj(gomo_t *gomo)
 {
 	gomo->obj->faces = NULL;
@@ -214,7 +236,7 @@ void init_gomo(gomo_t *gomo)
 		exit_callback(gomo, 0, "object malloc failed");
 	gomo->obj->id = 0;
 	if (!(gomo->stone = (instance_t *)malloc(sizeof(instance_t) * 19 * 19)))
-		exit_callback(gomo, 0, "stone malloc failed");
+		exit_callback(gomo, 1, "stone malloc failed");
 	gomo->nb_stones = 0;
 	if (!(gomo->shader = (shader_t *)malloc(sizeof(shader_t))))
 		exit_callback(gomo, 4, "vertices malloc failed");
@@ -222,7 +244,10 @@ void init_gomo(gomo_t *gomo)
 		exit_callback(gomo, 5, "camera malloc failed");
 	if (!(gomo->board = (grid_t *)malloc(sizeof(grid_t) * 19 * 19)))
 		exit_callback(gomo, 6, "board malloc failed");
-	init_board(gomo);
+	if (!(gomo->fonts = (font_t *)malloc(sizeof(font_t))))
+		exit_callback(gomo, 7, "fonts malloc failed");
+	if (!(gomo->text = (text_t *)malloc(sizeof(text_t) * NB_TEXT)))
+		exit_callback(gomo, 8, "text malloc failed");
 }
 
 void	new_obj(gomo_t *gomo) {
@@ -242,6 +267,7 @@ void	new_obj(gomo_t *gomo) {
 void init_all(gomo_t *gomo)
 {
 	init_gomo(gomo);
+	init_board(gomo);
 	init_obj(gomo);
 	gomo->obj->first = gomo->obj;
 	load_obj(gomo, "resources/goban.obj");
@@ -250,8 +276,10 @@ void init_all(gomo_t *gomo)
 	gomo->obj = gomo->obj->first;
 	init_glfw(gomo);
 	init_gl(gomo);
-	init_shader(gomo, gomo->shader, "./src/shader.vert", "./src/shader.frag");
+	init_shader(gomo);
 	init_VAOs(gomo);
 	init_camera(gomo);
-	load_texture(gomo);
+	init_fonts(gomo);
+	load_textures(gomo);
+	load_fonts(gomo);
 }

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5
+CMAKE_SOURCE_DIR = /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build
+CMAKE_BINARY_DIR = /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build
 
 # Include any dependencies generated for this target.
 include tests/CMakeFiles/joysticks.dir/depend.make
@@ -72,30 +72,30 @@ include tests/CMakeFiles/joysticks.dir/flags.make
 tests/CMakeFiles/joysticks.dir/joysticks.c.o: tests/CMakeFiles/joysticks.dir/flags.make
 tests/CMakeFiles/joysticks.dir/joysticks.c.o: ../tests/joysticks.c
 tests/CMakeFiles/joysticks.dir/joysticks.c.o: tests/CMakeFiles/joysticks.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/joysticks.dir/joysticks.c.o"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/joysticks.dir/joysticks.c.o -MF CMakeFiles/joysticks.dir/joysticks.c.o.d -o CMakeFiles/joysticks.dir/joysticks.c.o -c /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/joysticks.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/joysticks.dir/joysticks.c.o"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/joysticks.dir/joysticks.c.o -MF CMakeFiles/joysticks.dir/joysticks.c.o.d -o CMakeFiles/joysticks.dir/joysticks.c.o -c /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/joysticks.c
 
 tests/CMakeFiles/joysticks.dir/joysticks.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/joysticks.dir/joysticks.c.i"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/joysticks.c > CMakeFiles/joysticks.dir/joysticks.c.i
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/joysticks.c > CMakeFiles/joysticks.dir/joysticks.c.i
 
 tests/CMakeFiles/joysticks.dir/joysticks.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/joysticks.dir/joysticks.c.s"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/joysticks.c -o CMakeFiles/joysticks.dir/joysticks.c.s
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/joysticks.c -o CMakeFiles/joysticks.dir/joysticks.c.s
 
 tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o: tests/CMakeFiles/joysticks.dir/flags.make
 tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o: ../deps/glad_gl.c
 tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o: tests/CMakeFiles/joysticks.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o -MF CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o.d -o CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o -c /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_gl.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o -MF CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o.d -o CMakeFiles/joysticks.dir/__/deps/glad_gl.c.o -c /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_gl.c
 
 tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/joysticks.dir/__/deps/glad_gl.c.i"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/joysticks.dir/__/deps/glad_gl.c.i
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/joysticks.dir/__/deps/glad_gl.c.i
 
 tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/joysticks.dir/__/deps/glad_gl.c.s"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/joysticks.dir/__/deps/glad_gl.c.s
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/joysticks.dir/__/deps/glad_gl.c.s
 
 # Object files for target joysticks
 joysticks_OBJECTS = \
@@ -114,18 +114,18 @@ tests/joysticks: /usr/lib/x86_64-linux-gnu/librt.a
 tests/joysticks: /usr/lib/x86_64-linux-gnu/libm.so
 tests/joysticks: /usr/lib/x86_64-linux-gnu/libX11.so
 tests/joysticks: tests/CMakeFiles/joysticks.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable joysticks"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/joysticks.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable joysticks"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/joysticks.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 tests/CMakeFiles/joysticks.dir/build: tests/joysticks
 .PHONY : tests/CMakeFiles/joysticks.dir/build
 
 tests/CMakeFiles/joysticks.dir/clean:
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/joysticks.dir/cmake_clean.cmake
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/joysticks.dir/cmake_clean.cmake
 .PHONY : tests/CMakeFiles/joysticks.dir/clean
 
 tests/CMakeFiles/joysticks.dir/depend:
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5 /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests/CMakeFiles/joysticks.dir/DependInfo.cmake --color=$(COLOR)
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5 /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests/CMakeFiles/joysticks.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : tests/CMakeFiles/joysticks.dir/depend
 

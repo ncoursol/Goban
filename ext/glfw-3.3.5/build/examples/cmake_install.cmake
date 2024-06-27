@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/examples
+# Install script for directory: /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/examples
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

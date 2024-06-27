@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5
+CMAKE_SOURCE_DIR = /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build
+CMAKE_BINARY_DIR = /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build
 
 # Include any dependencies generated for this target.
 include tests/CMakeFiles/title.dir/depend.make
@@ -72,30 +72,30 @@ include tests/CMakeFiles/title.dir/flags.make
 tests/CMakeFiles/title.dir/title.c.o: tests/CMakeFiles/title.dir/flags.make
 tests/CMakeFiles/title.dir/title.c.o: ../tests/title.c
 tests/CMakeFiles/title.dir/title.c.o: tests/CMakeFiles/title.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/title.dir/title.c.o"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/title.dir/title.c.o -MF CMakeFiles/title.dir/title.c.o.d -o CMakeFiles/title.dir/title.c.o -c /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/title.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/title.dir/title.c.o"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/title.dir/title.c.o -MF CMakeFiles/title.dir/title.c.o.d -o CMakeFiles/title.dir/title.c.o -c /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/title.c
 
 tests/CMakeFiles/title.dir/title.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/title.dir/title.c.i"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/title.c > CMakeFiles/title.dir/title.c.i
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/title.c > CMakeFiles/title.dir/title.c.i
 
 tests/CMakeFiles/title.dir/title.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/title.dir/title.c.s"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/title.c -o CMakeFiles/title.dir/title.c.s
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/title.c -o CMakeFiles/title.dir/title.c.s
 
 tests/CMakeFiles/title.dir/__/deps/glad_gl.c.o: tests/CMakeFiles/title.dir/flags.make
 tests/CMakeFiles/title.dir/__/deps/glad_gl.c.o: ../deps/glad_gl.c
 tests/CMakeFiles/title.dir/__/deps/glad_gl.c.o: tests/CMakeFiles/title.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/title.dir/__/deps/glad_gl.c.o"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/title.dir/__/deps/glad_gl.c.o -MF CMakeFiles/title.dir/__/deps/glad_gl.c.o.d -o CMakeFiles/title.dir/__/deps/glad_gl.c.o -c /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_gl.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/title.dir/__/deps/glad_gl.c.o"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/title.dir/__/deps/glad_gl.c.o -MF CMakeFiles/title.dir/__/deps/glad_gl.c.o.d -o CMakeFiles/title.dir/__/deps/glad_gl.c.o -c /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_gl.c
 
 tests/CMakeFiles/title.dir/__/deps/glad_gl.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/title.dir/__/deps/glad_gl.c.i"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/title.dir/__/deps/glad_gl.c.i
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/title.dir/__/deps/glad_gl.c.i
 
 tests/CMakeFiles/title.dir/__/deps/glad_gl.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/title.dir/__/deps/glad_gl.c.s"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/title.dir/__/deps/glad_gl.c.s
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/title.dir/__/deps/glad_gl.c.s
 
 # Object files for target title
 title_OBJECTS = \
@@ -114,18 +114,18 @@ tests/title: /usr/lib/x86_64-linux-gnu/librt.a
 tests/title: /usr/lib/x86_64-linux-gnu/libm.so
 tests/title: /usr/lib/x86_64-linux-gnu/libX11.so
 tests/title: tests/CMakeFiles/title.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable title"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/title.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable title"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/title.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 tests/CMakeFiles/title.dir/build: tests/title
 .PHONY : tests/CMakeFiles/title.dir/build
 
 tests/CMakeFiles/title.dir/clean:
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/title.dir/cmake_clean.cmake
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/title.dir/cmake_clean.cmake
 .PHONY : tests/CMakeFiles/title.dir/clean
 
 tests/CMakeFiles/title.dir/depend:
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5 /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests/CMakeFiles/title.dir/DependInfo.cmake --color=$(COLOR)
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5 /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests/CMakeFiles/title.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : tests/CMakeFiles/title.dir/depend
 

@@ -21,7 +21,6 @@ GLuint load_image(char *path, int blend)
 
 	GLuint textureID;
 	glGenTextures(1, &textureID);
-	printf("Texture generation [%u]\n", textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	if (blend)
 	{
@@ -40,12 +39,22 @@ GLuint load_image(char *path, int blend)
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	free_null(data);
+
+	printf("Texture generation [%s]\n", path);
 	return textureID;
 }
 
-void	load_texture(gomo_t *gomo) {
+void	load_textures(gomo_t *gomo) {
+
 	gomo->grid_text = load_image("resources/grid.png", 1);
 	gomo->shaderID.textureID1 = glGetUniformLocation(gomo->shader->shaderProgram, "grid_text");
 	gomo->wood_text = load_image("resources/wood.jpeg", 0);
 	gomo->shaderID.textureID2 = glGetUniformLocation(gomo->shader->shaderProgram, "wood_text");
+	
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, gomo->grid_text);
+	glUniform1i(gomo->shaderID.textureID1, 0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, gomo->wood_text);
+	glUniform1i(gomo->shaderID.textureID2, 1);
 }

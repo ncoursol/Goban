@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = 
 
-C_INCLUDES = -I/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps -I/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/include
+C_INCLUDES = -I/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps -I/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/include
 
 C_FLAGS = -std=gnu99
 

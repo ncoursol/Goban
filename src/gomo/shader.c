@@ -48,109 +48,83 @@ char *parse_shader_src(char *path)
 	return (NULL);
 }
 
-void init_vertexShader(gomo_t *gomo, shader_t *shader, char *vert_src)
+void load_shader(gomo_t *gomo, unsigned int *shader, char *src, int type)
 {
 	GLenum errCode;
 	int success;
+	const char *tmp;
 
-	if (!(shader->vertexShaderSrc = parse_shader_src(vert_src)))
-		exit_callback(gomo, 27, "Shader vertex parsing failed");
+	if (!(tmp = parse_shader_src(src)))
+		exit_callback(gomo, 27, "Shader parsing failed");
 
-	shader->vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	if ((errCode = glGetError()) != GL_NO_ERROR || !shader->vertexShader)
+	*shader = glCreateShader(type);
+	if ((errCode = glGetError()) != GL_NO_ERROR || !*shader)
 		exit_callback(gomo, 28, getErrorString(errCode));
 
-	glShaderSource(shader->vertexShader, 1, &shader->vertexShaderSrc, NULL);
+	glShaderSource(*shader, 1, &tmp, NULL);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 29, getErrorString(errCode));
 
-	glCompileShader(shader->vertexShader);
+	glCompileShader(*shader);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 30, getErrorString(errCode));
 
-	glGetShaderiv(shader->vertexShader, GL_COMPILE_STATUS, &success);
+	glGetShaderiv(*shader, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		exit_callback(gomo, 31, "Shader vertex compilation failed");
+		exit_callback(gomo, 31, "Shader compilation failed");
 		GLchar infoLog[512];
-		glGetShaderInfoLog(shader->vertexShader, sizeof(infoLog), NULL, infoLog);
+		glGetShaderInfoLog(*shader, sizeof(infoLog), NULL, infoLog);
 		printf("error: %s\n", infoLog);
 	}
 }
 
-void init_fragmentShader(gomo_t *gomo, shader_t *shader, char *frag_src)
+void init_shaderProgram(gomo_t *gomo, unsigned int *prog, unsigned int *vert, unsigned int *frag)
 {
 	GLenum errCode;
 	int success;
 
-	if (!(shader->fragmentShaderSrc = parse_shader_src(frag_src)))
-		exit_callback(gomo, 32, "Shader fragment parsing failed");
-
-	shader->fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	if ((errCode = glGetError()) != GL_NO_ERROR || !shader->fragmentShader)
-		exit_callback(gomo, 33, getErrorString(errCode));
-
-	glShaderSource(shader->fragmentShader, 1, &shader->fragmentShaderSrc, NULL);
-	if ((errCode = glGetError()) != GL_NO_ERROR)
-		exit_callback(gomo, 34, getErrorString(errCode));
-
-	glCompileShader(shader->fragmentShader);
-	if ((errCode = glGetError()) != GL_NO_ERROR)
-		exit_callback(gomo, 35, getErrorString(errCode));
-
-	glGetShaderiv(shader->fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		exit_callback(gomo, 36, "Shader fragment compilation failed");
-		GLchar infoLog[512];
-		glGetShaderInfoLog(shader->fragmentShader, sizeof(infoLog), NULL, infoLog);
-		printf("error: %s\n", infoLog);
-	}
-}
-
-void init_shaderProgram(gomo_t *gomo, shader_t *shader)
-{
-	GLenum errCode;
-	int success;
-
-	shader->shaderProgram = glCreateProgram();
-	if ((errCode = glGetError()) != GL_NO_ERROR || !shader->shaderProgram)
+	*prog = glCreateProgram();
+	if ((errCode = glGetError()) != GL_NO_ERROR || !*prog)
 		exit_callback(gomo, 37, getErrorString(errCode));
 
-	glAttachShader(shader->shaderProgram, shader->vertexShader);
+	glAttachShader(*prog, *vert);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 38, getErrorString(errCode));
 
-	glAttachShader(shader->shaderProgram, shader->fragmentShader);
-	if ((errCode = glGetError()) != GL_NO_ERROR)
-		exit_callback(gomo, 39, getErrorString(errCode));
-
-	glLinkProgram(shader->shaderProgram);
+	glAttachShader(*prog, *frag);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 40, getErrorString(errCode));
 
-	glGetProgramiv(shader->shaderProgram, GL_LINK_STATUS, &success);
+	glLinkProgram(*prog);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 41, getErrorString(errCode));
+
+	glGetProgramiv(*prog, GL_LINK_STATUS, &success);
 	if (!success)
 	{
-		exit_callback(gomo, 41, "Shader program compilation failed");
 		GLchar infoLog[512];
-		glGetProgramInfoLog(shader->shaderProgram, sizeof(infoLog), NULL, infoLog);
-		printf("error: %s\n", infoLog);
+		glGetProgramInfoLog(*prog, sizeof(infoLog), NULL, infoLog);
+		exit_callback(gomo, 42, infoLog);
 	}
-}
-
-void init_shader(gomo_t *gomo, shader_t *shader, char *vert_src, char *frag_src)
-{
-	GLenum errCode;
-
-	init_vertexShader(gomo, shader, vert_src);
-	init_fragmentShader(gomo, shader, frag_src);
-	init_shaderProgram(gomo, shader);
-
-	glDeleteShader(shader->vertexShader);
-	if ((errCode = glGetError()) != GL_NO_ERROR)
-		exit_callback(gomo, 42, getErrorString(errCode));
-	glDeleteShader(shader->fragmentShader);
+	glDeleteShader(*vert);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 43, getErrorString(errCode));
+	glDeleteShader(*frag);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 44, getErrorString(errCode));
+}
+
+void init_shader(gomo_t *gomo)
+{
+	unsigned int vertexShader;
+	unsigned int fragmentShader;
+
+	load_shader(gomo, &vertexShader, "src/shaders/vertex.glsl", GL_VERTEX_SHADER);
+	load_shader(gomo, &fragmentShader, "src/shaders/frag.glsl", GL_FRAGMENT_SHADER);
+	init_shaderProgram(gomo, &gomo->shader->shaderProgram, &vertexShader, &fragmentShader);
+
+	load_shader(gomo, &vertexShader, "src/shaders/vertexHUD.glsl", GL_VERTEX_SHADER);
+	load_shader(gomo, &fragmentShader, "src/shaders/fragHUD.glsl", GL_FRAGMENT_SHADER);
+	init_shaderProgram(gomo, &gomo->shader->shaderProgramHUD, &vertexShader, &fragmentShader);
 }
