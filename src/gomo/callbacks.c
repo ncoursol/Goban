@@ -72,21 +72,18 @@ void updateData(gomo_t *gomo)
 
 int intersect(ray_t ray, hit_t *intersection)
 {
-	// First, check if we intersect direction and plane normal: d . n
 	float dDotN = dot_vec3(ray.direction, (vec3_t){0.0f, 1.0f, 0.0f});
 
 	// check if the ray is embedded to the plane
 	if (dDotN == 0.0f)
 		return 0;
 
-	// Find distance point of intersection
-	float t = dot_vec3(sub_vec3((vec3_t){0.0f, 0.0f, 0.0f}, ray.origin), (vec3_t){0.0f, 1.0f, 0.0f}) / dDotN;
+	float t = -ray.origin.y / ray.direction.y;
 
-	if (t <= RAY_T_MIN || t >= INFINITY)
-		return 0;
-
-	intersection->t = t;
-	intersection->point = add_vec3(ray.origin, prod_vec3(ray.direction, t));
+	// Calculate intersection point
+	intersection->point.x = ray.origin.x + t * ray.direction.x;
+	intersection->point.y = 0; // Plane is at y = 0
+	intersection->point.z = ray.origin.z + t * ray.direction.z;
 
 	return 1;
 }
@@ -96,23 +93,41 @@ ray_t createRay(gomo_t *gomo, double xpos, double ypos)
 	ray_t ray;
 	vec3_t direction, forward, right, up;
 	float h, w;
+	char tmp[200];
 
-	float normalizedX = (2.0f * xpos / WIDTH) - 1.0f;
-	float normalizedY = 1.0f - (2.0f * ypos / HEIGHT);
+	float normalizedX = (2.0f * xpos) / WIDTH - 1.0f;
+	float normalizedY = 1.0f - (2.0f * ypos) / HEIGHT;
 
+	// Calculate forward, right, and up vectors
 	forward = norm_vec3(sub_vec3(gomo->camera->center, gomo->camera->eye));
-	right = sub_vec3((vec3_t){0.0f, 0.0f, 0.0f}, norm_vec3(cross_vec3(forward, (vec3_t){0.0f, 1.0f, 0.0f})));
-	up = sub_vec3((vec3_t){0.0f, 0.0f, 0.0f}, cross_vec3(right, forward));
+	right = norm_vec3(cross_vec3(forward, (vec3_t){0.0f, 1.0f, 0.0f}));
+	up = cross_vec3(right, forward);
 
-	h = tanf(RAD(gomo->camera->fov));
+	h = tanf(RAD(gomo->camera->fov) / 2.0f);
 	w = h * (WIDTH / HEIGHT);
 
-	// direction = forward + x * w * right + y * h * up;
+	// Compute the direction
 	direction = add_vec3(add_vec3(forward, prod_vec3(right, normalizedX * w)), prod_vec3(up, normalizedY * h));
 
 	ray.origin = gomo->camera->eye;
 	ray.direction = norm_vec3(direction);
-	return (ray);
+
+	sprintf(tmp, "mouse :  x[%f] y[%f]", normalizedX, normalizedY);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 50, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 2);
+
+	sprintf(tmp, "forward : x[%f] y[%f] z[%f]", forward.x, forward.y, forward.z);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 90, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 3);
+	sprintf(tmp, "right   : x[%f] y[%f] z[%f]", right.x, right.y, right.z);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 110, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 4);
+	sprintf(tmp, "up      : x[%f] y[%f] z[%f]", up.x, up.y, up.z);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 130, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 5);
+
+	sprintf(tmp, "origin    : x[%f] y[%f] z[%f]", ray.origin.x, ray.origin.y, ray.origin.z);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 170, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 6);
+	sprintf(tmp, "direction : x[%f] y[%f] z[%f]", ray.direction.x, ray.direction.y, ray.direction.z);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 190, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 7);
+
+	return ray;
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
@@ -131,7 +146,8 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 			gomo->obj = gomo->obj->first;
 			if (intersect(ray, &res))
 			{
-				if (gomo->tmp_stone) {
+				if (gomo->tmp_stone)
+				{
 					gomo->nb_stones--;
 					gomo->tmp_stone = 0;
 				}
@@ -162,15 +178,18 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 	if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))
 	{
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
-		gomo->camera->options ^= 1 << 5;
-		if (action == GLFW_PRESS)
+		if (!(gomo->camera->options >> 8 & 1))
 		{
-			glfwSetInputMode(gomo->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			glfwSetCursorPos(gomo->window, gomo->camera->ah / MSPEED, gomo->camera->av / MSPEED);
-		}
-		else if (action == GLFW_RELEASE)
-		{
-			glfwSetInputMode(gomo->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			gomo->camera->options ^= 1 << 5;
+			if (action == GLFW_PRESS)
+			{
+				glfwSetInputMode(gomo->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+				glfwSetCursorPos(gomo->window, gomo->camera->ah / MSPEED, gomo->camera->av / MSPEED);
+			}
+			else if (action == GLFW_RELEASE)
+			{
+				glfwSetInputMode(gomo->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			}
 		}
 	}
 }
@@ -193,7 +212,8 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 {
 	gomo_t *gomo = glfwGetWindowUserPointer(window);
-	if (gomo->nb_stones < 361 + gomo->tmp_stone) {
+	if (gomo->nb_stones < 361 + gomo->tmp_stone)
+	{
 		ray_t ray;
 		hit_t res;
 		ray = createRay(gomo, xpos, ypos);
@@ -222,6 +242,8 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
 		if (key == GLFW_KEY_ESCAPE)
 			glfwSetWindowShouldClose(window, GLFW_TRUE);
+		else if (key == GLFW_KEY_F1)
+			gomo->camera->options ^= 1 << 0;
 		else if (key == GLFW_KEY_W)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		else if (key == GLFW_KEY_F)

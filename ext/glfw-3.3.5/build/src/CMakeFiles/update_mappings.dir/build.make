@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5
+CMAKE_SOURCE_DIR = /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build
+CMAKE_BINARY_DIR = /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build
 
 # Utility rule file for update_mappings.
 
@@ -67,8 +67,8 @@ include src/CMakeFiles/update_mappings.dir/compiler_depend.make
 include src/CMakeFiles/update_mappings.dir/progress.make
 
 src/CMakeFiles/update_mappings:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Updating gamepad mappings from upstream repository"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/src && /usr/bin/cmake -P /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/CMake/GenerateMappings.cmake mappings.h.in mappings.h
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Updating gamepad mappings from upstream repository"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/src && /usr/bin/cmake -P /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/CMake/GenerateMappings.cmake mappings.h.in mappings.h
 
 update_mappings: src/CMakeFiles/update_mappings
 update_mappings: src/CMakeFiles/update_mappings.dir/build.make
@@ -79,10 +79,10 @@ src/CMakeFiles/update_mappings.dir/build: update_mappings
 .PHONY : src/CMakeFiles/update_mappings.dir/build
 
 src/CMakeFiles/update_mappings.dir/clean:
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/src && $(CMAKE_COMMAND) -P CMakeFiles/update_mappings.dir/cmake_clean.cmake
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/src && $(CMAKE_COMMAND) -P CMakeFiles/update_mappings.dir/cmake_clean.cmake
 .PHONY : src/CMakeFiles/update_mappings.dir/clean
 
 src/CMakeFiles/update_mappings.dir/depend:
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5 /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/src /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/src /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/src/CMakeFiles/update_mappings.dir/DependInfo.cmake --color=$(COLOR)
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5 /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/src /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/src /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/src/CMakeFiles/update_mappings.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : src/CMakeFiles/update_mappings.dir/depend
 

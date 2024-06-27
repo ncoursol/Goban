@@ -61,6 +61,22 @@ GLfloat *perspective(float angle, float ratio, float near, float far)
 	return (ret);
 }
 
+GLfloat *orthographic(float left, float right, float bottom, float top, float near, float far)
+{
+	GLfloat *ret;
+
+	ret = new_mat4();
+	ret[0] = 2.0f / (right - left);
+	ret[5] = 2.0f / (top - bottom);
+	ret[10] = -2.0f / (far - near);
+	ret[12] = -(right + left) / (right - left);
+	ret[13] = -(top + bottom) / (top - bottom);
+	ret[14] = -(far + near) / (far - near);
+	ret[15] = 1.0f;
+
+	return (ret);
+}
+
 GLfloat *lookAt(const vec3_t eye, const vec3_t center, const vec3_t up)
 {
 	GLfloat *matrix;
@@ -93,24 +109,23 @@ GLfloat *lookAt(const vec3_t eye, const vec3_t center, const vec3_t up)
 
 void camera(gomo_t *gomo, vec3_t center, vec3_t up)
 {
-	float *mv;
-
 	if (gomo->camera->mvp != NULL)
 		free_null((void *)gomo->camera->mvp);
 	gomo->shaderID.mvpID = glGetUniformLocation(gomo->shader->shaderProgram, "MVP");
+	gomo->shaderID.orthoID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "ortho");
 	gomo->camera->projection = perspective(gomo->camera->fov, 4.0f / 3.0f, 0.1f, 100.0f);
 	gomo->camera->view = lookAt(gomo->camera->eye, center, up);
 	gomo->camera->model = new_mat4_model();
 	gomo->camera->model[0] = gomo->camera->scale;
 	gomo->camera->model[5] = gomo->camera->scale;
 	gomo->camera->model[10] = gomo->camera->scale;
-	mv = prod_mat4(gomo->camera->model, gomo->camera->view);
-	gomo->camera->mvp = prod_mat4(mv, gomo->camera->projection);
+	gomo->camera->mvp = prod_mat4(prod_mat4(gomo->camera->model, gomo->camera->view), gomo->camera->projection);
+	gomo->camera->ortho = orthographic(0, WIDTH, 0, HEIGHT, 0.0f, 100.0f);
+	//gomo->camera->ortho = prod_mat4(gomo->camera->view, orthographic(0, WIDTH, 0, HEIGHT, 0.1f, 100.0f));
 
-	free_null((void *)gomo->camera->projection);
-	free_null((void *)gomo->camera->view);
+	/* free_null((void *)gomo->camera->projection);
+	free_null((void *)gomo->camera->view); */
 	free_null((void *)gomo->camera->model);
-	free_null((void *)mv);
 }
 
 void init_camera(gomo_t *gomo)

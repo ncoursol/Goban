@@ -14,8 +14,6 @@
 
 void	free_shader(gomo_t *gomo)
 {
-	free_null((void*)gomo->shader->vertexShaderSrc);
-	free_null((void*)gomo->shader->fragmentShaderSrc);
 	if (gomo->shader->shaderProgram)
 		glDeleteProgram(gomo->shader->shaderProgram);
 }

@@ -8,14 +8,14 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/getopt.c" "tests/CMakeFiles/clipboard.dir/__/deps/getopt.c.o" "gcc" "tests/CMakeFiles/clipboard.dir/__/deps/getopt.c.o.d"
-  "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_gl.c" "tests/CMakeFiles/clipboard.dir/__/deps/glad_gl.c.o" "gcc" "tests/CMakeFiles/clipboard.dir/__/deps/glad_gl.c.o.d"
-  "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/clipboard.c" "tests/CMakeFiles/clipboard.dir/clipboard.c.o" "gcc" "tests/CMakeFiles/clipboard.dir/clipboard.c.o.d"
+  "/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/getopt.c" "tests/CMakeFiles/clipboard.dir/__/deps/getopt.c.o" "gcc" "tests/CMakeFiles/clipboard.dir/__/deps/getopt.c.o.d"
+  "/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_gl.c" "tests/CMakeFiles/clipboard.dir/__/deps/glad_gl.c.o" "gcc" "tests/CMakeFiles/clipboard.dir/__/deps/glad_gl.c.o.d"
+  "/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/clipboard.c" "tests/CMakeFiles/clipboard.dir/clipboard.c.o" "gcc" "tests/CMakeFiles/clipboard.dir/clipboard.c.o.d"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/src/CMakeFiles/glfw.dir/DependInfo.cmake"
+  "/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/src/CMakeFiles/glfw.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

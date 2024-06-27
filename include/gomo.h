@@ -15,6 +15,8 @@
 
 #include "../ext/glad/include/glad.h"
 #include "../ext/glfw-3.3.5/include/GLFW/glfw3.h"
+#include "../ext/freetype/include/ft2build.h"
+#include "../ext/freetype/include/freetype/freetype.h"
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
@@ -25,13 +27,15 @@
 #define WIDTH 1280 // 1024
 #define HEIGHT 960 // 768
 
+#define NB_TEXT 10
+
 #define MSPEED 0.005f // Mouse speed
 #define PI 3.14159265359
 #define V_BUFF_SIZE 20000
-#define AXIS gomo->camera->options & 1			  // top axis (y/z)
+#define FPS gomo.camera->options >> 0 & 1		  // Display FPS (yes/no)
 #define LEFT_MOUSE gomo->camera->options >> 5 & 1 // left mouse button press (yes/no)
 #define TOP_VIEW gomo->camera->options >> 8 & 1	  // top view (yes/no)
-#define RAY_T_MIN 0.0001f // Minimum ray t value
+#define RAY_T_MIN 0.0001f						  // Minimum ray t value
 
 #define ABS(x) (x >= 0 ? x : -x)
 #define RAD(x) (x * 0.0174533f)
@@ -78,6 +82,16 @@ typedef struct instance_s
 	vec3_t color;
 } instance_t;
 
+typedef struct text_s
+{
+	int id;
+	char *font;
+	char *text;
+	float scale;
+	vec3_t pos;
+	vec3_t color;
+} text_t;
+
 typedef struct data_s
 {
 	int vertex;
@@ -86,6 +100,29 @@ typedef struct data_s
 	struct data_s *next;
 	struct data_s *first;
 } data_t;
+
+typedef struct charact_s
+{
+	int id;
+	int width;
+	int height;
+	int advance;
+	int bearing_x;
+	int bearing_y;
+	unsigned char *bitmap;
+} charact_t;
+
+typedef struct font_s
+{
+	char *path;
+	char *name;
+	unsigned int VAO;
+	unsigned int VBO;
+	GLuint textureID;
+	charact_t *characters;
+	struct font_s *next;
+	struct font_s *first;
+} font_t;
 
 typedef struct camera_s
 {
@@ -102,9 +139,10 @@ typedef struct camera_s
 	float fov;			  // Field Of View of the camera
 	float max[3];
 	float min[3];
-	GLfloat *projection; // Projection Matrice
-	GLfloat *view;		 // View Matrice
-	GLfloat *model;		 // Model Matrice
+	GLfloat *projection; // Projection Matrix
+	GLfloat *ortho;		 // Orthographic Matrix
+	GLfloat *view;		 // View Matrix
+	GLfloat *model;		 // Model Matrix
 	GLfloat *mvp;		 // Model x View x Projection
 } camera_t;
 
@@ -131,16 +169,14 @@ typedef struct shaderID_s
 	GLuint textureID1;	// Texture ID for the first texture
 	GLuint textureID2;	// Texture ID for the second texture
 	GLuint mvpID;		// MVP ID
+	GLuint orthoID;		// Ortho ID
 	GLuint mvp_stoneID; // MVP ID for instances go stones
 } shaderID_t;
 
 typedef struct shader_s
 {
-	const char *vertexShaderSrc;   // Vertex shader source code
-	const char *fragmentShaderSrc; // Fragment shader source code
-	unsigned int vertexShader;	   // Vertex shader
-	unsigned int fragmentShader;   // Fragment shader
-	unsigned int shaderProgram;	   // Shader program
+	unsigned int shaderProgram;		// Shader program
+	unsigned int shaderProgramHUD;	// Shader program for HUD
 } shader_t;
 
 typedef struct gomo_s
@@ -149,6 +185,9 @@ typedef struct gomo_s
 	shader_t *shader;
 	camera_t *camera;
 	shaderID_t shaderID;
+	FT_Library ft;
+	font_t *fonts;
+	text_t *text;
 	GLuint grid_text;
 	GLuint wood_text;
 	instance_t *stone;
@@ -180,13 +219,12 @@ int count_space(char *a);
 // Init fct
 void init_all(gomo_t *gomo);
 void init_camera(gomo_t *gomo);
-void init_shader(gomo_t *gomo, shader_t *shader, char *vert_src, char *frag_src);
+void init_shader(gomo_t *gomo);
 void init_obj(gomo_t *gomo);
 void init_face_data(gomo_t *gomo, int nb_buff);
-void init_text(gomo_t *gomo);
 void load_obj(gomo_t *gomo, char *path);
-void load_texture(gomo_t *gomo);
-void VAOs(gomo_t *gomo, obj_t *obj);
+void load_textures(gomo_t *gomo);
+void load_fonts(gomo_t *gomo);
 
 // Matrice4 fct
 GLfloat *new_mat4(void);
@@ -194,6 +232,9 @@ GLfloat *new_mat4_model(void);
 GLfloat *prod_mat4(float *a, float *b);
 vec4_t mulv_mat4(float *m, vec4_t v);
 float *inv_mat4(float *m);
+vec4_t mult_mat4_vec4(float *m, vec4_t v);
+vec3_t mult_mat4_vec3(float *m, vec3_t v);
+void print_mat4(float *m);
 
 // Vector3 fct
 GLfloat dot_vec3(vec3_t a, vec3_t b);
@@ -210,6 +251,8 @@ void create_obj(gomo_t *gomo, float *vertices, float *normals, float *textures);
 
 // Render fct
 void camera(gomo_t *gomo, vec3_t center, vec3_t up);
+void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, float scale, vec3_t color, int id);
+void render_all_text(gomo_t *gomo);
 
 // Exit fct
 void free_all(gomo_t *gomo, int step);

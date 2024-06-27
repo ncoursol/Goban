@@ -70,16 +70,46 @@ vec4_t mulv_mat4(float *m, vec4_t v)
 	return result;
 }
 
+vec4_t mult_mat4_vec4(float *m, vec4_t v)
+{
+	vec4_t result;
+
+	result.x = m[0] * v.x + m[1] * v.y + m[2] * v.z + m[3] * v.w;
+	result.y = m[4] * v.x + m[5] * v.y + m[6] * v.z + m[7] * v.w;
+	result.z = m[8] * v.x + m[9] * v.y + m[10] * v.z + m[11] * v.w;
+	result.w = m[12] * v.x + m[13] * v.y + m[14] * v.z + m[15] * v.w;
+	return result;
+}
+
+vec3_t mult_mat4_vec3(float *m, vec3_t v)
+{
+	vec3_t result;
+
+	result.x = m[0] * v.x + m[1] * v.y + m[2] * v.z + m[3];
+	result.y = m[4] * v.x + m[5] * v.y + m[6] * v.z + m[7];
+	result.z = m[8] * v.x + m[9] * v.y + m[10] * v.z + m[11];
+	return result;
+}
+
+void print_mat4(float *m)
+{
+	printf("Matrix:\n");
+	printf("%f %f %f %f\n", m[0], m[1], m[2], m[3]);
+	printf("%f %f %f %f\n", m[4], m[5], m[6], m[7]);
+	printf("%f %f %f %f\n", m[8], m[9], m[10], m[11]);
+	printf("%f %f %f %f\n", m[12], m[13], m[14], m[15]);
+}
+
 float *inv_mat4(float *m)
 {
-	float tmp[12]; /* temp array for pairs */
-	float src[16]; /* array of transpose source matrix */
-	float det;	   /* determinant */
-	float *result; /* destination matrix */
+	float tmp[12]; // temp array for pairs
+	float src[16]; // array of transpose source matrix
+	float det;	   // determinant
+	float *result; // destination matrix
 
 	result = new_mat4();
 
-	/* transpose matrix */
+	// transpose matrix
 	for (int i = 0; i < 4; i++)
 	{
 		src[i] = m[i * 4];
@@ -88,7 +118,7 @@ float *inv_mat4(float *m)
 		src[i + 12] = m[i * 4 + 3];
 	}
 
-	/* calculate pairs for first 8 elements (cofactors) */
+	// calculate pairs for first 8 elements (cofactors)
 	tmp[0] = src[10] * src[15];
 	tmp[1] = src[11] * src[14];
 	tmp[2] = src[9] * src[15];
@@ -102,7 +132,7 @@ float *inv_mat4(float *m)
 	tmp[10] = src[8] * src[13];
 	tmp[11] = src[9] * src[12];
 
-	/* calculate first 8 elements (cofactors) */
+	// calculate first 8 elements (cofactors)
 	result[0] = tmp[0] * src[5] + tmp[3] * src[6] + tmp[4] * src[7];
 	result[0] -= tmp[1] * src[5] + tmp[2] * src[6] + tmp[5] * src[7];
 	result[1] = tmp[1] * src[4] + tmp[6] * src[6] + tmp[9] * src[7];
@@ -120,7 +150,7 @@ float *inv_mat4(float *m)
 	result[7] = tmp[4] * src[0] + tmp[9] * src[1] + tmp[10] * src[2];
 	result[7] -= tmp[5] * src[0] + tmp[8] * src[1] + tmp[11] * src[2];
 
-	/* calculate pairs for second 8 elements (cofactors) */
+	// calculate pairs for second 8 elements (cofactors)
 	tmp[0] = src[2] * src[7];
 	tmp[1] = src[3] * src[6];
 	tmp[2] = src[1] * src[7];
@@ -134,7 +164,7 @@ float *inv_mat4(float *m)
 	tmp[10] = src[0] * src[5];
 	tmp[11] = src[1] * src[4];
 
-	/* calculate second 8 elements (cofactors) */
+	// calculate second 8 elements (cofactors)
 	result[8] = tmp[0] * src[13] + tmp[3] * src[14] + tmp[4] * src[15];
 	result[8] -= tmp[1] * src[13] + tmp[2] * src[14] + tmp[5] * src[15];
 	result[9] = tmp[1] * src[12] + tmp[6] * src[14] + tmp[9] * src[15];
@@ -152,10 +182,10 @@ float *inv_mat4(float *m)
 	result[15] = tmp[10] * src[10] + tmp[4] * src[8] + tmp[9] * src[9];
 	result[15] -= tmp[8] * src[9] + tmp[11] * src[10] + tmp[5] * src[8];
 
-	/* calculate determinant */
+	// calculate determinant
 	det = src[0] * result[0] + src[1] * result[1] + src[2] * result[2] + src[3] * result[3];
 
-	/* calculate matrix inverse */
+	// calculate matrix inverse
 	det = 1.0f / det;
 	for (int i = 0; i < 16; i++)
 	{

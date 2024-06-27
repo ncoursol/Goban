@@ -105,7 +105,7 @@ void updateCamera(gomo_t *gomo)
 	vec3_t new_center;
 	vec3_t up;
 
-	up = (vec3_t){0, AXIS, !(AXIS)};
+	up = (vec3_t){0, 1, 0};
 
 	if (LEFT_MOUSE && !(TOP_VIEW))
 		set_new_camera_angles(gomo);
@@ -128,32 +128,34 @@ int main(void)
 	init_all(&gomo);
 	last_t = glfwGetTime();
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, gomo.grid_text);
-	glUniform1i(gomo.shaderID.textureID1, 0);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, gomo.wood_text);
-	glUniform1i(gomo.shaderID.textureID2, 1);
-
 	// RENDER LOOP
 	while (!glfwWindowShouldClose(gomo.window))
 	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		updateCamera(&gomo);
+
+		// Draw HUD
+
 		// Frame rate (ms/f)
 		t = glfwGetTime();
 		nb_frames++;
-		if (t - last_t >= 1.0)
+
+		char buff[100];
+		char buff2[100];
+		if (t - last_t >= 1.0f)
 		{
-			printf("%f ms/f\n", 1000.0 / (double)(nb_frames));
+			gcvt((double)(nb_frames), 2, buff);
+			gcvt(1000.0f / (double)(nb_frames), 5, buff2);
+			strcat(buff, " fps");
+			strcat(buff2, " ms/f");
 			nb_frames = 0;
 			last_t += 1.0;
 		}
+		add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0);
+		add_text_to_render(&gomo, "font_text2", buff2, (vec3_t){70, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 1);
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// Apply inputs events to the camera
-		updateCamera(&gomo);
-
-		// Set shader var
+		// Draw 3D objects
+		glUseProgram(gomo.shader->shaderProgram);
 		glUniformMatrix4fv(gomo.shaderID.mvpID, 1, GL_FALSE, &gomo.camera->mvp[0]);
 
 		// Draw each object
@@ -177,6 +179,10 @@ int main(void)
 			gomo.obj = gomo.obj->next;
 		}
 		glBindVertexArray(0);
+
+		// Render all text
+		if (FPS)
+			render_all_text(&gomo);
 
 		glfwSwapBuffers(gomo.window);
 		glfwPollEvents();

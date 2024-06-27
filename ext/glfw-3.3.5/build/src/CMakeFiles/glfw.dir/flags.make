@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = -D_GLFW_USE_CONFIG_H
 
-C_INCLUDES = -I/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/include -I/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/src -I/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/src
+C_INCLUDES = -I/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/include -I/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/src -I/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/src
 
 C_FLAGS = -fPIC -Wall -std=gnu99
 

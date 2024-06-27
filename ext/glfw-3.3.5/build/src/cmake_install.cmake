@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/src
+# Install script for directory: /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -43,6 +43,6 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/src/libglfw3.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/src/libglfw3.a")
 endif()
 

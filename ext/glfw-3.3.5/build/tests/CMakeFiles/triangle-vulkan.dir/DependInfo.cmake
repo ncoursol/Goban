@@ -8,13 +8,13 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_vulkan.c" "tests/CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.o" "gcc" "tests/CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.o.d"
-  "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/triangle-vulkan.c" "tests/CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.o" "gcc" "tests/CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.o.d"
+  "/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_vulkan.c" "tests/CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.o" "gcc" "tests/CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.o.d"
+  "/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/triangle-vulkan.c" "tests/CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.o" "gcc" "tests/CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.o.d"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/src/CMakeFiles/glfw.dir/DependInfo.cmake"
+  "/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/src/CMakeFiles/glfw.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

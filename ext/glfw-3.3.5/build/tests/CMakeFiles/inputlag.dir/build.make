@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5
+CMAKE_SOURCE_DIR = /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build
+CMAKE_BINARY_DIR = /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build
 
 # Include any dependencies generated for this target.
 include tests/CMakeFiles/inputlag.dir/depend.make
@@ -72,44 +72,44 @@ include tests/CMakeFiles/inputlag.dir/flags.make
 tests/CMakeFiles/inputlag.dir/inputlag.c.o: tests/CMakeFiles/inputlag.dir/flags.make
 tests/CMakeFiles/inputlag.dir/inputlag.c.o: ../tests/inputlag.c
 tests/CMakeFiles/inputlag.dir/inputlag.c.o: tests/CMakeFiles/inputlag.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/inputlag.dir/inputlag.c.o"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/inputlag.dir/inputlag.c.o -MF CMakeFiles/inputlag.dir/inputlag.c.o.d -o CMakeFiles/inputlag.dir/inputlag.c.o -c /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/inputlag.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object tests/CMakeFiles/inputlag.dir/inputlag.c.o"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/inputlag.dir/inputlag.c.o -MF CMakeFiles/inputlag.dir/inputlag.c.o.d -o CMakeFiles/inputlag.dir/inputlag.c.o -c /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/inputlag.c
 
 tests/CMakeFiles/inputlag.dir/inputlag.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/inputlag.dir/inputlag.c.i"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/inputlag.c > CMakeFiles/inputlag.dir/inputlag.c.i
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/inputlag.c > CMakeFiles/inputlag.dir/inputlag.c.i
 
 tests/CMakeFiles/inputlag.dir/inputlag.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/inputlag.dir/inputlag.c.s"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests/inputlag.c -o CMakeFiles/inputlag.dir/inputlag.c.s
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests/inputlag.c -o CMakeFiles/inputlag.dir/inputlag.c.s
 
 tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.o: tests/CMakeFiles/inputlag.dir/flags.make
 tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.o: ../deps/getopt.c
 tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.o: tests/CMakeFiles/inputlag.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.o"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.o -MF CMakeFiles/inputlag.dir/__/deps/getopt.c.o.d -o CMakeFiles/inputlag.dir/__/deps/getopt.c.o -c /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/getopt.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.o"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.o -MF CMakeFiles/inputlag.dir/__/deps/getopt.c.o.d -o CMakeFiles/inputlag.dir/__/deps/getopt.c.o -c /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/getopt.c
 
 tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/inputlag.dir/__/deps/getopt.c.i"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/getopt.c > CMakeFiles/inputlag.dir/__/deps/getopt.c.i
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/getopt.c > CMakeFiles/inputlag.dir/__/deps/getopt.c.i
 
 tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/inputlag.dir/__/deps/getopt.c.s"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/getopt.c -o CMakeFiles/inputlag.dir/__/deps/getopt.c.s
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/getopt.c -o CMakeFiles/inputlag.dir/__/deps/getopt.c.s
 
 tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o: tests/CMakeFiles/inputlag.dir/flags.make
 tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o: ../deps/glad_gl.c
 tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o: tests/CMakeFiles/inputlag.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o -MF CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o.d -o CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o -c /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_gl.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o -MF CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o.d -o CMakeFiles/inputlag.dir/__/deps/glad_gl.c.o -c /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_gl.c
 
 tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/inputlag.dir/__/deps/glad_gl.c.i"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/inputlag.dir/__/deps/glad_gl.c.i
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_gl.c > CMakeFiles/inputlag.dir/__/deps/glad_gl.c.i
 
 tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/inputlag.dir/__/deps/glad_gl.c.s"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/inputlag.dir/__/deps/glad_gl.c.s
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/deps/glad_gl.c -o CMakeFiles/inputlag.dir/__/deps/glad_gl.c.s
 
 # Object files for target inputlag
 inputlag_OBJECTS = \
@@ -130,18 +130,18 @@ tests/inputlag: /usr/lib/x86_64-linux-gnu/librt.a
 tests/inputlag: /usr/lib/x86_64-linux-gnu/libm.so
 tests/inputlag: /usr/lib/x86_64-linux-gnu/libX11.so
 tests/inputlag: tests/CMakeFiles/inputlag.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable inputlag"
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/inputlag.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable inputlag"
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/inputlag.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 tests/CMakeFiles/inputlag.dir/build: tests/inputlag
 .PHONY : tests/CMakeFiles/inputlag.dir/build
 
 tests/CMakeFiles/inputlag.dir/clean:
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/inputlag.dir/cmake_clean.cmake
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests && $(CMAKE_COMMAND) -P CMakeFiles/inputlag.dir/cmake_clean.cmake
 .PHONY : tests/CMakeFiles/inputlag.dir/clean
 
 tests/CMakeFiles/inputlag.dir/depend:
-	cd /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5 /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/tests /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests /mnt/nfs/homes/ncoursol/Documents/gomoku/ext/glfw-3.3.5/build/tests/CMakeFiles/inputlag.dir/DependInfo.cmake --color=$(COLOR)
+	cd /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5 /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/tests /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests /mnt/nfs/homes/ncoursol/Documents/Gomoku/ext/glfw-3.3.5/build/tests/CMakeFiles/inputlag.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : tests/CMakeFiles/inputlag.dir/depend
 
