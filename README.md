@@ -1,2 +1,2 @@
 # Goban
-3d goban with opengl
+3d goban with opengl (in progress...)
