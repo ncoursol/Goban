@@ -91,41 +91,34 @@ int intersect(ray_t ray, hit_t *intersection)
 ray_t createRay(gomo_t *gomo, double xpos, double ypos)
 {
 	ray_t ray;
-	vec3_t direction, forward, right, up;
-	float h, w;
+	vec3_t direction;
 	char tmp[200];
 
-	float normalizedX = (2.0f * xpos) / WIDTH - 1.0f;
-	float normalizedY = 1.0f - (2.0f * ypos) / HEIGHT;
-
-	// Calculate forward, right, and up vectors
-	forward = norm_vec3(sub_vec3(gomo->camera->center, gomo->camera->eye));
-	right = norm_vec3(cross_vec3(forward, (vec3_t){0.0f, 1.0f, 0.0f}));
-	up = cross_vec3(right, forward);
-
-	h = tanf(RAD(gomo->camera->fov) / 2.0f);
-	w = h * (WIDTH / HEIGHT);
-
-	// Compute the direction
-	direction = add_vec3(add_vec3(forward, prod_vec3(right, normalizedX * w)), prod_vec3(up, normalizedY * h));
+	float aspect_ratio = (float)WIDTH / (float)HEIGHT;
+	float ndcX = (xpos + 0.5f) / WIDTH;
+	float ndcY = (ypos + 0.5f) / HEIGHT;
+	float screenX = 2.0f * ndcX - 1.0f;
+	float screenY = 1.0f - 2.0f * ndcY;
+	float normalizedX = screenX * aspect_ratio * tanf(RAD(gomo->camera->fov));
+	float normalizedY = screenY * tanf(RAD(gomo->camera->fov));
 
 	ray.origin = gomo->camera->eye;
-	ray.direction = norm_vec3(direction);
+	vec4_t rayClip = {normalizedX, normalizedY, 1.0f, 1.0f};
+	vec4_t rayEye = mult_mat4_vec4(inv_mat4(gomo->camera->projection), rayClip);
+	rayEye = (vec4_t){rayEye.x, rayEye.y, 1.0f, 0.0f};
+	vec4_t rayWorld = mult_mat4_vec4(gomo->camera->view, rayEye);
+	direction = norm_vec3((vec3_t){rayWorld.x, rayWorld.y, rayWorld.z});
+	ray.direction = direction;
 
 	sprintf(tmp, "mouse :  x[%f] y[%f]", normalizedX, normalizedY);
 	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 50, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 2);
-
-	sprintf(tmp, "forward : x[%f] y[%f] z[%f]", forward.x, forward.y, forward.z);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 90, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 3);
-	sprintf(tmp, "right   : x[%f] y[%f] z[%f]", right.x, right.y, right.z);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 110, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 4);
-	sprintf(tmp, "up      : x[%f] y[%f] z[%f]", up.x, up.y, up.z);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 130, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 5);
-
 	sprintf(tmp, "origin    : x[%f] y[%f] z[%f]", ray.origin.x, ray.origin.y, ray.origin.z);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 170, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 6);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 80, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 6);
 	sprintf(tmp, "direction : x[%f] y[%f] z[%f]", ray.direction.x, ray.direction.y, ray.direction.z);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 190, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 7);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 110, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 7);
+
+	sprintf(tmp, "x[%f] y[%f] ratio[%f]", normalizedX, normalizedY, aspect_ratio);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 140, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 8);
 
 	return ray;
 }
