@@ -99,13 +99,13 @@ ray_t createRay(gomo_t *gomo, double xpos, double ypos)
 	float ndcY = (ypos + 0.5f) / HEIGHT;
 	float screenX = 2.0f * ndcX - 1.0f;
 	float screenY = 1.0f - 2.0f * ndcY;
-	float normalizedX = screenX * aspect_ratio * tanf(RAD(gomo->camera->fov));
-	float normalizedY = screenY * tanf(RAD(gomo->camera->fov));
+	float normalizedX = screenX * aspect_ratio * tanf(RAD(gomo->camera->fov) / 2.0f);
+	float normalizedY = screenY * tanf(RAD(gomo->camera->fov) / 2.0f);
 
 	ray.origin = gomo->camera->eye;
-	vec4_t rayClip = {normalizedX, normalizedY, 1.0f, 1.0f};
+	vec4_t rayClip = {normalizedX, normalizedY, -1.0f, 1.0f};
 	vec4_t rayEye = mult_mat4_vec4(inv_mat4(gomo->camera->projection), rayClip);
-	rayEye = (vec4_t){rayEye.x, rayEye.y, 1.0f, 0.0f};
+	rayEye = (vec4_t){rayEye.x, rayEye.y, -1.0f, 0.0f};
 	vec4_t rayWorld = mult_mat4_vec4(gomo->camera->view, rayEye);
 	direction = norm_vec3((vec3_t){rayWorld.x, rayWorld.y, rayWorld.z});
 	ray.direction = direction;
@@ -113,12 +113,12 @@ ray_t createRay(gomo_t *gomo, double xpos, double ypos)
 	sprintf(tmp, "mouse :  x[%f] y[%f]", normalizedX, normalizedY);
 	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 50, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 2);
 	sprintf(tmp, "origin    : x[%f] y[%f] z[%f]", ray.origin.x, ray.origin.y, ray.origin.z);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 80, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 6);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 80, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 3);
 	sprintf(tmp, "direction : x[%f] y[%f] z[%f]", ray.direction.x, ray.direction.y, ray.direction.z);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 110, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 7);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 110, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 4);
 
 	sprintf(tmp, "x[%f] y[%f] ratio[%f]", normalizedX, normalizedY, aspect_ratio);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 140, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 8);
+	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 140, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 5);
 
 	return ray;
 }

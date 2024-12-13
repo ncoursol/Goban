@@ -54,9 +54,9 @@ GLfloat *perspective(float angle, float ratio, float near, float far)
 	half_tan = 1.0f / tanf(RAD(angle / 2.0f));
 	ret[0] = half_tan / ratio;
 	ret[5] = half_tan;
-	ret[10] = (-near - far) / (near - far);
-	ret[11] = 1.0f;
-	ret[14] = 2.0f * far * near / (near - far);
+	ret[10] = -(near + far) / (far - near);
+	ret[11] = -1.0f;
+	ret[14] = -(2.0f * far * near) / (far - near);
 
 	return (ret);
 }
@@ -90,19 +90,19 @@ GLfloat *lookAt(const vec3_t eye, const vec3_t center, const vec3_t up)
 
 	matrix[0] = x.x;
 	matrix[1] = y.x;
-	matrix[2] = z.x;
+	matrix[2] = -z.x;
 
 	matrix[4] = x.y;
 	matrix[5] = y.y;
-	matrix[6] = z.y;
+	matrix[6] = -z.y;
 
 	matrix[8] = x.z;
 	matrix[9] = y.z;
-	matrix[10] = z.z;
+	matrix[10] = -z.z;
 
 	matrix[12] = -dot_vec3(x, eye);
 	matrix[13] = -dot_vec3(y, eye);
-	matrix[14] = -dot_vec3(z, eye);
+	matrix[14] = dot_vec3(z, eye);
 
 	return (matrix);
 }
@@ -113,15 +113,14 @@ void camera(gomo_t *gomo, vec3_t center, vec3_t up)
 		free_null((void *)gomo->camera->mvp);
 	gomo->shaderID.mvpID = glGetUniformLocation(gomo->shader->shaderProgram, "MVP");
 	gomo->shaderID.orthoID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "ortho");
-	gomo->camera->projection = perspective(gomo->camera->fov, 4.0f / 3.0f, 1.0f, 100.0f);
+	gomo->camera->projection = perspective(gomo->camera->fov, (float)WIDTH / (float)HEIGHT, 1.0f, 100.0f);
 	gomo->camera->view = lookAt(gomo->camera->eye, center, up);
 	gomo->camera->model = new_mat4_model();
 	gomo->camera->model[0] = gomo->camera->scale;
 	gomo->camera->model[5] = gomo->camera->scale;
 	gomo->camera->model[10] = gomo->camera->scale;
 	gomo->camera->mvp = prod_mat4(prod_mat4(gomo->camera->model, gomo->camera->view), gomo->camera->projection);
-	gomo->camera->ortho = orthographic(0, WIDTH, 0, HEIGHT, 1.0f, 100.0f);
-	//gomo->camera->ortho = prod_mat4(gomo->camera->view, orthographic(0, WIDTH, 0, HEIGHT, 0.1f, 100.0f));
+	gomo->camera->ortho = orthographic(0, WIDTH, 0, HEIGHT, 0.0f, 100.0f);
 
 	/* free_null((void *)gomo->camera->projection);
 	free_null((void *)gomo->camera->view); */
@@ -134,7 +133,7 @@ void init_camera(gomo_t *gomo)
 
 	set_scale(gomo);
 	gomo->camera->options = 11; // 00001011 (see boolean options include/gomo.h)
-	gomo->camera->fov = 45.0f;
+	gomo->camera->fov = 90.0f;
 	gomo->camera->ah = RAD(10.0f);
 	gomo->camera->av = RAD(120.0f);
 	gomo->camera->gh = 0.0f;
