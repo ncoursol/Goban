@@ -91,9 +91,12 @@ vec3_t mult_mat4_vec3(float *m, vec3_t v)
 	return result;
 }
 
-void print_mat4(float *m)
+void print_mat4(float *m, char *name)
 {
-	printf("Matrix:\n");
+	if (name)
+		printf("Matrix %s\n", name);
+	else
+		printf("Matrix\n");
 	printf("%f %f %f %f\n", m[0], m[1], m[2], m[3]);
 	printf("%f %f %f %f\n", m[4], m[5], m[6], m[7]);
 	printf("%f %f %f %f\n", m[8], m[9], m[10], m[11]);

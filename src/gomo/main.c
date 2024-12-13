@@ -91,9 +91,9 @@ void set_new_camera_angles(gomo_t *gomo)
 		gomo->camera->av = PI - 0.05f;
 		glfwSetCursorPos(gomo->window, gomo->camera->ah / MSPEED, gomo->camera->av / MSPEED);
 	}
-	else if (tmp < 0.05f)
+	else if (tmp < 1.0f)
 	{
-		gomo->camera->av = 0.05f;
+		gomo->camera->av = 1.0f;
 		glfwSetCursorPos(gomo->window, gomo->camera->ah / MSPEED, gomo->camera->av / MSPEED);
 	}
 	else

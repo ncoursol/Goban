@@ -113,14 +113,14 @@ void camera(gomo_t *gomo, vec3_t center, vec3_t up)
 		free_null((void *)gomo->camera->mvp);
 	gomo->shaderID.mvpID = glGetUniformLocation(gomo->shader->shaderProgram, "MVP");
 	gomo->shaderID.orthoID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "ortho");
-	gomo->camera->projection = perspective(gomo->camera->fov, 4.0f / 3.0f, 0.1f, 100.0f);
+	gomo->camera->projection = perspective(gomo->camera->fov, 4.0f / 3.0f, 1.0f, 100.0f);
 	gomo->camera->view = lookAt(gomo->camera->eye, center, up);
 	gomo->camera->model = new_mat4_model();
 	gomo->camera->model[0] = gomo->camera->scale;
 	gomo->camera->model[5] = gomo->camera->scale;
 	gomo->camera->model[10] = gomo->camera->scale;
 	gomo->camera->mvp = prod_mat4(prod_mat4(gomo->camera->model, gomo->camera->view), gomo->camera->projection);
-	gomo->camera->ortho = orthographic(0, WIDTH, 0, HEIGHT, 0.0f, 100.0f);
+	gomo->camera->ortho = orthographic(0, WIDTH, 0, HEIGHT, 1.0f, 100.0f);
 	//gomo->camera->ortho = prod_mat4(gomo->camera->view, orthographic(0, WIDTH, 0, HEIGHT, 0.1f, 100.0f));
 
 	/* free_null((void *)gomo->camera->projection);
@@ -130,7 +130,6 @@ void camera(gomo_t *gomo, vec3_t center, vec3_t up)
 
 void init_camera(gomo_t *gomo)
 {
-	vec3_t eye;
 	vec3_t up;
 
 	set_scale(gomo);
@@ -152,10 +151,6 @@ void init_camera(gomo_t *gomo)
 		(gomo->camera->scale * (gomo->camera->max[2] + gomo->camera->min[2])) / 2};
 	gomo->camera->dist = 20;
 	up = (vec3_t){0, 1, 0};
-	eye = (vec3_t){
-		gomo->camera->dist * sinf(gomo->camera->av) * cosf(gomo->camera->ah),
-		gomo->camera->dist * sinf(gomo->camera->av) * sinf(gomo->camera->ah),
-		gomo->camera->dist * cosf(gomo->camera->av)};
 	glUseProgram(gomo->shader->shaderProgram);
 	glfwSetCursorPos(gomo->window, gomo->camera->ah, gomo->camera->av);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

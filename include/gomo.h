@@ -234,7 +234,7 @@ vec4_t mulv_mat4(float *m, vec4_t v);
 float *inv_mat4(float *m);
 vec4_t mult_mat4_vec4(float *m, vec4_t v);
 vec3_t mult_mat4_vec3(float *m, vec3_t v);
-void print_mat4(float *m);
+void print_mat4(float *m, char *name);
 
 // Vector3 fct
 GLfloat dot_vec3(vec3_t a, vec3_t b);
