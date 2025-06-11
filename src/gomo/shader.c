@@ -127,4 +127,8 @@ void init_shader(gomo_t *gomo)
 	load_shader(gomo, &vertexShader, "src/shaders/vertexHUD.glsl", GL_VERTEX_SHADER);
 	load_shader(gomo, &fragmentShader, "src/shaders/fragHUD.glsl", GL_FRAGMENT_SHADER);
 	init_shaderProgram(gomo, &gomo->shader->shaderProgramHUD, &vertexShader, &fragmentShader);
+
+	load_shader(gomo, &vertexShader, "src/shaders/vertexLine.glsl", GL_VERTEX_SHADER);
+	load_shader(gomo, &fragmentShader, "src/shaders/fragLine.glsl", GL_FRAGMENT_SHADER);
+	init_shaderProgram(gomo, &gomo->shader->shaderProgramLine, &vertexShader, &fragmentShader);
 }

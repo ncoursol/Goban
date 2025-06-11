@@ -146,12 +146,66 @@ void init_VAO(gomo_t *gomo)
 	glBindVertexArray(0);
 }
 
+void init_lineVAO(gomo_t *gomo)
+{
+	GLenum errCode;
+	/*
+	// display lines
+	for (int i = 0; i < 4; i++)
+	{
+		printf("line[%d]\t%f / %f / %f\t%f / %f / %f\t%f / %f / %f\n", i,
+			   gomo->lines[i].start.x, gomo->lines[i].start.y, gomo->lines[i].start.z,
+			   gomo->lines[i].end.x, gomo->lines[i].end.y, gomo->lines[i].end.z,
+			   gomo->lines[i].color.x, gomo->lines[i].color.y, gomo->lines[i].color.z);
+	}
+	*/
+	// VAO
+	glGenVertexArrays(1, &gomo->lineVAO);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 52, getErrorString(errCode));
+	glBindVertexArray(gomo->lineVAO);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 53, getErrorString(errCode));
+
+	// VBO
+	glGenBuffers(1, &gomo->lineVBO);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 54, getErrorString(errCode));
+	glBindBuffer(GL_ARRAY_BUFFER, gomo->lineVBO);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 55, getErrorString(errCode));
+	glBufferData(GL_ARRAY_BUFFER,
+				 gomo->nb_lines * 12 * sizeof(float),
+				 &gomo->lines_buffer[0],
+				 GL_STATIC_DRAW);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 56, getErrorString(errCode));
+
+	// Vertex format(Coordinate/Color): x1,y1,z1, r1, g1, b1
+
+	// Coordinate
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 57, getErrorString(errCode));
+	glEnableVertexAttribArray(0);
+	// Color
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+	if ((errCode = glGetError()) != GL_NO_ERROR)
+		exit_callback(gomo, 58, getErrorString(errCode));
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
 void init_VAOs(gomo_t *gomo)
 {
 	gomo->obj = gomo->obj->first;
 	init_VAO(gomo);
 	gomo->obj = gomo->obj->next;
 	init_VAO(gomo);
+	init_lineVAO(gomo);
+
 }
 
 void init_face_data(gomo_t *gomo, int nb_buff)
@@ -269,6 +323,7 @@ void init_all(gomo_t *gomo)
 	init_gomo(gomo);
 	init_board(gomo);
 	init_obj(gomo);
+	init_lines(gomo);
 	gomo->obj->first = gomo->obj;
 	load_obj(gomo, "resources/goban.obj");
 	new_obj(gomo);

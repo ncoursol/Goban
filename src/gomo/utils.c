@@ -114,3 +114,24 @@ data_t	*data_copy(data_t *a, data_t *b) {
 	a->next = NULL;
 	return (a);
 }
+
+int		find_closest_case(gomo_t *gomo, vec3_t point)
+{
+	int closest_case = 0;
+	float shortest_dist = INFINITY;
+	float tmp_dist = 0;
+
+	for (int i = 0; i < 19 * 19; i++)
+	{
+		tmp_dist = dist_btw_two_vec3(gomo->board[i].pos, point);
+		if (!gomo->board[i].state && tmp_dist < shortest_dist)
+		{
+			shortest_dist = dist_btw_two_vec3(gomo->board[i].pos, point);
+			closest_case = i;
+		}
+	}
+	// if the closest case is too far from the point, return -1
+	if (shortest_dist > 10.0f)
+		return -1;
+	return closest_case;
+}
