@@ -131,7 +131,7 @@ int		find_closest_case(gomo_t *gomo, vec3_t point)
 		}
 	}
 	// if the closest case is too far from the point, return -1
-	if (shortest_dist > 10.0f)
+	if (shortest_dist > 1.0f)
 		return -1;
 	return closest_case;
 }

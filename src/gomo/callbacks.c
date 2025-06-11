@@ -124,42 +124,16 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 	(void)mods;
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && (action == GLFW_PRESS || action == GLFW_RELEASE))
 	{
-		double xpos, ypos;
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
-		if (action == GLFW_PRESS && gomo->nb_stones < 361 + gomo->tmp_stone)
+		if (action == GLFW_PRESS && gomo->nb_stones < 361)
 		{
-			ray_t ray;
-			hit_t res;
-			glfwGetCursorPos(gomo->window, &xpos, &ypos);
-			ray = createRay(gomo, xpos, ypos);
-			gomo->obj = gomo->obj->first;
-			if (intersect(ray, &res))
-			{
-				if (gomo->tmp_stone)
-				{
-					gomo->nb_stones--;
-					gomo->tmp_stone = 0;
-				}
-				gomo->nb_stones++;
-				gomo->obj = gomo->obj->next;
-
-				int closest_case = find_closest_case(gomo, res.point);
-				if (closest_case > 0 && gomo->tmp_stone == 0) {
-					gomo->board[closest_case].state = 1;
-					gomo->stone[gomo->nb_stones - 1].pos = gomo->board[closest_case].pos;
-					gomo->stone[gomo->nb_stones - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.0f, 0.0f, 0.0f} : (vec3_t){1.0f, 1.0f, 1.0f};
-					if (gomo->camera->options >> 0 & 1) {
-						draw_line(gomo, gomo->camera->eye, (vec3_t){res.point.x, res.point.y + 5.92f, res.point.z}, (vec3_t){0.0f, 1.0f, 0.0f});
-						draw_line(gomo, gomo->camera->eye, (vec3_t){gomo->board[closest_case].pos.x, gomo->board[closest_case].pos.y + 5.92f, gomo->board[closest_case].pos.z}, gomo->stone[gomo->nb_stones - 1].color);
-					}
-					updateData(gomo);
-				}
+			if (gomo->tmp_stone && !gomo->board[gomo->tmp_stone - 1].state) {
+				gomo->board[gomo->tmp_stone - 1].state = 1;
+				gomo->stone[gomo->nb_stones - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.0f, 0.0f, 0.0f} : (vec3_t){1.0f, 1.0f, 1.0f};
+				gomo->tmp_stone = 0;
 			}
-			else
-				printf("No hit\n");
 		}
-	}
-	if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))
+	} else if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))
 	{
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
 		if (!(gomo->camera->options >> 8 & 1))
@@ -196,7 +170,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 {
 	gomo_t *gomo = glfwGetWindowUserPointer(window);
-	if (gomo->nb_stones < 361 + gomo->tmp_stone)
+	if (gomo->nb_stones < 361)
 	{
 		ray_t ray;
 		hit_t res;
@@ -204,23 +178,21 @@ void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 		gomo->obj = gomo->obj->first;
 		if (intersect(ray, &res))
 		{
-			if (!gomo->tmp_stone)
-			{
-				gomo->nb_stones++;
-				gomo->tmp_stone = 1;
-			}
 			gomo->obj = gomo->obj->next;
 			int closest_case = find_closest_case(gomo, res.point);
-			if (closest_case >= 0) {
-				gomo->stone[gomo->nb_stones - 1].pos = gomo->board[closest_case].pos;
-				gomo->stone[gomo->nb_stones - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.2f, 0.2f, 0.2f} : (vec3_t){0.8f, 0.8f, 0.8f};
-				updateData(gomo);
-			} else if (gomo->tmp_stone)
+			if (closest_case >= 0 && gomo->board[closest_case].state == 0)
 			{
-				gomo->nb_stones--;
+				if (!gomo->tmp_stone) {
+					gomo->nb_stones++;
+				}
+				gomo->tmp_stone = closest_case + 1;
+				gomo->stone[gomo->nb_stones - 1].pos = gomo->board[closest_case].pos;
+				gomo->stone[gomo->nb_stones - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.3f, 0.3f, 0.3f} : (vec3_t){0.9f, 0.9f, 0.9f};
+			} else if (gomo->tmp_stone) {
 				gomo->tmp_stone = 0;
-				updateData(gomo);
+				gomo->nb_stones--;
 			}
+			updateData(gomo);
 		}
 	}
 }
