@@ -72,55 +72,51 @@ void updateData(gomo_t *gomo)
 
 int intersect(ray_t ray, hit_t *intersection)
 {
-	float dDotN = dot_vec3(ray.direction, (vec3_t){0.0f, 1.0f, 0.0f});
+    float dDotN = dot_vec3(ray.direction, (vec3_t){0.0f, 1.0f, 0.0f});
 
-	// check if the ray is embedded to the plane
-	if (dDotN == 0.0f)
-		return 0;
+    // Use epsilon for floating-point comparison
+    if (fabsf(dDotN) < 1e-6f)
+        return 0;
 
-	float t = -ray.origin.y / ray.direction.y;
+    float t = (5.7f - ray.origin.y) / ray.direction.y;
 
-	// Calculate intersection point
-	intersection->point.x = ray.origin.x + t * ray.direction.x;
-	intersection->point.y = 0; // Plane is at y = 0
-	intersection->point.z = ray.origin.z + t * ray.direction.z;
+    // Ignore intersections behind the ray origin
+    if (t < 0)
+        return 0;
 
-	return 1;
+    intersection->point.x = ray.origin.x + t * ray.direction.x;
+    intersection->point.y = -0.26f; // Goban height
+    intersection->point.z = ray.origin.z + t * ray.direction.z;
+
+    return 1;
 }
 
 ray_t createRay(gomo_t *gomo, double xpos, double ypos)
 {
-	ray_t ray;
-	vec3_t direction;
-	char tmp[200];
+    ray_t ray;
+    char tmp[200];
 
-	float aspect_ratio = (float)WIDTH / (float)HEIGHT;
-	float ndcX = (xpos + 0.5f) / WIDTH;
-	float ndcY = (ypos + 0.5f) / HEIGHT;
-	float screenX = 2.0f * ndcX - 1.0f;
-	float screenY = 1.0f - 2.0f * ndcY;
-	float normalizedX = screenX * aspect_ratio * tanf(RAD(gomo->camera->fov) / 2.0f);
-	float normalizedY = screenY * tanf(RAD(gomo->camera->fov) / 2.0f);
+    // Convert screen coordinates to normalized device coordinates (NDC)
+    float ndcX = (2.0f * (float)xpos) / (float)WIDTH - 1.0f;
+    float ndcY = 1.0f - (2.0f * (float)ypos) / (float)HEIGHT;
+	vec4_t ray_clip = {ndcX, ndcY, -1.0f, 1.0f};
+	vec4_t ray_eye = mulv_mat4(inv_mat4(gomo->camera->projection), ray_clip);
+	ray_eye = (vec4_t){ray_eye.x, ray_eye.y, -1.0f, 0.0f};
+	vec4_t ray_world = mulv_mat4(inv_mat4(gomo->camera->view), ray_eye);
+	ray.direction = norm_vec3((vec3_t){ray_world.x, ray_world.y, ray_world.z});
+	
+    ray.origin = gomo->camera->eye;
+	ray.direction = norm_vec3(ray.direction); // Normalize the direction vector
 
-	ray.origin = gomo->camera->eye;
-	vec4_t rayClip = {normalizedX, normalizedY, -1.0f, 1.0f};
-	vec4_t rayEye = mult_mat4_vec4(inv_mat4(gomo->camera->projection), rayClip);
-	rayEye = (vec4_t){rayEye.x, rayEye.y, -1.0f, 0.0f};
-	vec4_t rayWorld = mult_mat4_vec4(gomo->camera->view, rayEye);
-	direction = norm_vec3((vec3_t){rayWorld.x, rayWorld.y, rayWorld.z});
-	ray.direction = direction;
+    // Debug text
+    sprintf(tmp, "mouse NDC: x[%f] y[%f]", ndcX, ndcY);
+    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 50, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 2);
+    sprintf(tmp, "origin    : x[%f] y[%f] z[%f]", ray.origin.x, ray.origin.y, ray.origin.z);
+    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 80, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 3);
+    sprintf(tmp, "direction : x[%f] y[%f] z[%f]", ray.direction.x, ray.direction.y, ray.direction.z);
+    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 110, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 4);
 
-	sprintf(tmp, "mouse :  x[%f] y[%f]", normalizedX, normalizedY);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 50, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 2);
-	sprintf(tmp, "origin    : x[%f] y[%f] z[%f]", ray.origin.x, ray.origin.y, ray.origin.z);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 80, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 3);
-	sprintf(tmp, "direction : x[%f] y[%f] z[%f]", ray.direction.x, ray.direction.y, ray.direction.z);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 110, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 4);
-
-	sprintf(tmp, "x[%f] y[%f] ratio[%f]", normalizedX, normalizedY, aspect_ratio);
-	add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 140, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 5);
-
-	return ray;
+    return ray;
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
@@ -146,23 +142,18 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 				}
 				gomo->nb_stones++;
 				gomo->obj = gomo->obj->next;
-				int closest_case = 0;
-				float shortest_dist = INFINITY;
-				float tmp_dist = 0;
-				for (int i = 0; i < 19 * 19; i++)
-				{
-					tmp_dist = dist_btw_two_vec3(gomo->board[i].pos, res.point);
 
-					if (!gomo->board[i].state && tmp_dist < shortest_dist)
-					{
-						shortest_dist = dist_btw_two_vec3(gomo->board[i].pos, res.point);
-						closest_case = i;
+				int closest_case = find_closest_case(gomo, res.point);
+				if (closest_case > 0 && gomo->tmp_stone == 0) {
+					gomo->board[closest_case].state = 1;
+					gomo->stone[gomo->nb_stones - 1].pos = gomo->board[closest_case].pos;
+					gomo->stone[gomo->nb_stones - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.0f, 0.0f, 0.0f} : (vec3_t){1.0f, 1.0f, 1.0f};
+					if (gomo->camera->options >> 0 & 1) {
+						draw_line(gomo, gomo->camera->eye, (vec3_t){res.point.x, res.point.y + 5.92f, res.point.z}, (vec3_t){0.0f, 1.0f, 0.0f});
+						draw_line(gomo, gomo->camera->eye, (vec3_t){gomo->board[closest_case].pos.x, gomo->board[closest_case].pos.y + 5.92f, gomo->board[closest_case].pos.z}, gomo->stone[gomo->nb_stones - 1].color);
 					}
+					updateData(gomo);
 				}
-				gomo->board[closest_case].state = 1;
-				gomo->stone[gomo->nb_stones - 1].pos = gomo->board[closest_case].pos;
-				gomo->stone[gomo->nb_stones - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.0f, 0.0f, 0.0f} : (vec3_t){1.0f, 1.0f, 1.0f};
-				updateData(gomo);
 			}
 			else
 				printf("No hit\n");
@@ -196,7 +187,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 		if (!(TOP_VIEW))
 		{
 			float zoom = yoffset * (log(gomo->camera->dist + 7.5) - 2);
-			if (gomo->camera->dist - zoom >= 0 && gomo->camera->dist - zoom <= 100)
+			if (gomo->camera->dist - zoom >= 0 && gomo->camera->dist - zoom <= 150)
 				gomo->camera->dist -= zoom;
 		}
 	}
@@ -219,9 +210,17 @@ void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 				gomo->tmp_stone = 1;
 			}
 			gomo->obj = gomo->obj->next;
-			gomo->stone[gomo->nb_stones - 1].pos = res.point;
-			gomo->stone[gomo->nb_stones - 1].color = (vec3_t){1.0f, 0.0f, 0.0f};
-			updateData(gomo);
+			int closest_case = find_closest_case(gomo, res.point);
+			if (closest_case >= 0) {
+				gomo->stone[gomo->nb_stones - 1].pos = gomo->board[closest_case].pos;
+				gomo->stone[gomo->nb_stones - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.2f, 0.2f, 0.2f} : (vec3_t){0.8f, 0.8f, 0.8f};
+				updateData(gomo);
+			} else if (gomo->tmp_stone)
+			{
+				gomo->nb_stones--;
+				gomo->tmp_stone = 0;
+				updateData(gomo);
+			}
 		}
 	}
 }
@@ -235,7 +234,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
 		if (key == GLFW_KEY_ESCAPE)
 			glfwSetWindowShouldClose(window, GLFW_TRUE);
-		else if (key == GLFW_KEY_F1)
+		else if (key == GLFW_KEY_H)
 			gomo->camera->options ^= 1 << 0;
 		else if (key == GLFW_KEY_W)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

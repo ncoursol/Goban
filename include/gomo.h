@@ -27,12 +27,12 @@
 #define WIDTH 1280 // 1024
 #define HEIGHT 960 // 768
 
-#define NB_TEXT 10
+#define NB_TEXT 1000
 
 #define MSPEED 0.005f // Mouse speed
 #define PI 3.14159265359
 #define V_BUFF_SIZE 20000
-#define FPS gomo.camera->options >> 0 & 1		  // Display FPS (yes/no)
+#define HUD gomo.camera->options >> 0 & 1		  // Display HUD (yes/no)
 #define LEFT_MOUSE gomo->camera->options >> 5 & 1 // left mouse button press (yes/no)
 #define TOP_VIEW gomo->camera->options >> 8 & 1	  // top view (yes/no)
 #define RAY_T_MIN 0.0001f						  // Minimum ray t value
@@ -112,6 +112,13 @@ typedef struct charact_s
 	unsigned char *bitmap;
 } charact_t;
 
+typedef struct line_s
+{
+	vec3_t start; // Start point of the line
+	vec3_t end;   // End point of the line
+	vec3_t color; // Color of the line
+} line_t;
+
 typedef struct font_s
 {
 	char *path;
@@ -170,13 +177,13 @@ typedef struct shaderID_s
 	GLuint textureID2;	// Texture ID for the second texture
 	GLuint mvpID;		// MVP ID
 	GLuint orthoID;		// Ortho ID
-	GLuint mvp_stoneID; // MVP ID for instances go stones
 } shaderID_t;
 
 typedef struct shader_s
 {
 	unsigned int shaderProgram;		// Shader program
 	unsigned int shaderProgramHUD;	// Shader program for HUD
+	unsigned int shaderProgramLine;	// Shader program for Lines
 } shader_t;
 
 typedef struct gomo_s
@@ -186,14 +193,19 @@ typedef struct gomo_s
 	camera_t *camera;
 	shaderID_t shaderID;
 	FT_Library ft;
+	line_t *lines; // Lines to render
+	float *lines_buffer; // Buffer for lines
 	font_t *fonts;
 	text_t *text;
 	GLuint grid_text;
 	GLuint wood_text;
 	instance_t *stone;
+	unsigned int lineVAO; // Vertex Array Object for lines
+	unsigned int lineVBO; // Vertex Buffer Object for lines
 	unsigned int instanceVBO; // Vertex Buffer Object for instances go stones
 	grid_t *board;
 	int nb_stones;
+	int nb_lines; // Number of lines to render
 	int tmp_stone;
 	hit_t tmp_hit;
 	obj_t *obj;
@@ -215,6 +227,8 @@ float *float_copy(gomo_t *gomo, float *dest, int len, char *line, int *nb, int *
 char *string_copy(gomo_t *gomo, char *dest, char *line);
 data_t *data_copy(data_t *a, data_t *b);
 int count_space(char *a);
+int find_closest_case(gomo_t *gomo, vec3_t point);
+
 
 // Init fct
 void init_all(gomo_t *gomo);
@@ -222,6 +236,7 @@ void init_camera(gomo_t *gomo);
 void init_shader(gomo_t *gomo);
 void init_obj(gomo_t *gomo);
 void init_face_data(gomo_t *gomo, int nb_buff);
+void init_lines(gomo_t *gomo);
 void load_obj(gomo_t *gomo, char *path);
 void load_textures(gomo_t *gomo);
 void load_fonts(gomo_t *gomo);
@@ -252,9 +267,12 @@ void create_obj(gomo_t *gomo, float *vertices, float *normals, float *textures);
 // Render fct
 void camera(gomo_t *gomo, vec3_t center, vec3_t up);
 void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, float scale, vec3_t color, int id);
+void draw_line(gomo_t *gomo, vec3_t start, vec3_t end, vec3_t color);
 void render_all_text(gomo_t *gomo);
+void render_lines(gomo_t *gomo);
 
 // Exit fct
+void free_lines(gomo_t *gomo);
 void free_all(gomo_t *gomo, int step);
 void free_null(void *a);
 

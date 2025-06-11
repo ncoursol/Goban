@@ -26,7 +26,7 @@ void set_new_eye(gomo_t *gomo, vec3_t up)
 	{
 		av = PI - 0.000005f;
 		ah = 0.0f;
-		d = 15;
+		d = 42.0f;
 	}
 	if (av < 1.535f)
 		av = 1.535f;
@@ -45,37 +45,6 @@ void set_new_eye(gomo_t *gomo, vec3_t up)
 			(d * -sinf(av) * sinf(ah)) + gomo->camera->center.z + gomo->camera->gap.z,
 		};
 	}
-}
-
-vec3_t set_new_center(gomo_t *gomo, vec3_t up)
-{
-	vec3_t ret = (vec3_t){0, 0, 0};
-	double xpos, ypos;
-	float av, ah;
-	float gv, gh;
-
-	av = gomo->camera->av - (PI / 2);
-	ah = gomo->camera->ah - (PI / 2);
-	glfwGetCursorPos(gomo->window, &xpos, &ypos);
-	gh = xpos * MSPEED * (gomo->camera->dist / 10);
-	gv = ypos * MSPEED * (gomo->camera->dist / 10);
-	if (up.z)
-	{
-		ret = (vec3_t){
-			gh * cosf(ah) + gv * -sinf(av) * sinf(ah),
-			gh * sinf(ah) + gv * sinf(av) * cosf(ah),
-			gv * cosf(av)};
-	}
-	else
-	{
-		ret = (vec3_t){
-			gh * -cosf(ah) + gv * -sinf(av) * sinf(ah),
-			gv * cosf(av),
-			gh * -sinf(ah) + gv * sinf(av) * cosf(ah)};
-	}
-	gomo->camera->gh = gh;
-	gomo->camera->gv = gv;
-	return (ret);
 }
 
 void set_new_camera_angles(gomo_t *gomo)
@@ -117,6 +86,7 @@ void updateCamera(gomo_t *gomo)
 		gomo->camera->center.y + gomo->camera->gap.y,
 		gomo->camera->center.z + gomo->camera->gap.z};
 	camera(gomo, new_center, up);
+
 }
 
 int main(void)
@@ -150,10 +120,13 @@ int main(void)
 			strcat(buff2, " ms/f");
 			nb_frames = 0;
 			last_t += 1.0;
+			add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0);
+			add_text_to_render(&gomo, "font_text2", buff2, (vec3_t){70, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 1);
 		}
-		add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0);
-		add_text_to_render(&gomo, "font_text2", buff2, (vec3_t){70, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 1);
 
+		// Render lines
+		if (HUD)
+			render_lines(&gomo);
 		// Draw 3D objects
 		glUseProgram(gomo.shader->shaderProgram);
 		glUniformMatrix4fv(gomo.shaderID.mvpID, 1, GL_FALSE, &gomo.camera->mvp[0]);
@@ -170,7 +143,6 @@ int main(void)
 			}
 			else
 			{
-				glBindTexture(GL_TEXTURE_2D, gomo.grid_text);
 				glBindTexture(GL_TEXTURE_2D, gomo.wood_text);
 				glDrawArrays(GL_TRIANGLES, 0, gomo.obj->nb_vertices);
 			}
@@ -180,8 +152,9 @@ int main(void)
 		}
 		glBindVertexArray(0);
 
+
 		// Render all text
-		if (FPS)
+		if (HUD)
 			render_all_text(&gomo);
 
 		glfwSwapBuffers(gomo.window);

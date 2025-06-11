@@ -77,6 +77,8 @@ void	free_all(gomo_t *gomo, int step)
 			free_obj(gomo);
 		free_shader(gomo);
 		free_glfw(gomo, step);
+		free_lines(gomo);
+		free_null((void*)gomo->lines);
 	}
 	free_gomo(gomo);
 }
