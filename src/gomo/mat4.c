@@ -70,17 +70,6 @@ vec4_t mulv_mat4(float *m, vec4_t v)
 	return result;
 }
 
-vec4_t mult_mat4_vec4(float *m, vec4_t v)
-{
-	vec4_t result;
-
-	result.x = m[0] * v.x + m[1] * v.y + m[2] * v.z + m[3] * v.w;
-	result.y = m[4] * v.x + m[5] * v.y + m[6] * v.z + m[7] * v.w;
-	result.z = m[8] * v.x + m[9] * v.y + m[10] * v.z + m[11] * v.w;
-	result.w = m[12] * v.x + m[13] * v.y + m[14] * v.z + m[15] * v.w;
-	return result;
-}
-
 vec3_t mult_mat4_vec3(float *m, vec3_t v)
 {
 	vec3_t result;
