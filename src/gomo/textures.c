@@ -14,11 +14,38 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../include/stb_image.h"
 
+typedef struct {
+	const char *path;
+	const char *uniform_name;
+	int 		blend; // 1 for RGBA, 0 for RGB
+} texture_info_t;
+
+texture_info_t textures_path[NB_TEXTURES] = {
+	{"resources/room_textures/grid.png", "grid_text", 1},
+	{"resources/room_textures/wood.jpeg", "wood_text", 0},
+	{"resources/room_textures/blk_stones.jpeg", "blk_stones_text", 0},
+	{"resources/room_textures/containers.jpeg", "containers_text", 0},
+	{"resources/room_textures/floor_1.jpeg", "floor_1_text", 0},
+	{"resources/room_textures/floor_2.png", "floor_2_text", 0},
+	{"resources/room_textures/footer.jpeg", "footer_text", 0},
+	{"resources/room_textures/goboard.jpeg", "goboard_text", 0},
+	{"resources/room_textures/house.jpeg", "house_text", 0},
+	{"resources/room_textures/gogrid.png", "gogrid_text", 1},
+	{"resources/room_textures/lantern.jpeg", "lantern_text", 0},
+	{"resources/room_textures/roof.jpeg", "roof_text", 0},
+	{"resources/room_textures/wall.jpeg", "wall_text", 0},
+	{"resources/room_textures/wht_stones.jpeg", "wht_stones_text", 0},
+};
+
 GLuint load_image(char *path, int blend)
 {
 	int width, height, nrChannels;
 	unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
-
+	if (!data)
+	{
+		fprintf(stderr, "Failed to load texture at path: %s\n", path);
+		return 0;
+	}
 	GLuint textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
@@ -44,17 +71,18 @@ GLuint load_image(char *path, int blend)
 	return textureID;
 }
 
-void	load_textures(gomo_t *gomo) {
+void bind_texture(GLuint texture, GLuint shaderProgram, const char *uniformName, int textureUnit) {
+    GLuint loc = glGetUniformLocation(shaderProgram, uniformName);
+    glActiveTexture(GL_TEXTURE0 + textureUnit);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(loc, textureUnit);
+}
 
-	gomo->grid_text = load_image("resources/grid.png", 1);
-	gomo->shaderID.textureID1 = glGetUniformLocation(gomo->shader->shaderProgram, "grid_text");
-	gomo->wood_text = load_image("resources/wood.jpeg", 0);
-	gomo->shaderID.textureID2 = glGetUniformLocation(gomo->shader->shaderProgram, "wood_text");
-	
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, gomo->grid_text);
-	glUniform1i(gomo->shaderID.textureID1, 0);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, gomo->wood_text);
-	glUniform1i(gomo->shaderID.textureID2, 1);
+void	load_textures(gomo_t *gomo) {
+    for (int i = 0; i < NB_TEXTURES; ++i) {
+        gomo->textures[i] = load_image((char*)textures_path[i].path, textures_path[i].blend);
+    }
+    for (int i = 0; i < NB_TEXTURES; ++i) {
+		bind_texture(gomo->textures[i], gomo->shader->shaderProgram, textures_path[i].uniform_name, i);
+    }
 }

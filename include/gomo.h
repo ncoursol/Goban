@@ -31,11 +31,19 @@
 
 #define MSPEED 0.005f // Mouse speed
 #define PI 3.14159265359
-#define V_BUFF_SIZE 20000
+#define V_BUFF_SIZE 60000
 #define HUD gomo.camera->options >> 0 & 1		  // Display HUD (yes/no)
 #define LEFT_MOUSE gomo->camera->options >> 5 & 1 // left mouse button press (yes/no)
 #define TOP_VIEW gomo->camera->options >> 8 & 1	  // top view (yes/no)
 #define RAY_T_MIN 0.0001f						  // Minimum ray t value
+
+#define NB_TEXTURES 14 // Number of textures
+
+#define MAX_MOVES 500
+#define MAX_NAME_LEN 64
+#define MAX_EVENT_LEN 128
+#define MAX_RESULT_LEN 16
+#define MAX_DATE_LEN 16
 
 #define ABS(x) (x >= 0 ? x : -x)
 #define RAD(x) (x * 0.0174533f)
@@ -82,6 +90,13 @@ typedef struct instance_s
 	vec3_t color;
 } instance_t;
 
+typedef struct move_s
+{
+	unsigned int nb;
+	unsigned int id;
+	vec3_t color;
+} move_t;
+
 typedef struct text_s
 {
 	int id;
@@ -111,6 +126,21 @@ typedef struct charact_s
 	int bearing_y;
 	unsigned char *bitmap;
 } charact_t;
+
+typedef struct game_data_s
+{
+    char event[MAX_EVENT_LEN];
+    char round[MAX_RESULT_LEN];
+    char black_player[MAX_NAME_LEN];
+    char black_rank[MAX_NAME_LEN];
+    char white_player[MAX_NAME_LEN];
+    char white_rank[MAX_NAME_LEN];
+    char komi[MAX_RESULT_LEN];
+    char result[MAX_RESULT_LEN];
+    char date[MAX_DATE_LEN];
+	move_t *moves;
+	unsigned int max_move;
+} game_data_t;
 
 typedef struct line_s
 {
@@ -173,8 +203,9 @@ typedef struct obj_s // Chained list of each object of the scene
 
 typedef struct shaderID_s
 {
-	GLuint textureID1;	// Texture ID for the first texture
-	GLuint textureID2;	// Texture ID for the second texture
+	GLuint textureID1;
+	GLuint textureID2;
+
 	GLuint mvpID;		// MVP ID
 	GLuint orthoID;		// Ortho ID
 } shaderID_t;
@@ -197,16 +228,17 @@ typedef struct gomo_s
 	float *lines_buffer; // Buffer for lines
 	font_t *fonts;
 	text_t *text;
-	GLuint grid_text;
-	GLuint wood_text;
+	GLuint textures[NB_TEXTURES]; // Textures
 	instance_t *stone;
 	unsigned int lineVAO; // Vertex Array Object for lines
 	unsigned int lineVBO; // Vertex Buffer Object for lines
 	unsigned int instanceVBO; // Vertex Buffer Object for instances go stones
+	game_data_t *game_data;
 	grid_t *board;
 	int nb_stones;
 	int nb_lines; // Number of lines to render
 	int tmp_stone;
+	unsigned int cursor;
 	hit_t tmp_hit;
 	obj_t *obj;
 } gomo_t;
@@ -228,6 +260,7 @@ char *string_copy(gomo_t *gomo, char *dest, char *line);
 data_t *data_copy(data_t *a, data_t *b);
 int count_space(char *a);
 int find_closest_case(gomo_t *gomo, vec3_t point);
+int read_sgf_game(gomo_t *gomo, char *filename);
 
 
 // Init fct

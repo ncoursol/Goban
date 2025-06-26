@@ -58,6 +58,13 @@ void	free_obj(gomo_t *gomo)
 	}
 }
 
+void	free_textures(gomo_t *gomo) {
+    for (int i = 0; i < NB_TEXTURES; ++i) {
+        if (gomo->textures[i])
+            glDeleteTextures(1, &gomo->textures[i]);
+    }
+}
+
 void	free_gomo(gomo_t *gomo)
 {
 	free_null((void*)gomo->obj);
@@ -69,10 +76,8 @@ void	free_all(gomo_t *gomo, int step)
 {
 	if (step > 5) {
 		free_null((void*)gomo->camera->mvp);
-		if (gomo->grid_text)
-			glDeleteTextures(1, &gomo->grid_text);
-		if (gomo->wood_text)
-			glDeleteTextures(1, &gomo->wood_text);
+		free_textures(gomo);
+		
 		if (gomo->obj)
 			free_obj(gomo);
 		free_shader(gomo);

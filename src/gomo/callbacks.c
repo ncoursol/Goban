@@ -44,10 +44,29 @@ void exit_callback(gomo_t *gomo, int state, char *description)
 	exit(1);
 }
 
+void update_stones(gomo_t *gomo)
+{
+	int i = 0;
+	int index = 0;
+
+	for (i = 0; i < 19 * 19; i++)
+	{
+		if (gomo->board[i].state == 2 && !gomo->tmp_stone)
+			gomo->board[i].state = 0;
+		else if (gomo->board[i].state) {
+			gomo->stone[index].pos = gomo->board[i].pos;
+			gomo->stone[index].color = gomo->board[i].color;
+			index++;
+		}
+	}
+	gomo->nb_stones = index;
+}
+
 void updateData(gomo_t *gomo)
 {
 	GLenum errCode;
 
+	update_stones(gomo);
 	gomo->obj = gomo->obj->first->next;
 	glBindVertexArray(gomo->obj->VAO);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
@@ -127,9 +146,9 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
 		if (action == GLFW_PRESS && gomo->nb_stones < 361)
 		{
-			if (gomo->tmp_stone && !gomo->board[gomo->tmp_stone - 1].state) {
+			if (gomo->tmp_stone && (!gomo->board[gomo->tmp_stone - 1].state || gomo->board[gomo->tmp_stone - 1].state == 2)) {
 				gomo->board[gomo->tmp_stone - 1].state = 1;
-				gomo->stone[gomo->nb_stones - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.0f, 0.0f, 0.0f} : (vec3_t){1.0f, 1.0f, 1.0f};
+				gomo->board[gomo->tmp_stone - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.0f, 0.0f, 0.0f} : (vec3_t){1.0f, 1.0f, 1.0f};
 				gomo->tmp_stone = 0;
 			}
 		}
@@ -182,18 +201,35 @@ void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 			int closest_case = find_closest_case(gomo, res.point);
 			if (closest_case >= 0 && gomo->board[closest_case].state == 0)
 			{
-				if (!gomo->tmp_stone) {
-					gomo->nb_stones++;
+				if (gomo->tmp_stone && gomo->tmp_stone - 1 != closest_case) {
+					gomo->board[gomo->tmp_stone - 1].state = 0;
+					gomo->board[gomo->tmp_stone - 1].color = (vec3_t){1.0f, 0.0f, 1.0f};
 				}
 				gomo->tmp_stone = closest_case + 1;
-				gomo->stone[gomo->nb_stones - 1].pos = gomo->board[closest_case].pos;
-				gomo->stone[gomo->nb_stones - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.3f, 0.3f, 0.3f} : (vec3_t){0.9f, 0.9f, 0.9f};
-			} else if (gomo->tmp_stone) {
+				gomo->board[closest_case].state = 2;
+				gomo->board[closest_case].color = gomo->nb_stones % 2 ? (vec3_t){0.5f, 0.5f, 0.5f} : (vec3_t){0.8f, 0.8f, 0.8f};
+			} else if (closest_case < 0 && gomo->tmp_stone) {
+				gomo->board[gomo->tmp_stone - 1].state = 0;
+				gomo->board[gomo->tmp_stone - 1].color = (vec3_t){1.0f, 0.0f, 1.0f};
 				gomo->tmp_stone = 0;
-				gomo->nb_stones--;
 			}
 			updateData(gomo);
 		}
+	}
+}
+
+void move_cursor(gomo_t *gomo, unsigned int type)
+{
+	if (type && gomo->cursor < gomo->game_data->max_move - 1) {
+		gomo->cursor++;
+		gomo->board[gomo->game_data->moves[gomo->cursor].id].state = 1;
+		gomo->board[gomo->game_data->moves[gomo->cursor].id].color = gomo->game_data->moves[gomo->cursor].color;
+		updateData(gomo);
+	} else if (!type && gomo->cursor > 0) {
+		gomo->board[gomo->game_data->moves[gomo->cursor].id].state = 0;
+		gomo->board[gomo->game_data->moves[gomo->cursor].id].color = (vec3_t){1.0f, 0.0f, 1.0f};
+		gomo->cursor--;
+		updateData(gomo);
 	}
 }
 
@@ -214,6 +250,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		else if (key == GLFW_KEY_P)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		else if (key == GLFW_KEY_Q)
+			move_cursor(gomo, 0);
+		else if (key == GLFW_KEY_E)
+			move_cursor(gomo, 1);
 		else if (key == GLFW_KEY_SPACE)
 		{
 			free_null((void *)gomo->camera->mvp);

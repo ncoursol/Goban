@@ -124,7 +124,7 @@ int		find_closest_case(gomo_t *gomo, vec3_t point)
 	for (int i = 0; i < 19 * 19; i++)
 	{
 		tmp_dist = dist_btw_two_vec3(gomo->board[i].pos, point);
-		if (!gomo->board[i].state && tmp_dist < shortest_dist)
+		if (gomo->board[i].state != 1 && tmp_dist < shortest_dist)
 		{
 			shortest_dist = dist_btw_two_vec3(gomo->board[i].pos, point);
 			closest_case = i;
