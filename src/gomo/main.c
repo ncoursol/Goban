@@ -143,13 +143,14 @@ int main(void)
 			}
 			else
 			{
-				glBindTexture(GL_TEXTURE_2D, gomo.wood_text);
+				glBindTexture(GL_TEXTURE_2D, gomo.textures[1]);
 				glDrawArrays(GL_TRIANGLES, 0, gomo.obj->nb_vertices);
 			}
 			if (gomo.obj->next == NULL)
 				break;
 			gomo.obj = gomo.obj->next;
 		}
+
 		glBindVertexArray(0);
 
 

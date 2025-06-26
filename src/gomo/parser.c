@@ -74,7 +74,6 @@ void load_obj(gomo_t *gomo, char *argv)
 		exit_callback(gomo, 2, "textures malloc failed");
 	if (!(normals = (float *)malloc(sizeof(float) * V_BUFF_SIZE)))
 		exit_callback(gomo, 3, "normals malloc failed");
-
 	while ((read = getline(&line, &len, fp)) != (size_t)(-1))
 	{
 		if (line != NULL && line[0] != '#')

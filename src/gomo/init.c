@@ -285,6 +285,7 @@ void init_gomo(gomo_t *gomo)
 	gomo->shader = NULL;
 	gomo->camera = NULL;
 	gomo->tmp_stone = 0;
+	gomo->cursor = 0;
 	gomo->tmp_hit = (hit_t){0, 0, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}};
 	if (!(gomo->obj = (obj_t *)malloc(sizeof(obj_t))))
 		exit_callback(gomo, 0, "object malloc failed");
@@ -302,9 +303,14 @@ void init_gomo(gomo_t *gomo)
 		exit_callback(gomo, 7, "fonts malloc failed");
 	if (!(gomo->text = (text_t *)malloc(sizeof(text_t) * NB_TEXT)))
 		exit_callback(gomo, 8, "text malloc failed");
+	if (!(gomo->game_data = (game_data_t *)malloc(sizeof(game_data_t))))
+		exit_callback(gomo, 9, "game data malloc failed");
+	if (!(gomo->game_data->moves = (move_t *)malloc(sizeof(move_t) * MAX_MOVES)))
+		exit_callback(gomo, 10, "game data move malloc failed");
+
 }
 
-void	new_obj(gomo_t *gomo) {
+void new_obj(gomo_t *gomo) {
 	obj_t *new;
 	obj_t *first;
 
@@ -316,6 +322,10 @@ void	new_obj(gomo_t *gomo) {
 	gomo->obj = gomo->obj->next;
 	init_obj(gomo);
 	gomo->obj->first = first;
+}
+
+void read_game(gomo_t *gomo) {
+	read_sgf_game(gomo, "./resources/games/Agon/01/1.sgf");
 }
 
 void init_all(gomo_t *gomo)
@@ -337,4 +347,5 @@ void init_all(gomo_t *gomo)
 	init_fonts(gomo);
 	load_textures(gomo);
 	load_fonts(gomo);
+	read_game(gomo);
 }

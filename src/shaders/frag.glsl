@@ -8,6 +8,8 @@ out vec4 FragColor;
 
 uniform sampler2D grid_text;
 uniform sampler2D wood_text;
+
+
 uniform sampler2D text;
 uniform vec3 textColor;
 
