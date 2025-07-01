@@ -1,6 +1,5 @@
 # Blender 3.6.4
 # www.blender.org
-mtllib stone.mtl
 o Icosphere
 v 0.000000 -0.401287 0.000000
 v 0.651247 -0.179463 0.473153

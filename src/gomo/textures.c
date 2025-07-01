@@ -14,15 +14,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../include/stb_image.h"
 
-typedef struct {
-	const char *path;
-	const char *uniform_name;
-	int 		blend; // 1 for RGBA, 0 for RGB
-} texture_info_t;
-
 texture_info_t textures_path[NB_TEXTURES] = {
-	{"resources/room_textures/grid.png", "grid_text", 1},
-	{"resources/room_textures/wood.jpeg", "wood_text", 0},
 	{"resources/room_textures/blk_stones.jpeg", "blk_stones_text", 0},
 	{"resources/room_textures/containers.jpeg", "containers_text", 0},
 	{"resources/room_textures/floor_1.jpeg", "floor_1_text", 0},
@@ -70,19 +62,32 @@ GLuint load_image(char *path, int blend)
 	printf("Texture generation [%s]\n", path);
 	return textureID;
 }
-
+/*
 void bind_texture(GLuint texture, GLuint shaderProgram, const char *uniformName, int textureUnit) {
     GLuint loc = glGetUniformLocation(shaderProgram, uniformName);
     glActiveTexture(GL_TEXTURE0 + textureUnit);
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(loc, textureUnit);
 }
-
-void	load_textures(gomo_t *gomo) {
+*/
+void load_textures(gomo_t *gomo) {
     for (int i = 0; i < NB_TEXTURES; ++i) {
         gomo->textures[i] = load_image((char*)textures_path[i].path, textures_path[i].blend);
     }
-    for (int i = 0; i < NB_TEXTURES; ++i) {
-		bind_texture(gomo->textures[i], gomo->shader->shaderProgram, textures_path[i].uniform_name, i);
+
+    // Bind all textures to the shader as an array
+    GLint texUniform = glGetUniformLocation(gomo->shader->shaderProgram, "textures");
+    if (texUniform == -1) {
+        fprintf(stderr, "Could not find 'textures' uniform array in shader\n");
+        return;
     }
+	printf("Found 'textures' uniform at location %d\n", texUniform);
+    GLint samplers[NB_TEXTURES];
+    for (int i = 0; i < NB_TEXTURES; ++i) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, gomo->textures[i]);
+		printf("Binding texture %d to unit %d\n", i, i);
+        samplers[i] = i;
+    }
+    glUniform1iv(texUniform, NB_TEXTURES, samplers);
 }

@@ -73,15 +73,15 @@ void init_VAO(gomo_t *gomo)
 		exit_callback(gomo, 45, getErrorString(errCode));
 
 	// VBO
-	/*
+	
 	printf("id: %d\n", gomo->obj->id);
-	for (int i = 0; i < gomo->obj->nb_vertices; i++) {
-		printf("obj[%d]\t%f / %f / %f\t   %f / %f\t   %f / %f / %f\n", i,
-			   gomo->obj->obj[i * 8], gomo->obj->obj[i * 8 + 1], gomo->obj->obj[i * 8 + 2],
-			   gomo->obj->obj[i * 8 + 3], gomo->obj->obj[i * 8 + 4],
-			   gomo->obj->obj[i * 8 + 5], gomo->obj->obj[i * 8 + 6], gomo->obj->obj[i * 8 + 7]);
+	for (int i = 0; i < 10; i++) {
+		printf("obj[%d]\t%f / %f / %f     %f / %f     %f\n", i,
+			   gomo->obj->obj[i * 6], gomo->obj->obj[i * 6 + 1], gomo->obj->obj[i * 6 + 2],
+			   gomo->obj->obj[i * 6 + 3], gomo->obj->obj[i * 6 + 4],
+			   gomo->obj->obj[i * 6 + 5]);
 	}
-	*/
+
 	glGenBuffers(1, &gomo->obj->VBO);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 46, getErrorString(errCode));
@@ -89,26 +89,26 @@ void init_VAO(gomo_t *gomo)
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 47, getErrorString(errCode));
 	glBufferData(GL_ARRAY_BUFFER,
-				 gomo->obj->nb_vertices * 8 * sizeof(float),
+				 gomo->obj->nb_vertices * 6 * sizeof(float),
 				 &gomo->obj->obj[0],
 				 GL_STATIC_DRAW);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 48, getErrorString(errCode));
 
-	// Vertex format(Coordinate/TextureUV/Color): x1,y1,z1, u1,v1, r1,g1,b1, x2...
+	// Vertex format(Coordinate/TextureUV/Color): x1,y1,z1, u1,v1, i1, x2...
 
 	// Coordinate
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 49, getErrorString(errCode));
 	glEnableVertexAttribArray(0);
 	// TextureUV
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 50, getErrorString(errCode));
 	glEnableVertexAttribArray(1);
-	// Color
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(5 * sizeof(float)));
+	// Id
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(5 * sizeof(float)));
 	if ((errCode = glGetError()) != GL_NO_ERROR)
 		exit_callback(gomo, 51, getErrorString(errCode));
 	glEnableVertexAttribArray(2);
@@ -251,6 +251,8 @@ void init_obj(gomo_t *gomo)
 	gomo->obj->nb_vertices = 0;
 	if (!(gomo->obj->faces = (data_t **)malloc(sizeof(data_t *) * V_BUFF_SIZE)))
 		exit_callback(gomo, 6, "faces malloc failed");
+	if (!(gomo->obj->materials = (material_t *)malloc(sizeof(material_t) * V_BUFF_SIZE)))
+		exit_callback(gomo, 7, "materials malloc failed");
 	gomo->obj->faces_size = V_BUFF_SIZE;
 	gomo->obj->obj = NULL;
 	for (int i = 0; i < 3; i++)
@@ -335,7 +337,7 @@ void init_all(gomo_t *gomo)
 	init_obj(gomo);
 	init_lines(gomo);
 	gomo->obj->first = gomo->obj;
-	load_obj(gomo, "resources/goban.obj");
+	load_obj(gomo, "resources/room.obj");
 	new_obj(gomo);
 	load_obj(gomo, "resources/stone.obj");
 	gomo->obj = gomo->obj->first;
@@ -344,8 +346,8 @@ void init_all(gomo_t *gomo)
 	init_shader(gomo);
 	init_VAOs(gomo);
 	init_camera(gomo);
-	init_fonts(gomo);
 	load_textures(gomo);
+	init_fonts(gomo);
 	load_fonts(gomo);
 	read_game(gomo);
 }
