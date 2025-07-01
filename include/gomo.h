@@ -51,7 +51,7 @@
 typedef struct {
 	const char *path;
 	const char *uniform_name;
-	int 		blend; // 1 for RGBA, 0 for RGB
+	int 		blend; // 0 = GL_REPEAT, 1 = GL_CLAMP_TO_BORDER
 } texture_info_t;
 
 typedef struct vec3_s
