@@ -73,14 +73,13 @@ void init_VAO(gomo_t *gomo)
 		exit_callback(gomo, 45, getErrorString(errCode));
 
 	// VBO
-	
-	printf("id: %d\n", gomo->obj->id);
-	for (int i = 0; i < 10; i++) {
+	/*
+	for (int i = 0; i < gomo->obj->nb_vertices; i++) {
 		printf("obj[%d]\t%f / %f / %f     %f / %f     %f\n", i,
 			   gomo->obj->obj[i * 6], gomo->obj->obj[i * 6 + 1], gomo->obj->obj[i * 6 + 2],
 			   gomo->obj->obj[i * 6 + 3], gomo->obj->obj[i * 6 + 4],
 			   gomo->obj->obj[i * 6 + 5]);
-	}
+	}*/
 
 	glGenBuffers(1, &gomo->obj->VBO);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
@@ -295,6 +294,7 @@ void init_gomo(gomo_t *gomo)
 	if (!(gomo->stone = (instance_t *)malloc(sizeof(instance_t) * 19 * 19)))
 		exit_callback(gomo, 1, "stone malloc failed");
 	gomo->nb_stones = 0;
+	
 	if (!(gomo->shader = (shader_t *)malloc(sizeof(shader_t))))
 		exit_callback(gomo, 4, "vertices malloc failed");
 	if (!(gomo->camera = (camera_t *)malloc(sizeof(camera_t))))
@@ -343,6 +343,7 @@ void init_all(gomo_t *gomo)
 	gomo->obj = gomo->obj->first;
 	init_glfw(gomo);
 	init_gl(gomo);
+	printf("OpenGL version: %s\n", glGetString(GL_VERSION));
 	init_shader(gomo);
 	init_VAOs(gomo);
 	init_camera(gomo);

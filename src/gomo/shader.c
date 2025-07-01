@@ -72,10 +72,10 @@ void load_shader(gomo_t *gomo, unsigned int *shader, char *src, int type)
 	glGetShaderiv(*shader, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		exit_callback(gomo, 31, "Shader compilation failed");
 		GLchar infoLog[512];
 		glGetShaderInfoLog(*shader, sizeof(infoLog), NULL, infoLog);
 		printf("error: %s\n", infoLog);
+		exit_callback(gomo, 31, "Shader compilation failed");
 	}
 }
 

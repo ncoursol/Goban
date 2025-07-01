@@ -95,29 +95,35 @@ void set_texture_xyz(gomo_t *gomo, float *vertices, int *k, int i)
 
 void set_texture_id(gomo_t *gomo, int i, int *k)
 {
-	int j = 0;
+	int id = 0;
 	material_t *tmp;
 
 	tmp = gomo->obj->materials;
+
 	if (gomo->obj->materials_ids != NULL && gomo->obj->materials->name != NULL) {
-		while (gomo->obj->materials_ids[j] != -2 && gomo->obj->materials_ids[j + 1] != -2)
+		while (gomo->obj->materials_ids[id] != -2 && gomo->obj->materials_ids[id + 1] != -2)
 		{
-			if (gomo->obj->materials_ids[j] <= i && gomo->obj->materials_ids[j + 1] > i)
+			if (gomo->obj->materials_ids[id] <= i && gomo->obj->materials_ids[id + 1] > i)
 				break;
-			j++;
+			id++;
 		}
 
-		while (tmp && tmp->id != (unsigned int)gomo->obj->materials_ids[j]) {
+		while (tmp && tmp->next && tmp->id != (unsigned int)gomo->obj->materials_ids[id]) {
 			tmp = tmp->next;
 		}
-	} else {
-		tmp->id = 0;
+	}
+	id = 0;
+	if (tmp->texture) {
+		for (int l = 0; l < NB_TEXTURES; l++) {
+			if (strstr(textures_path[l].path, tmp->texture) != NULL) {
+				id = l;
+				break;
+			}
+		}
 	}
 
-	// PG DE SEGFAULT ICI
-
 	for (int j = 0; j < 3; j++) {
-		gomo->obj->obj[*k] = tmp->id;
+		gomo->obj->obj[*k] = (float)id;
 		*k += 6;
 	}
 }
