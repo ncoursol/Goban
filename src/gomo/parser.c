@@ -55,6 +55,36 @@ void load_vertex(gomo_t *gomo, float *vertices, char *line, size_t read, int *nb
 	}
 }
 
+void find_material(gomo_t *gomo, char *name, int nb_faces)
+{
+	int i = 0;
+    size_t name_len = strlen(name);
+	gomo->obj->materials = gomo->obj->materials->first;
+    if (name_len > 0 && name[name_len - 1] == '\n') {
+        name[name_len - 1] = '\0';
+    }
+
+	if (gomo->obj->materials == NULL)
+		exit_callback(gomo, 9, "no material loaded");
+	while (gomo->obj->materials != NULL)
+	{
+		if (!strncmp(gomo->obj->materials->name, name, strlen(name)))
+		{
+			gomo->obj->materials->id = nb_faces;
+			while (gomo->obj->materials_ids[i] != -2 && gomo->obj->materials_ids[i] != -1)
+			{
+				i++;
+			}
+			if (gomo->obj->materials_ids[i] != -2)
+				gomo->obj->materials_ids[i] = nb_faces;
+			gomo->obj->materials = gomo->obj->materials->first;
+			return ;
+		}
+		gomo->obj->materials = gomo->obj->materials->next;
+	}
+	exit_callback(gomo, 10, "material not found");
+}
+
 void load_obj(gomo_t *gomo, char *argv)
 {
 	FILE *fp;
@@ -91,10 +121,17 @@ void load_obj(gomo_t *gomo, char *argv)
 			{
 				normals = float_copy(gomo, normals, read, &line[2], &nb_normals, &b_vn);
 			}
+			else if (!strncmp(line, "usemtl ", 7))
+			{
+				find_material(gomo, &line[7], nb_faces);
+			}
 			else if (!strncmp(line, "f ", 2))
 			{
 				load_face(gomo, line, nb_faces, &b_f);
 				nb_faces++;
+			} else if (!strncmp(line, "mtllib ", 7))
+			{
+				load_material(gomo, &line[7]);
 			}
 		}
 		free(line);

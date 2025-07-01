@@ -2,6 +2,7 @@
     "cmake.sourceDirectory": "/home/blue/Documents/goban/ext/glfw-3.3.5",
     "cmake.configureOnOpen": false,
     "files.associations": {
-        "cstring": "c"
+        "cstring": "c",
+        "gomo.h": "c"
     }
 }

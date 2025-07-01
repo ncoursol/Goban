@@ -37,7 +37,7 @@
 #define TOP_VIEW gomo->camera->options >> 8 & 1	  // top view (yes/no)
 #define RAY_T_MIN 0.0001f						  // Minimum ray t value
 
-#define NB_TEXTURES 14 // Number of textures
+#define NB_TEXTURES 12 // Number of textures
 
 #define MAX_MOVES 500
 #define MAX_NAME_LEN 64
@@ -47,6 +47,12 @@
 
 #define ABS(x) (x >= 0 ? x : -x)
 #define RAD(x) (x * 0.0174533f)
+
+typedef struct {
+	const char *path;
+	const char *uniform_name;
+	int 		blend; // 1 for RGBA, 0 for RGB
+} texture_info_t;
 
 typedef struct vec3_s
 {
@@ -183,6 +189,23 @@ typedef struct camera_s
 	GLfloat *mvp;		 // Model x View x Projection
 } camera_t;
 
+typedef struct material_s
+{
+	char *name;				// Name of the material
+	char *texture;			// Texture file name
+	vec3_t ambient;			// Ambient color
+	vec3_t diffuse;			// Diffuse color
+	vec3_t specular; 		// Specular color
+	vec3_t emission;		// Emission color
+	float specular_exp; 	// Specular exponent
+	float dissolve;			// Dissolve factor
+	float refract_index;	// Refractive index
+	int illum;				// Illumination model
+	unsigned int id;
+	struct material_s *next;
+	struct material_s *first;
+} material_t;
+
 typedef struct obj_s // Chained list of each object of the scene
 {
 	int id;			 // Id of the object
@@ -192,11 +215,13 @@ typedef struct obj_s // Chained list of each object of the scene
 	int texCoord;	 // Texture coordinate
 	int faces_size;	 // Size of faces array
 	data_t **faces;	 // All indices (see arrays in gomo_s below) of each faces
-	float *obj;		 // All vertices data ready for render (x1,y1,z1,u1,v1,r1,g1,b1,x2,...)
+	float *obj;		 // All vertices data ready for render (x1,y1,z1,u1,v1,i1,x2,...)
 	float max[3];
 	float min[3];
+	int *materials_ids; // Array of material ids for each face
 	unsigned int VBO;	 // Vertex Buffer Object
 	unsigned int VAO;	 // Vertex Array Object
+	material_t *materials; // Material of the object
 	struct obj_s *next;	 // Next object
 	struct obj_s *first; // First object
 } obj_t;
@@ -271,6 +296,7 @@ void init_obj(gomo_t *gomo);
 void init_face_data(gomo_t *gomo, int nb_buff);
 void init_lines(gomo_t *gomo);
 void load_obj(gomo_t *gomo, char *path);
+void load_material(gomo_t *gomo, char *name);
 void load_textures(gomo_t *gomo);
 void load_fonts(gomo_t *gomo);
 
@@ -308,5 +334,7 @@ void render_lines(gomo_t *gomo);
 void free_lines(gomo_t *gomo);
 void free_all(gomo_t *gomo, int step);
 void free_null(void *a);
+
+extern texture_info_t textures_path[NB_TEXTURES];
 
 #endif

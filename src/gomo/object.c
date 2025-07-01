@@ -26,9 +26,9 @@ void new_vertex(gomo_t *gomo, int f)
 	gomo->obj->faces[f]->next = NULL;
 }
 
-vec3_t create_normal(gomo_t *gomo, float *normals, int k, int i, vec3_t norm)
+vec3_t create_normal(gomo_t *gomo, float *normals, int k, int i)
 {
-	vec3_t a, b;
+	vec3_t a, b, norm;
 	if (!gomo->obj->faces[i]->normal)
 	{
 		a = (vec3_t){
@@ -53,7 +53,7 @@ vec3_t create_normal(gomo_t *gomo, float *normals, int k, int i, vec3_t norm)
 	return (norm);
 }
 
-void set_texture_uvrgb(gomo_t *gomo, float *textures, int *k, int i)
+void set_texture_uv(gomo_t *gomo, float *textures, int *k, int i)
 {
 	int j = 0;
 
@@ -62,11 +62,6 @@ void set_texture_uvrgb(gomo_t *gomo, float *textures, int *k, int i)
 		// Set UV
 		gomo->obj->obj[*k + 0] = textures[(gomo->obj->faces[i]->texture - 1) * 2];
 		gomo->obj->obj[*k + 1] = textures[(gomo->obj->faces[i]->texture - 1) * 2 + 1];
-		*k += 2;
-		// Set RGB
-		gomo->obj->obj[*k + 0] = (float)i / (float)gomo->obj->nb_faces;
-		gomo->obj->obj[*k + 1] = (float)i / (float)gomo->obj->nb_faces;
-		gomo->obj->obj[*k + 2] = (float)i / (float)gomo->obj->nb_faces;
 		*k += 6;
 		if (gomo->obj->faces[i]->next == NULL)
 			break;
@@ -90,7 +85,7 @@ void set_texture_xyz(gomo_t *gomo, float *vertices, int *k, int i)
 			gomo->obj->obj[*k + 1] += 6.35;
 			gomo->obj->obj[*k + 2] += 2.14 * (gomo->obj->id - 1);
 		}
-		*k += 8;
+		*k += 6;
 		if (gomo->obj->faces[i]->next == NULL)
 			break;
 		gomo->obj->faces[i] = gomo->obj->faces[i]->next;
@@ -98,10 +93,39 @@ void set_texture_xyz(gomo_t *gomo, float *vertices, int *k, int i)
 	}
 }
 
+void set_texture_id(gomo_t *gomo, int i, int *k)
+{
+	int j = 0;
+	material_t *tmp;
+
+	tmp = gomo->obj->materials;
+	if (gomo->obj->materials_ids != NULL && gomo->obj->materials->name != NULL) {
+		while (gomo->obj->materials_ids[j] != -2 && gomo->obj->materials_ids[j + 1] != -2)
+		{
+			if (gomo->obj->materials_ids[j] <= i && gomo->obj->materials_ids[j + 1] > i)
+				break;
+			j++;
+		}
+
+		while (tmp && tmp->id != (unsigned int)gomo->obj->materials_ids[j]) {
+			tmp = tmp->next;
+		}
+	} else {
+		tmp->id = 0;
+	}
+
+	// PG DE SEGFAULT ICI
+
+	for (int j = 0; j < 3; j++) {
+		gomo->obj->obj[*k] = tmp->id;
+		*k += 6;
+	}
+}
+
 /* Object Buffer (for 1 triangle):
-		00 01 02 03 04 05 06 07|08 09 10 11 12 13 14 15|16 17 18 19 20 21 22 23
-		x1 y1 z1 U1 V1 r1 g1 b1|x2 y2 z2 U2 V2 r2 g2 b2|x3 y3 z3 U3 V3 r3 g3 b3
-				Vertex 1       |        Vertex 2       |        Vertex 3
+		00 01 02 03 04 05|06 07 08 09 10 11|12 13 14 15 16 17
+		x1 y1 z1 U1 V1 i1|x2 y2 z2 U2 V2 i2|x3 y3 z3 U3 V3 i3
+			 Vertex 1    |     Vertex 2    |     Vertex 3
 */
 void create_obj(gomo_t *gomo, float *vertices, float *textures, float *normals)
 {
@@ -115,17 +139,18 @@ void create_obj(gomo_t *gomo, float *vertices, float *textures, float *normals)
 		gomo->obj->faces[i] = gomo->obj->faces[i]->first;
 		// first set XYZ for each vertices
 		set_texture_xyz(gomo, vertices, &k, i);
-		// Back to the vertex U1 (see above) k = 24
-		k -= 21;
+		// Back to the vertex U1 (see above) k = 18
+		k -= 15;
+
 		// create (or set if already define) the triangle normal
-		norm = create_normal(gomo, normals, k, i, norm);
+		norm = create_normal(gomo, normals, k, i);
 		gomo->obj->faces[i] = gomo->obj->faces[i]->first;
-		// Set UV and RGB for each vertices
-		set_texture_uvrgb(gomo, textures, &k, i);
+		// Set UV for each vertices
+		set_texture_uv(gomo, textures, &k, i);
+		k -= 16;
+
+		set_texture_id(gomo, i, &k);
 		// Set indice k to 24 (0 for the next triangle) k = 27
-		k -= 3;
+		k -= 5;
 	}
-	// for (int i = 0; i < gomo->obj->nb_vertices; i++) {
-	//	printf("obj %d: %f %f %f / %f %f / %f %f %f\n", i, gomo->obj->obj[i * 8], gomo->obj->obj[i * 8 + 1], gomo->obj->obj[i * 8 + 2], gomo->obj->obj[i * 8 + 3], gomo->obj->obj[i * 8 + 4], gomo->obj->obj[i * 8 + 5], gomo->obj->obj[i * 8 + 6], gomo->obj->obj[i * 8 + 7]);
-	// }
 }
