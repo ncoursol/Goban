@@ -67,6 +67,7 @@ void updateData(gomo_t *gomo)
 	GLenum errCode;
 
 	update_stones(gomo);
+	glUseProgram(gomo->shader->shaderProgramStones);
 	gomo->obj = gomo->obj->first->next;
 	glBindVertexArray(gomo->obj->VAO);
 	if ((errCode = glGetError()) != GL_NO_ERROR)
@@ -97,7 +98,7 @@ int intersect(ray_t ray, hit_t *intersection)
     if (fabsf(dDotN) < 1e-6f)
         return 0;
 
-    float t = (5.7f - ray.origin.y) / ray.direction.y;
+    float t = (0.43f - ray.origin.y) / ray.direction.y;
 
     // Ignore intersections behind the ray origin
     if (t < 0)
@@ -106,6 +107,7 @@ int intersect(ray_t ray, hit_t *intersection)
     intersection->point.x = ray.origin.x + t * ray.direction.x;
     intersection->point.y = -0.26f; // Goban height
     intersection->point.z = ray.origin.z + t * ray.direction.z;
+
 
     return 1;
 }
@@ -134,6 +136,8 @@ ray_t createRay(gomo_t *gomo, double xpos, double ypos)
     add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 80, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 3);
     sprintf(tmp, "direction : x[%f] y[%f] z[%f]", ray.direction.x, ray.direction.y, ray.direction.z);
     add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 110, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 4);
+	sprintf(tmp, "dist : %f", gomo->camera->dist);
+    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 140, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 4);
 
     return ray;
 }
@@ -180,7 +184,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 		if (!(TOP_VIEW))
 		{
 			float zoom = yoffset * (log(gomo->camera->dist + 7.5) - 2);
-			if (gomo->camera->dist - zoom >= 0 && gomo->camera->dist - zoom <= 150)
+			if (gomo->camera->dist - zoom >= 1.0f && gomo->camera->dist - zoom <= 20.0f) //3.4
 				gomo->camera->dist -= zoom;
 		}
 	}

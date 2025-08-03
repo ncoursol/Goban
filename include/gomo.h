@@ -48,7 +48,8 @@
 #define ABS(x) (x >= 0 ? x : -x)
 #define RAD(x) (x * 0.0174533f)
 
-typedef struct {
+typedef struct texture_info_s 
+{
 	const char *path;
 	const char *uniform_name;
 	int 		blend; // 0 = GL_REPEAT, 1 = GL_CLAMP_TO_BORDER
@@ -238,6 +239,7 @@ typedef struct shaderID_s
 typedef struct shader_s
 {
 	unsigned int shaderProgram;		// Shader program
+	unsigned int shaderProgramStones; // Shader program for stones
 	unsigned int shaderProgramHUD;	// Shader program for HUD
 	unsigned int shaderProgramLine;	// Shader program for Lines
 } shader_t;

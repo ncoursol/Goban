@@ -3,6 +3,7 @@
     "cmake.configureOnOpen": false,
     "files.associations": {
         "cstring": "c",
-        "gomo.h": "c"
+        "gomo.h": "c",
+        "stb_image.h": "c"
     }
 }

@@ -84,6 +84,8 @@ void init_lines(gomo_t *gomo)
     draw_line(gomo, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){100.0f, 0.0f, 0.0f}, (vec3_t){1.0f, 0.0f, 0.0f}); // X axis
     draw_line(gomo, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 100.0f, 0.0f}, (vec3_t){0.0f, 1.0f, 0.0f}); // Y axis
     draw_line(gomo, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 0.0f, 100.0f}, (vec3_t){0.0f, 0.0f, 1.0f}); // Z axis
+
+    draw_line(gomo, (vec3_t){2.0f, 0.43f, 0.0f}, (vec3_t){-2.0f, 0.43f, 0.0f}, (vec3_t){1.0f, 1.0f, 0.0f}); // Horizontal line
 }
 
 void free_lines(gomo_t *gomo)

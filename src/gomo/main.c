@@ -26,7 +26,7 @@ void set_new_eye(gomo_t *gomo, vec3_t up)
 	{
 		av = PI - 0.000005f;
 		ah = 0.0f;
-		d = 42.0f;
+		d = 1.0f;
 	}
 	if (av < 1.535f)
 		av = 1.535f;
@@ -127,9 +127,6 @@ int main(void)
 		// Render lines
 		if (HUD)
 			render_lines(&gomo);
-		// Draw 3D objects
-		glUseProgram(gomo.shader->shaderProgram);
-		glUniformMatrix4fv(gomo.shaderID.mvpID, 1, GL_FALSE, &gomo.camera->mvp[0]);
 
 		// Draw each object
 		gomo.obj = gomo.obj->first;
@@ -138,11 +135,16 @@ int main(void)
 			glBindVertexArray(gomo.obj->VAO);
 			if (gomo.obj->id != 0)
 			{
+				glUseProgram(gomo.shader->shaderProgramStones);
+				glUniformMatrix4fv(gomo.shaderID.mvpID, 1, GL_FALSE, &gomo.camera->mvp[0]);
+
 				glBindTexture(GL_TEXTURE_2D, 0);
 				glDrawArraysInstanced(GL_TRIANGLES, 0, gomo.obj->nb_vertices, gomo.nb_stones);
 			}
 			else
 			{
+				glUseProgram(gomo.shader->shaderProgram);
+				glUniformMatrix4fv(gomo.shaderID.mvpID, 1, GL_FALSE, &gomo.camera->mvp[0]);
 				glBindTexture(GL_TEXTURE_2D, gomo.textures[1]);
 				glDrawArrays(GL_TRIANGLES, 0, gomo.obj->nb_vertices);
 			}
