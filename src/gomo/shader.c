@@ -119,16 +119,25 @@ void init_shader(gomo_t *gomo)
 {
 	unsigned int vertexShader;
 	unsigned int fragmentShader;
-
-	load_shader(gomo, &vertexShader, "src/shaders/vertex.glsl", GL_VERTEX_SHADER);
-	load_shader(gomo, &fragmentShader, "src/shaders/frag.glsl", GL_FRAGMENT_SHADER);
-	init_shaderProgram(gomo, &gomo->shader->shaderProgram, &vertexShader, &fragmentShader);
-
-	load_shader(gomo, &vertexShader, "src/shaders/vertexHUD.glsl", GL_VERTEX_SHADER);
-	load_shader(gomo, &fragmentShader, "src/shaders/fragHUD.glsl", GL_FRAGMENT_SHADER);
-	init_shaderProgram(gomo, &gomo->shader->shaderProgramHUD, &vertexShader, &fragmentShader);
-
-	load_shader(gomo, &vertexShader, "src/shaders/vertexLine.glsl", GL_VERTEX_SHADER);
-	load_shader(gomo, &fragmentShader, "src/shaders/fragLine.glsl", GL_FRAGMENT_SHADER);
-	init_shaderProgram(gomo, &gomo->shader->shaderProgramLine, &vertexShader, &fragmentShader);
+	
+	typedef struct {
+		char *vertexPath;
+		char *fragmentPath;
+		unsigned int *programPtr;
+	} shader_pair_t;
+	
+	shader_pair_t shader_pairs[] = {
+		{"src/shaders/vertex.glsl", "src/shaders/frag.glsl", &gomo->shader->shaderProgram},
+		{"src/shaders/vertexStones.glsl", "src/shaders/fragStones.glsl", &gomo->shader->shaderProgramStones},
+		{"src/shaders/vertexHUD.glsl", "src/shaders/fragHUD.glsl", &gomo->shader->shaderProgramHUD},
+		{"src/shaders/vertexLine.glsl", "src/shaders/fragLine.glsl", &gomo->shader->shaderProgramLine}
+	};
+	
+	int num_pairs = sizeof(shader_pairs) / sizeof(shader_pairs[0]);
+	
+	for (int i = 0; i < num_pairs; i++) {
+		load_shader(gomo, &vertexShader, shader_pairs[i].vertexPath, GL_VERTEX_SHADER);
+		load_shader(gomo, &fragmentShader, shader_pairs[i].fragmentPath, GL_FRAGMENT_SHADER);
+		init_shaderProgram(gomo, shader_pairs[i].programPtr, &vertexShader, &fragmentShader);
+	}
 }

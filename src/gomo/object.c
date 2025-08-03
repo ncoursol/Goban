@@ -120,6 +120,8 @@ void set_texture_id(gomo_t *gomo, int i, int *k)
 				break;
 			}
 		}
+	} else {
+		id = -1; // No texture found, set to -1
 	}
 
 	for (int j = 0; j < 3; j++) {

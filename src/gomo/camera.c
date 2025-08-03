@@ -112,7 +112,7 @@ void camera(gomo_t *gomo, vec3_t center, vec3_t up)
 		free_null((void *)gomo->camera->mvp);
 	gomo->shaderID.mvpID = glGetUniformLocation(gomo->shader->shaderProgram, "MVP");
 	gomo->shaderID.orthoID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "ortho");
-	gomo->camera->projection = perspective(gomo->camera->fov, (float)WIDTH / (float)HEIGHT, 1.0f, 1000.0f);
+	gomo->camera->projection = perspective(gomo->camera->fov, (float)WIDTH / (float)HEIGHT, 0.2f, 1000.0f);
 	gomo->camera->view = lookAt(gomo->camera->eye, center, up);
 	gomo->camera->model = new_mat4_model();
 	/*
@@ -145,11 +145,8 @@ void init_camera(gomo_t *gomo)
 	gomo->camera->view = NULL;
 	gomo->camera->model = NULL;
 	gomo->camera->mvp = NULL;
-	gomo->camera->center = (vec3_t){
-		(gomo->camera->scale * (gomo->camera->max[0] + gomo->camera->min[0])) / 2,
-		(gomo->camera->scale * (gomo->camera->max[1] + gomo->camera->min[1])) / 2,
-		(gomo->camera->scale * (gomo->camera->max[2] + gomo->camera->min[2])) / 2};
-	gomo->camera->dist = 80;
+	gomo->camera->center = (vec3_t){0, 0.5, 0};
+	gomo->camera->dist = 3.0f;
 	up = (vec3_t){0, 1, 0};
 	glUseProgram(gomo->shader->shaderProgram);
 	glfwSetCursorPos(gomo->window, gomo->camera->ah, gomo->camera->av);

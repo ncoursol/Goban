@@ -272,9 +272,9 @@ void init_board(gomo_t *gomo)
 		{
 			gomo->board[index].state = 0;
 			gomo->board[index].color = (vec3_t){1.0f, 0.0f, 1.0f};
-			gomo->board[index].pos.x = (float)x + 1.0f;
-			gomo->board[index].pos.y = -0.26f;	// magic number for the gap btw goban and stones
-			gomo->board[index].pos.z = (float)z + 1.0f;
+			gomo->board[index].pos.x = 0.02f * (float)x;
+			gomo->board[index].pos.y = 0.0f;	// magic number for the gap btw goban and stones
+			gomo->board[index].pos.z = 0.02f * (float)z;
 			index++;
 		}
 	}
@@ -339,7 +339,7 @@ void init_all(gomo_t *gomo)
 	gomo->obj->first = gomo->obj;
 	load_obj(gomo, "resources/room.obj");
 	new_obj(gomo);
-	load_obj(gomo, "resources/stone.obj");
+	load_obj(gomo, "resources/stone2.obj");
 	gomo->obj = gomo->obj->first;
 	init_glfw(gomo);
 	init_gl(gomo);

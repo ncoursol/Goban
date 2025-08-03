@@ -1,9 +1,9 @@
-# Blender MTL File: 'None'
-# Material Count: 15
+# Blender 4.5.1 LTS MTL File: 'Untitled.blend'
+# www.blender.org
 
 newmtl Container_Wood
-map_Kd containers.jpeg
-Ns 323.999994
+map_Kd containersBake_7.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -13,19 +13,19 @@ d 1.000000
 illum 2
 
 newmtl GoGrid
-map_Kd gogrid.png
-Ns 323.999994
+map_Kd Image_3.png
+Ns 54.104580
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
-Ni 1.000000
+Ni 1.500000
 d 1.000000
 illum 2
 
 newmtl UVGrid
-map_Kd lantern.jpeg
-Ns 323.999994
+map_Kd lantern_sm_8.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -34,9 +34,9 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl UVGrid.001
-map_Kd lantern.jpeg
-Ns 323.999994
+newmtl WoodBase
+map_Kd goboardBake_11.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -45,20 +45,19 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl WoodBase_COLOR_0
-map_Kd goboard.jpeg
-Ns 323.999994
+newmtl aa玻璃
+Ns 0.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
+Kd 0.854249 0.886732 1.000000
+Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
-illum 2
+Ni 1.450000
+d 0.270028
+illum 1
 
 newmtl blackStone
-map_Kd blk_stones.jpeg
-Ns 323.999994
+map_Kd blackStones_10.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -68,8 +67,8 @@ d 1.000000
 illum 2
 
 newmtl painting
-map_Kd wall.jpeg
-Ns 323.999994
+map_Kd WallAndPaper_5.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -79,8 +78,8 @@ d 1.000000
 illum 2
 
 newmtl tatami
-map_Kd floor_1.jpeg
-Ns 323.999994
+map_Kd floor_2.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -90,8 +89,8 @@ d 1.000000
 illum 2
 
 newmtl whiteStone
-map_Kd wht_stones.jpeg
-Ns 323.999994
+map_Kd whiteStones_9.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -101,8 +100,8 @@ d 1.000000
 illum 2
 
 newmtl 墙纹样.001
-map_Kd wall.jpeg
-Ns 323.999994
+map_Kd WallAndPaper_5.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -112,8 +111,8 @@ d 1.000000
 illum 2
 
 newmtl 日式房间墙
-map_Kd wall.jpeg
-Ns 323.999994
+map_Kd WallAndPaper_5.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -123,8 +122,8 @@ d 1.000000
 illum 2
 
 newmtl 榻榻米包边
-map_Kd floor_2.png
-Ns 323.999994
+map_Kd floor_2.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -134,8 +133,8 @@ d 1.000000
 illum 2
 
 newmtl 程序化木纹.003
-map_Kd house.jpeg
-Ns 323.999994
+map_Kd HouseFrame_4.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -145,8 +144,8 @@ d 1.000000
 illum 2
 
 newmtl 程序化木纹.005
-map_Kd roof.jpeg
-Ns 323.999994
+map_Kd RoofBake_sm_0.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -156,8 +155,8 @@ d 1.000000
 illum 2
 
 newmtl 程序化木纹.006
-map_Kd footer.jpeg
-Ns 323.999994
+map_Kd footerBake_sm_1.jpeg
+Ns 360.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000

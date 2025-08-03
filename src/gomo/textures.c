@@ -15,18 +15,18 @@
 #include "../../include/stb_image.h"
 
 texture_info_t textures_path[NB_TEXTURES] = {
-	{"resources/room_textures/blk_stones.jpeg", "blk_stones_text", 0},
-	{"resources/room_textures/containers.jpeg", "containers_text", 0},
-	{"resources/room_textures/floor_1.jpeg", "floor_1_text", 0},
-	{"resources/room_textures/floor_2.png", "floor_2_text", 0},
-	{"resources/room_textures/footer.jpeg", "footer_text", 0},
-	{"resources/room_textures/goboard.jpeg", "goboard_text", 0},
-	{"resources/room_textures/house.jpeg", "house_text", 0},
-	{"resources/room_textures/gogrid.png", "gogrid_text", 1},
-	{"resources/room_textures/lantern.jpeg", "lantern_text", 0},
-	{"resources/room_textures/roof.jpeg", "roof_text", 0},
-	{"resources/room_textures/wall.jpeg", "wall_text", 0},
-	{"resources/room_textures/wht_stones.jpeg", "wht_stones_text", 0},
+	{"resources/textures/blackStones_10.jpeg", "blk_stones_text", 0},
+	{"resources/textures/containersBake_7.jpeg", "containers_text", 0},
+	{"resources/textures/floor_3.png", "floor_1_text", 1},
+	{"resources/textures/floor_2.jpeg", "floor_2_text", 0},
+	{"resources/textures/footerBake_sm_1.jpeg", "footer_text", 0},
+	{"resources/textures/goboardBake_11.jpeg", "goboard_text", 0},
+	{"resources/textures/HouseFrame_4.jpeg", "house_text", 0},
+	{"resources/textures/Image_3.png", "gogrid_text", 1},
+	{"resources/textures/lantern_sm_8.jpeg", "lantern_text", 0},
+	{"resources/textures/RoofBake_sm_0.jpeg", "roof_text", 0},
+	{"resources/textures/WallAndPaper_5.jpeg", "wall_text", 0},
+	{"resources/textures/whiteStones_9.jpeg", "wht_stones_text", 0},
 };
 
 GLuint load_image(char *path, int blend)
