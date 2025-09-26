@@ -46,8 +46,8 @@ void render_text(gomo_t *gomo, char *font, char *text, vec3_t pos, float scale, 
     // Bind the font's VAO
     glBindVertexArray(gomo->fonts->VAO);
 
-    // Activate the texture unit
-    glActiveTexture(GL_TEXTURE2);
+    // Activate the texture unit (use unit 12 to avoid conflicts with regular textures 0-11)
+    glActiveTexture(GL_TEXTURE0 + NB_TEXTURES);
 
     // Set the text color in the shader
     GLint colorLocation;
@@ -56,7 +56,7 @@ void render_text(gomo_t *gomo, char *font, char *text, vec3_t pos, float scale, 
     colorLocation = glGetUniformLocation(gomo->shader->shaderProgramHUD, "textColor");
     glUniform3f(colorLocation, color.x, color.y, color.z);
     samplerLocation = glGetUniformLocation(gomo->shader->shaderProgramHUD, "text");
-    glUniform1i(samplerLocation, 2);
+    glUniform1i(samplerLocation, NB_TEXTURES);
 
     // Render each character
     for (unsigned int i = 0; i < strlen(text); i++)
@@ -95,7 +95,6 @@ void render_text(gomo_t *gomo, char *font, char *text, vec3_t pos, float scale, 
     }
 
     // Unbind the texture and VAO
-    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
 }

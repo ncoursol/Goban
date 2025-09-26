@@ -272,9 +272,9 @@ void init_board(gomo_t *gomo)
 		{
 			gomo->board[index].state = 0;
 			gomo->board[index].color = (vec3_t){1.0f, 0.0f, 1.0f};
-			gomo->board[index].pos.x = 0.02f * (float)x;
-			gomo->board[index].pos.y = 0.0f;	// magic number for the gap btw goban and stones
-			gomo->board[index].pos.z = 0.02f * (float)z;
+			gomo->board[index].pos.x = 0.0245f * ((float)x + 1);
+			gomo->board[index].pos.y = -5.904f;	// magic number for the gap btw goban and stones
+			gomo->board[index].pos.z = 0.0245f * ((float)z + 1);
 			index++;
 		}
 	}
@@ -337,13 +337,12 @@ void init_all(gomo_t *gomo)
 	init_obj(gomo);
 	init_lines(gomo);
 	gomo->obj->first = gomo->obj;
-	load_obj(gomo, "resources/room.obj");
+	load_obj(gomo, "resources/map.obj");
 	new_obj(gomo);
-	load_obj(gomo, "resources/stone2.obj");
+	load_obj(gomo, "resources/stone.obj");
 	gomo->obj = gomo->obj->first;
 	init_glfw(gomo);
 	init_gl(gomo);
-	printf("OpenGL version: %s\n", glGetString(GL_VERSION));
 	init_shader(gomo);
 	init_VAOs(gomo);
 	init_camera(gomo);
@@ -351,4 +350,8 @@ void init_all(gomo_t *gomo)
 	init_fonts(gomo);
 	load_fonts(gomo);
 	read_game(gomo);
+
+	gomo->shaderID.mvpID = glGetUniformLocation(gomo->shader->shaderProgram, "MVP");
+	gomo->shaderID.orthoID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "ortho");
+	gomo->shaderID.timeID = glGetUniformLocation(gomo->shader->shaderProgramStones, "time");
 }

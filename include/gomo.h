@@ -31,10 +31,11 @@
 
 #define MSPEED 0.005f // Mouse speed
 #define PI 3.14159265359
-#define V_BUFF_SIZE 60000
+#define V_BUFF_SIZE 6000000
 #define HUD gomo.camera->options >> 0 & 1		  // Display HUD (yes/no)
 #define LEFT_MOUSE gomo->camera->options >> 5 & 1 // left mouse button press (yes/no)
 #define TOP_VIEW gomo->camera->options >> 8 & 1	  // top view (yes/no)
+#define ANIMATE gomo->camera->options >> 9 & 1	  // animate camera (yes/no)
 #define RAY_T_MIN 0.0001f						  // Minimum ray t value
 
 #define NB_TEXTURES 12 // Number of textures
@@ -231,7 +232,7 @@ typedef struct shaderID_s
 {
 	GLuint textureID1;
 	GLuint textureID2;
-
+	GLuint timeID;
 	GLuint mvpID;		// MVP ID
 	GLuint orthoID;		// Ortho ID
 } shaderID_t;

@@ -16,18 +16,10 @@ void set_new_eye(gomo_t *gomo, vec3_t up)
 {
 	float d, ah, av;
 
-	if (!(TOP_VIEW))
-	{
-		d = gomo->camera->dist;
-		ah = gomo->camera->ah;
-		av = gomo->camera->av;
-	}
-	else
-	{
-		av = PI - 0.000005f;
-		ah = 0.0f;
-		d = 1.0f;
-	}
+	d = gomo->camera->dist;
+	ah = gomo->camera->ah;
+	av = gomo->camera->av;
+
 	if (av < 1.535f)
 		av = 1.535f;
 	if (up.z)
@@ -76,7 +68,7 @@ void updateCamera(gomo_t *gomo)
 
 	up = (vec3_t){0, 1, 0};
 
-	if (LEFT_MOUSE && !(TOP_VIEW))
+	if (LEFT_MOUSE && !(TOP_VIEW) && !(ANIMATE))
 		set_new_camera_angles(gomo);
 
 	set_new_eye(gomo, up);
@@ -87,6 +79,63 @@ void updateCamera(gomo_t *gomo)
 		gomo->camera->center.z + gomo->camera->gap.z};
 	camera(gomo, new_center, up);
 
+}
+
+void animateCamera(gomo_t *gomo)
+{
+	if (TOP_VIEW) {
+		float target_av = PI - 0.000005f;
+		float target_ah = 0.0f;
+		float target_dist = 1.0f;
+		float threshold = 0.001f;
+		float lerp_speed = 0.1f;
+		
+		// Check if we need to animate
+		if (fabsf(gomo->camera->av - target_av) > threshold || 
+			fabsf(gomo->camera->ah - target_ah) > threshold || 
+			fabsf(gomo->camera->dist - target_dist) > threshold) {
+			
+			// Smooth interpolation with easing
+			gomo->camera->av += (target_av - gomo->camera->av) * lerp_speed;
+			gomo->camera->ah += (target_ah - gomo->camera->ah) * lerp_speed;
+			gomo->camera->dist += (target_dist - gomo->camera->dist) * lerp_speed;
+			
+			// Snap to target values when very close
+			if (fabsf(target_av - gomo->camera->av) < threshold)
+				gomo->camera->av = target_av;
+			if (fabsf(target_ah - gomo->camera->ah) < threshold)
+				gomo->camera->ah = target_ah;
+			if (fabsf(target_dist - gomo->camera->dist) < threshold)
+				gomo->camera->dist = target_dist;
+		}
+	} else if (ANIMATE) {
+		float target_av = PI * 0.75f;
+		float target_ah = 0.0f;
+		float target_dist = 2.0f;
+		float threshold = 0.001f;
+		float lerp_speed = 0.1f;
+		
+		// Check if we need to animate
+		if (fabsf(gomo->camera->av - target_av) > threshold || 
+			fabsf(gomo->camera->ah - target_ah) > threshold || 
+			fabsf(gomo->camera->dist - target_dist) > threshold) {
+			
+			// Smooth interpolation with easing
+			gomo->camera->av += (target_av - gomo->camera->av) * lerp_speed;
+			gomo->camera->ah += (target_ah - gomo->camera->ah) * lerp_speed;
+			gomo->camera->dist += (target_dist - gomo->camera->dist) * lerp_speed;
+			
+			// Snap to target values when very close
+			if (fabsf(target_av - gomo->camera->av) < threshold)
+				gomo->camera->av = target_av;
+			if (fabsf(target_ah - gomo->camera->ah) < threshold)
+				gomo->camera->ah = target_ah;
+			if (fabsf(target_dist - gomo->camera->dist) < threshold)
+				gomo->camera->dist = target_dist;
+		} else {
+			gomo->camera->options ^= 1 << 9;
+		}
+	}
 }
 
 int main(void)
@@ -102,6 +151,7 @@ int main(void)
 	while (!glfwWindowShouldClose(gomo.window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		animateCamera(&gomo);
 		updateCamera(&gomo);
 
 		// Draw HUD
@@ -137,6 +187,7 @@ int main(void)
 			{
 				glUseProgram(gomo.shader->shaderProgramStones);
 				glUniformMatrix4fv(gomo.shaderID.mvpID, 1, GL_FALSE, &gomo.camera->mvp[0]);
+				glUniform1f(gomo.shaderID.timeID, (float)t);
 
 				glBindTexture(GL_TEXTURE_2D, 0);
 				glDrawArraysInstanced(GL_TRIANGLES, 0, gomo.obj->nb_vertices, gomo.nb_stones);
@@ -145,7 +196,6 @@ int main(void)
 			{
 				glUseProgram(gomo.shader->shaderProgram);
 				glUniformMatrix4fv(gomo.shaderID.mvpID, 1, GL_FALSE, &gomo.camera->mvp[0]);
-				glBindTexture(GL_TEXTURE_2D, gomo.textures[1]);
 				glDrawArrays(GL_TRIANGLES, 0, gomo.obj->nb_vertices);
 			}
 			if (gomo.obj->next == NULL)

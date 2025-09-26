@@ -105,7 +105,7 @@ int intersect(ray_t ray, hit_t *intersection)
         return 0;
 
     intersection->point.x = ray.origin.x + t * ray.direction.x;
-    intersection->point.y = -0.26f; // Goban height
+    intersection->point.y = -5.904f; // Goban height
     intersection->point.z = ray.origin.z + t * ray.direction.z;
 
 
@@ -181,10 +181,10 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 	if (yoffset)
 	{
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
-		if (!(TOP_VIEW))
+		if (!(TOP_VIEW) && !(ANIMATE))
 		{
 			float zoom = yoffset * (log(gomo->camera->dist + 7.5) - 2);
-			if (gomo->camera->dist - zoom >= 1.0f && gomo->camera->dist - zoom <= 20.0f) //3.4
+			if (gomo->camera->dist - zoom >= 1.0f /*&& gomo->camera->dist - zoom <= 3.4f*/)
 				gomo->camera->dist -= zoom;
 		}
 	}
@@ -265,7 +265,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 		}
 		else if (key == GLFW_KEY_V)
 		{
-			gomo->camera->options ^= 1 << 8; // top view
+			if (TOP_VIEW && !(ANIMATE)) gomo->camera->options ^= 1 << 9; // animate
+			else if (!(TOP_VIEW) && ANIMATE) gomo->camera->options ^= 1 << 9; // animate
+			gomo->camera->options ^= 1 << 8; // free view
 		}
 	}
 }

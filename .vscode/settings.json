@@ -4,6 +4,9 @@
     "files.associations": {
         "cstring": "c",
         "gomo.h": "c",
-        "stb_image.h": "c"
+        "stb_image.h": "c",
+        "span": "c",
+        "freetype.h": "c",
+        "stdio.h": "c"
     }
 }

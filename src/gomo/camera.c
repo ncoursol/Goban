@@ -110,9 +110,7 @@ void camera(gomo_t *gomo, vec3_t center, vec3_t up)
 {
 	if (gomo->camera->mvp != NULL)
 		free_null((void *)gomo->camera->mvp);
-	gomo->shaderID.mvpID = glGetUniformLocation(gomo->shader->shaderProgram, "MVP");
-	gomo->shaderID.orthoID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "ortho");
-	gomo->camera->projection = perspective(gomo->camera->fov, (float)WIDTH / (float)HEIGHT, 0.2f, 1000.0f);
+	gomo->camera->projection = perspective(gomo->camera->fov, (float)WIDTH / (float)HEIGHT, 0.2f, 250.0f);
 	gomo->camera->view = lookAt(gomo->camera->eye, center, up);
 	gomo->camera->model = new_mat4_model();
 	/*
