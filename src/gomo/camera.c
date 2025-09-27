@@ -108,22 +108,33 @@ GLfloat *lookAt(const vec3_t eye, const vec3_t center, const vec3_t up)
 
 void camera(gomo_t *gomo, vec3_t center, vec3_t up)
 {
-	if (gomo->camera->mvp != NULL)
-		free_null((void *)gomo->camera->mvp);
+	// Free previous matrices if they exist
+	if (gomo->camera->mvp) {
+		free(gomo->camera->mvp);
+		gomo->camera->mvp = NULL;
+	}
+	if (gomo->camera->projection) {
+		free(gomo->camera->projection);
+		gomo->camera->projection = NULL;
+	}
+	if (gomo->camera->view) {
+		free(gomo->camera->view);
+		gomo->camera->view = NULL;
+	}
+	if (gomo->camera->ortho) {
+		free(gomo->camera->ortho);
+		gomo->camera->ortho = NULL;
+	}
+	
 	gomo->camera->projection = perspective(gomo->camera->fov, (float)WIDTH / (float)HEIGHT, 0.2f, 250.0f);
 	gomo->camera->view = lookAt(gomo->camera->eye, center, up);
 	gomo->camera->model = new_mat4_model();
-	/*
-	gomo->camera->model[0] = gomo->camera->scale;
-	gomo->camera->model[5] = gomo->camera->scale;
-	gomo->camera->model[10] = gomo->camera->scale;
-	*/
+
 	gomo->camera->mvp = prod_mat4(prod_mat4(gomo->camera->model, gomo->camera->view), gomo->camera->projection);
 	gomo->camera->ortho = orthographic(0, WIDTH, 0, HEIGHT, 0.0f, 1000.0f);
 
-	/* free_null((void *)gomo->camera->projection);
-	free_null((void *)gomo->camera->view); */
-	free_null((void *)gomo->camera->model);
+	free(gomo->camera->model);
+	gomo->camera->model = NULL;
 }
 
 void init_camera(gomo_t *gomo)

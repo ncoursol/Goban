@@ -115,29 +115,23 @@ int intersect(ray_t ray, hit_t *intersection)
 ray_t createRay(gomo_t *gomo, double xpos, double ypos)
 {
     ray_t ray;
-    char tmp[200];
 
     // Convert screen coordinates to normalized device coordinates (NDC)
     float ndcX = (2.0f * (float)xpos) / (float)WIDTH - 1.0f;
     float ndcY = 1.0f - (2.0f * (float)ypos) / (float)HEIGHT;
 	vec4_t ray_clip = {ndcX, ndcY, -1.0f, 1.0f};
-	vec4_t ray_eye = mulv_mat4(inv_mat4(gomo->camera->projection), ray_clip);
+	float *inv_proj = inv_mat4(gomo->camera->projection);
+	float *inv_view = inv_mat4(gomo->camera->view);
+	vec4_t ray_eye = mulv_mat4(inv_proj, ray_clip);
 	ray_eye = (vec4_t){ray_eye.x, ray_eye.y, -1.0f, 0.0f};
-	vec4_t ray_world = mulv_mat4(inv_mat4(gomo->camera->view), ray_eye);
+	vec4_t ray_world = mulv_mat4(inv_view, ray_eye);
 	ray.direction = norm_vec3((vec3_t){ray_world.x, ray_world.y, ray_world.z});
-	
+
+	free(inv_proj);
+	free(inv_view);
+
     ray.origin = gomo->camera->eye;
 	ray.direction = norm_vec3(ray.direction); // Normalize the direction vector
-
-    // Debug text
-    sprintf(tmp, "mouse NDC: x[%f] y[%f]", ndcX, ndcY);
-    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 50, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 2);
-    sprintf(tmp, "origin    : x[%f] y[%f] z[%f]", ray.origin.x, ray.origin.y, ray.origin.z);
-    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 80, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 3);
-    sprintf(tmp, "direction : x[%f] y[%f] z[%f]", ray.direction.x, ray.direction.y, ray.direction.z);
-    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 110, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 4);
-	sprintf(tmp, "dist : %f", gomo->camera->dist);
-    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 140, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 4);
 
     return ray;
 }
@@ -184,7 +178,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 		if (!(TOP_VIEW) && !(ANIMATE))
 		{
 			float zoom = yoffset * (log(gomo->camera->dist + 7.5) - 2);
-			if (gomo->camera->dist - zoom >= 1.0f /*&& gomo->camera->dist - zoom <= 3.4f*/)
+			if (gomo->camera->dist - zoom >= 1.0f && gomo->camera->dist - zoom <= 3.4f)
 				gomo->camera->dist -= zoom;
 		}
 	}

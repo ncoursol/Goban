@@ -248,18 +248,31 @@ void init_obj(gomo_t *gomo)
 	gomo->obj->faces_size = 0;
 	gomo->obj->nb_faces = 0;
 	gomo->obj->nb_vertices = 0;
+	gomo->obj->materials = NULL;
+	gomo->obj->materials_ids = NULL;
+	gomo->obj->obj = NULL;
+	gomo->obj->VBO = 0;
+	gomo->obj->VAO = 0;
+	gomo->obj->next = NULL;
+	gomo->obj->first = NULL;
+	
 	if (!(gomo->obj->faces = (data_t **)malloc(sizeof(data_t *) * V_BUFF_SIZE)))
 		exit_callback(gomo, 6, "faces malloc failed");
-	if (!(gomo->obj->materials = (material_t *)malloc(sizeof(material_t) * V_BUFF_SIZE)))
+	memset(gomo->obj->faces, 0, sizeof(data_t *) * V_BUFF_SIZE);
+	
+	if (!(gomo->obj->materials = (material_t *)malloc(sizeof(material_t))))
 		exit_callback(gomo, 7, "materials malloc failed");
+	memset(gomo->obj->materials, 0, sizeof(material_t));
+	gomo->obj->materials->first = gomo->obj->materials;
+	
 	gomo->obj->faces_size = V_BUFF_SIZE;
-	gomo->obj->obj = NULL;
+	
 	for (int i = 0; i < 3; i++)
 	{
 		gomo->obj->min[i] = 0;
 		gomo->obj->max[i] = 0;
 	}
-	gomo->obj->next = NULL;
+	
 	init_face_data(gomo, 1);
 }
 
@@ -282,34 +295,51 @@ void init_board(gomo_t *gomo)
 
 void init_gomo(gomo_t *gomo)
 {
-	gomo->obj = NULL;
-	gomo->shader = NULL;
-	gomo->camera = NULL;
+	// Initialize all pointers to NULL first
+	memset(gomo, 0, sizeof(gomo_t));
+	
 	gomo->tmp_stone = 0;
 	gomo->cursor = 0;
+	gomo->nb_stones = 0;
+	gomo->nb_lines = 0;
 	gomo->tmp_hit = (hit_t){0, 0, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}};
+	
 	if (!(gomo->obj = (obj_t *)malloc(sizeof(obj_t))))
 		exit_callback(gomo, 0, "object malloc failed");
+	memset(gomo->obj, 0, sizeof(obj_t));
 	gomo->obj->id = 0;
+	
 	if (!(gomo->stone = (instance_t *)malloc(sizeof(instance_t) * 19 * 19)))
 		exit_callback(gomo, 1, "stone malloc failed");
-	gomo->nb_stones = 0;
+	memset(gomo->stone, 0, sizeof(instance_t) * 19 * 19);
 	
 	if (!(gomo->shader = (shader_t *)malloc(sizeof(shader_t))))
-		exit_callback(gomo, 4, "vertices malloc failed");
+		exit_callback(gomo, 4, "shader malloc failed");
+	memset(gomo->shader, 0, sizeof(shader_t));
+	
 	if (!(gomo->camera = (camera_t *)malloc(sizeof(camera_t))))
 		exit_callback(gomo, 5, "camera malloc failed");
+	memset(gomo->camera, 0, sizeof(camera_t));
+	
 	if (!(gomo->board = (grid_t *)malloc(sizeof(grid_t) * 19 * 19)))
 		exit_callback(gomo, 6, "board malloc failed");
+	memset(gomo->board, 0, sizeof(grid_t) * 19 * 19);
+	
 	if (!(gomo->fonts = (font_t *)malloc(sizeof(font_t))))
 		exit_callback(gomo, 7, "fonts malloc failed");
+	memset(gomo->fonts, 0, sizeof(font_t));
+	
 	if (!(gomo->text = (text_t *)malloc(sizeof(text_t) * NB_TEXT)))
 		exit_callback(gomo, 8, "text malloc failed");
+	memset(gomo->text, 0, sizeof(text_t) * NB_TEXT);
+	
 	if (!(gomo->game_data = (game_data_t *)malloc(sizeof(game_data_t))))
 		exit_callback(gomo, 9, "game data malloc failed");
+	memset(gomo->game_data, 0, sizeof(game_data_t));
+	
 	if (!(gomo->game_data->moves = (move_t *)malloc(sizeof(move_t) * MAX_MOVES)))
 		exit_callback(gomo, 10, "game data move malloc failed");
-
+	memset(gomo->game_data->moves, 0, sizeof(move_t) * MAX_MOVES);
 }
 
 void new_obj(gomo_t *gomo) {
@@ -327,7 +357,7 @@ void new_obj(gomo_t *gomo) {
 }
 
 void read_game(gomo_t *gomo) {
-	read_sgf_game(gomo, "./resources/games/Agon/01/1.sgf");
+	read_sgf_game(gomo, "./resources/games/game1.sgf");
 }
 
 void init_all(gomo_t *gomo)
@@ -349,9 +379,11 @@ void init_all(gomo_t *gomo)
 	load_textures(gomo);
 	init_fonts(gomo);
 	load_fonts(gomo);
-	read_game(gomo);
+	//read_game(gomo);
 
 	gomo->shaderID.mvpID = glGetUniformLocation(gomo->shader->shaderProgram, "MVP");
-	gomo->shaderID.orthoID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "ortho");
+	gomo->shaderID.projID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "proj");
+	gomo->shaderID.playerPosID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "playerPos");
+	gomo->shaderID.centerTextPosID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "centerTextPos");
 	gomo->shaderID.timeID = glGetUniformLocation(gomo->shader->shaderProgramStones, "time");
 }

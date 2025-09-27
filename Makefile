@@ -18,7 +18,7 @@ LIBGLFW3 = ext/glfw-3.3.5/build/src/libglfw3.a
 LIBGLAD = ext/glad/libglad.a
 LIBFFT = ext/freetype/objs/libfreetype.a
 
-CC = clang #-fsanitize=address -g
+CC = clang
 
 CFLAGS = -Wall -Wextra -Werror
 CFLAGS += -I./src/ -I./ext/glfw-3.3.5/include/ -I./ext/glad/include/ -I./ext/freetype/include/

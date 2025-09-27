@@ -31,7 +31,7 @@
 
 #define MSPEED 0.005f // Mouse speed
 #define PI 3.14159265359
-#define V_BUFF_SIZE 6000000
+#define V_BUFF_SIZE 100000
 #define HUD gomo.camera->options >> 0 & 1		  // Display HUD (yes/no)
 #define LEFT_MOUSE gomo->camera->options >> 5 & 1 // left mouse button press (yes/no)
 #define TOP_VIEW gomo->camera->options >> 8 & 1	  // top view (yes/no)
@@ -108,6 +108,7 @@ typedef struct move_s
 typedef struct text_s
 {
 	int id;
+	int proj;
 	char *font;
 	char *text;
 	float scale;
@@ -233,8 +234,10 @@ typedef struct shaderID_s
 	GLuint textureID1;
 	GLuint textureID2;
 	GLuint timeID;
+	GLuint playerPosID;
+	GLuint centerTextPosID;
 	GLuint mvpID;		// MVP ID
-	GLuint orthoID;		// Ortho ID
+	GLuint projID;		// Ortho ID
 } shaderID_t;
 
 typedef struct shader_s
@@ -328,7 +331,7 @@ void create_obj(gomo_t *gomo, float *vertices, float *normals, float *textures);
 
 // Render fct
 void camera(gomo_t *gomo, vec3_t center, vec3_t up);
-void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, float scale, vec3_t color, int id);
+void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, float scale, vec3_t color, int proj, int id);
 void draw_line(gomo_t *gomo, vec3_t start, vec3_t end, vec3_t color);
 void render_all_text(gomo_t *gomo);
 void render_lines(gomo_t *gomo);

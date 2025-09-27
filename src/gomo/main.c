@@ -156,27 +156,24 @@ int main(void)
 
 		// Draw HUD
 
-		// Frame rate (ms/f)
 		t = glfwGetTime();
 		nb_frames++;
-
-		char buff[100];
-		char buff2[100];
-		if (t - last_t >= 1.0f)
-		{
-			gcvt((double)(nb_frames), 2, buff);
-			gcvt(1000.0f / (double)(nb_frames), 5, buff2);
-			strcat(buff, " fps");
-			strcat(buff2, " ms/f");
-			nb_frames = 0;
-			last_t += 1.0;
-			add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0);
-			add_text_to_render(&gomo, "font_text2", buff2, (vec3_t){70, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 1);
+		if (t - last_t >= 1.0) {
+		    double fps = (double)nb_frames / (t - last_t);
+		    double ms_per_frame = 1000.0 / fps;
+		
+		    // Use snprintf for better control over precision
+		    char buff[100];
+		    char buff2[100];
+		    snprintf(buff, sizeof(buff), "%.1f fps", fps);
+		    snprintf(buff2, sizeof(buff2), "%.3f ms/f", ms_per_frame);
+		
+		    nb_frames = 0;
+		    last_t = t;  // Reset to current time, not last_t + 1.0
+		
+		    add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 0);
+		    add_text_to_render(&gomo, "font_text2", buff2, (vec3_t){80, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 1);
 		}
-
-		// Render lines
-		if (HUD)
-			render_lines(&gomo);
 
 		// Draw each object
 		gomo.obj = gomo.obj->first;
@@ -188,7 +185,6 @@ int main(void)
 				glUseProgram(gomo.shader->shaderProgramStones);
 				glUniformMatrix4fv(gomo.shaderID.mvpID, 1, GL_FALSE, &gomo.camera->mvp[0]);
 				glUniform1f(gomo.shaderID.timeID, (float)t);
-
 				glBindTexture(GL_TEXTURE_2D, 0);
 				glDrawArraysInstanced(GL_TRIANGLES, 0, gomo.obj->nb_vertices, gomo.nb_stones);
 			}
@@ -202,13 +198,12 @@ int main(void)
 				break;
 			gomo.obj = gomo.obj->next;
 		}
-
 		glBindVertexArray(0);
 
-
-		// Render all text
-		if (HUD)
+		if (HUD) {
+			render_lines(&gomo);
 			render_all_text(&gomo);
+		}
 
 		glfwSwapBuffers(gomo.window);
 		glfwPollEvents();

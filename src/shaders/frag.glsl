@@ -9,7 +9,7 @@ uniform sampler2D textures[12];
 
 void main() {
     if (TexIndex == -1) {
-        FragColor = vec4(1.0f, 1.0f, 1.0f, 0.2f);
+        FragColor = vec4(1.0f, 1.0f, 1.0f, 0.4f);
     } else if (TexIndex == 0) {
         FragColor = texture(textures[TexIndex], vec2(TexCoord.x, 1.0f - TexCoord.y));
     } else {

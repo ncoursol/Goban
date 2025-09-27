@@ -110,13 +110,15 @@ void    load_material(gomo_t *gomo, char *name)
 	}
 	free_null((void *)line);
 	fclose(fp);
-    if (!(gomo->obj->materials_ids = (int *)malloc(sizeof(int) * i)))
-		exit_callback(gomo, 56, "vertices malloc failed");
-    for (unsigned int j = 0; j < i; j++)
-    {
-        gomo->obj->materials_ids[j] = -1;
+    if (i > 0) {
+        if (!(gomo->obj->materials_ids = (int *)malloc(sizeof(int) * (i + 1))))
+            exit_callback(gomo, 56, "materials_ids malloc failed");
+        for (unsigned int j = 0; j < i; j++)
+        {
+            gomo->obj->materials_ids[j] = -1;
+        }
+        gomo->obj->materials_ids[i] = -2;
     }
-    gomo->obj->materials_ids[i] = -2;
     /*
     gomo->obj->materials = gomo->obj->materials->first;
     while (gomo->obj->materials != NULL)

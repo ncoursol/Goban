@@ -14,60 +14,66 @@
 
 char *parse_shader_src(char *path)
 {
-	char buf[V_BUFF_SIZE + 1];
-	int fd;
-	char *str;
-	char *tmp;
-	int i;
-
-	if ((fd = open(path, O_RDONLY)) > 2)
-	{
-		str = NULL;
-		while ((i = read(fd, buf, V_BUFF_SIZE)) > 0)
-		{
-			if (i > 0)
-			{
-				buf[i] = '\0';
-				tmp = str;
-				if (!(str = strjoin(str, buf)))
-					return (NULL);
-				if (tmp)
-				{
-					free(tmp);
-					tmp = NULL;
-				}
-			}
-			else
-			{
-				break;
-			}
-		}
-		close(fd);
-		return (str);
+	FILE *file;
+	char *str = NULL;
+	long file_size;
+	
+	file = fopen(path, "r");
+	if (!file)
+		return NULL;
+	
+	// Get file size
+	fseek(file, 0, SEEK_END);
+	file_size = ftell(file);
+	fseek(file, 0, SEEK_SET);
+	
+	if (file_size <= 0) {
+		fclose(file);
+		return NULL;
 	}
-	return (NULL);
+	
+	// Allocate buffer for entire file
+	str = (char*)malloc(file_size + 1);
+	if (!str) {
+		fclose(file);
+		return NULL;
+	}
+	
+	// Read entire file
+	size_t bytes_read = fread(str, 1, file_size, file);
+	str[bytes_read] = '\0';
+	
+	fclose(file);
+	return str;
 }
 
 void load_shader(gomo_t *gomo, unsigned int *shader, char *src, int type)
 {
 	GLenum errCode;
 	int success;
-	const char *tmp;
+	char *shader_source;
 
-	if (!(tmp = parse_shader_src(src)))
+	if (!(shader_source = parse_shader_src(src)))
 		exit_callback(gomo, 27, "Shader parsing failed");
 
 	*shader = glCreateShader(type);
-	if ((errCode = glGetError()) != GL_NO_ERROR || !*shader)
+	if ((errCode = glGetError()) != GL_NO_ERROR || !*shader) {
+		free(shader_source);
 		exit_callback(gomo, 28, getErrorString(errCode));
+	}
 
+	const char *tmp = shader_source;
 	glShaderSource(*shader, 1, &tmp, NULL);
-	if ((errCode = glGetError()) != GL_NO_ERROR)
+	if ((errCode = glGetError()) != GL_NO_ERROR) {
+		free(shader_source);
 		exit_callback(gomo, 29, getErrorString(errCode));
+	}
 
 	glCompileShader(*shader);
-	if ((errCode = glGetError()) != GL_NO_ERROR)
+	if ((errCode = glGetError()) != GL_NO_ERROR) {
+		free(shader_source);
 		exit_callback(gomo, 30, getErrorString(errCode));
+	}
 
 	glGetShaderiv(*shader, GL_COMPILE_STATUS, &success);
 	if (!success)
@@ -75,8 +81,11 @@ void load_shader(gomo_t *gomo, unsigned int *shader, char *src, int type)
 		GLchar infoLog[512];
 		glGetShaderInfoLog(*shader, sizeof(infoLog), NULL, infoLog);
 		printf("error: %s\n", infoLog);
+		free(shader_source);
 		exit_callback(gomo, 31, "Shader compilation failed");
 	}
+	
+	free(shader_source);
 }
 
 void init_shaderProgram(gomo_t *gomo, unsigned int *prog, unsigned int *vert, unsigned int *frag)

@@ -14,7 +14,7 @@ void render_lines(gomo_t *gomo)
 
 void update_lines_buffer(gomo_t *gomo)
 {
-    if (gomo->shader != NULL && gomo->shader->shaderProgramLine != 0) {
+    if (gomo->shader != NULL && gomo->shader->shaderProgramLine != 0 && gomo->lines_buffer != NULL) {
         glUseProgram(gomo->shader->shaderProgramLine);
         glUniformMatrix4fv(gomo->shaderID.mvpID, 1, GL_FALSE, &gomo->camera->mvp[0]);
         glBindVertexArray(gomo->lineVAO);
@@ -23,9 +23,10 @@ void update_lines_buffer(gomo_t *gomo)
         glBufferData(GL_ARRAY_BUFFER, gomo->nb_lines * 12 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
         float *data = (float *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
-	    memcpy(data, &gomo->lines_buffer[0], gomo->nb_lines * 12 * sizeof(float));
-
-	    glUnmapBuffer(GL_ARRAY_BUFFER);
+        if (data != NULL) {
+            memcpy(data, &gomo->lines_buffer[0], gomo->nb_lines * 12 * sizeof(float));
+            glUnmapBuffer(GL_ARRAY_BUFFER);
+        }
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
@@ -99,6 +100,10 @@ void free_lines(gomo_t *gomo)
     if (gomo->lines) {
         free(gomo->lines);
         gomo->lines = NULL;
+    }
+    if (gomo->lines_buffer) {
+        free(gomo->lines_buffer);
+        gomo->lines_buffer = NULL;
     }
     gomo->nb_lines = 0;
 }
