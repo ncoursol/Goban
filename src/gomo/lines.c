@@ -2,6 +2,43 @@
 
 void render_lines(gomo_t *gomo)
 {
+    // draw gizmo lines
+    draw_line(gomo, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){100.0f, 0.0f, 0.0f}, (vec3_t){1.0f, 0.0f, 0.0f}); // X axis
+    draw_line(gomo, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 100.0f, 0.0f}, (vec3_t){0.0f, 1.0f, 0.0f}); // Y axis
+    draw_line(gomo, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 0.0f, 100.0f}, (vec3_t){0.0f, 0.0f, 1.0f}); // Z axis
+
+    draw_line(gomo, (vec3_t){1.0f, 0.0f, 0.04f}, (vec3_t){1.0f, 0.0f, -0.04f}, (vec3_t){1.0f, 0.0f, 0.0f}); // 1m X axis
+    draw_line(gomo, (vec3_t){0.0f, 1.0f, 0.04f}, (vec3_t){0.0f, 1.0f, -0.04f}, (vec3_t){0.0f, 1.0f, 0.0f}); // 1m Y axis
+    draw_line(gomo, (vec3_t){0.04f, 0.0f, 1.0f}, (vec3_t){-0.04f, 0.0f, 1.0f}, (vec3_t){0.0f, 0.0f, 1.0f}); // 1m Z axis
+    draw_line(gomo, (vec3_t){2.0f, 0.0f, 0.04f}, (vec3_t){2.0f, 0.0f, -0.04f}, (vec3_t){1.0f, 0.0f, 0.0f}); // 2m X axis
+    draw_line(gomo, (vec3_t){0.0f, 2.0f, 0.04f}, (vec3_t){0.0f, 2.0f, -0.04f}, (vec3_t){0.0f, 1.0f, 0.0f}); // 2m Y axis
+    draw_line(gomo, (vec3_t){0.04f, 0.0f, 2.0f}, (vec3_t){-0.04f, 0.0f, 2.0f}, (vec3_t){0.0f, 0.0f, 1.0f}); // 2m Z axis
+
+    for (int i = -19; i < 19; i += 2) {
+        for (int j = -19; j < 19; j += 2)
+        {
+            draw_line(gomo, (vec3_t){(i + 1) * 0.0245f, 0.4f, (j + 1) * 0.0245f}, (vec3_t){(i + 1) * 0.0245f, 0.47f, (j + 1) * 0.0245f}, (vec3_t){1.0f, 0.0f, 1.0f});
+        }
+        
+    }
+/*
+    for (int i = 0; i < NB_TEXT; i++)
+	{
+		text_t *text = &gomo->text[i];
+		if (!text->id || !text->text || text->proj != 1 || text->id == 2)
+			continue;
+
+		float textWidth = calculate_text_width(gomo, text->font, text->text, text->scale);
+        float textHeight = 48.0f * text->scale;
+
+    	draw_line(gomo, (vec3_t){text->pos.x - textWidth / 2, text->pos.y - textHeight / 2, text->pos.z}, (vec3_t){text->pos.x + textWidth / 2, text->pos.y + textHeight / 2, text->pos.z}, (vec3_t){0.0f, 0.0f, 1.0f});
+    	draw_line(gomo, (vec3_t){text->pos.x - textWidth / 2, text->pos.y + textHeight / 2, text->pos.z}, (vec3_t){text->pos.x + textWidth / 2, text->pos.y + textHeight / 2, text->pos.z}, (vec3_t){0.0f, 0.0f, 1.0f});
+    	draw_line(gomo, (vec3_t){text->pos.x + textWidth / 2, text->pos.y + textHeight / 2, text->pos.z}, (vec3_t){text->pos.x + textWidth / 2, text->pos.y - textHeight / 2, text->pos.z}, (vec3_t){0.0f, 0.0f, 1.0f});
+    	draw_line(gomo, (vec3_t){text->pos.x + textWidth / 2, text->pos.y - textHeight / 2, text->pos.z}, (vec3_t){text->pos.x - textWidth / 2, text->pos.y - textHeight / 2, text->pos.z}, (vec3_t){0.0f, 0.0f, 1.0f});
+    	draw_line(gomo, (vec3_t){text->pos.x - textWidth / 2, text->pos.y - textHeight / 2, text->pos.z}, (vec3_t){text->pos.x - textWidth / 2, text->pos.y + textHeight / 2, text->pos.z}, (vec3_t){0.0f, 0.0f, 1.0f});
+    }*/
+
+
     glUseProgram(gomo->shader->shaderProgramLine);
     glUniformMatrix4fv(gomo->shaderID.mvpID, 1, GL_FALSE, &gomo->camera->mvp[0]);
     glBindVertexArray(gomo->lineVAO);
@@ -35,7 +72,9 @@ void update_lines_buffer(gomo_t *gomo)
 
 void draw_line(gomo_t *gomo, vec3_t start, vec3_t end, vec3_t color) {
     static int i = 0;
-    if (i >= V_BUFF_SIZE) {
+
+    i = gomo->nb_lines;
+    if (i >= MAX_LINES) {
         i = 0;
     }
     gomo->lines[i].start = start;
@@ -57,8 +96,8 @@ void draw_line(gomo_t *gomo, vec3_t start, vec3_t end, vec3_t color) {
     gomo->lines_buffer[offset + 11] = color.z;
 
     gomo->nb_lines++;
-    if (gomo->nb_lines >= V_BUFF_SIZE) {
-        gomo->nb_lines = V_BUFF_SIZE;
+    if (gomo->nb_lines >= MAX_LINES) {
+        gomo->nb_lines = MAX_LINES;
     }
     i++;
     update_lines_buffer(gomo);
@@ -80,18 +119,6 @@ void init_lines(gomo_t *gomo)
     for (int i = 0; i < V_BUFF_SIZE * 12; i++)
     {
         gomo->lines_buffer[i] = 0.0f;
-    }
-    // draw gizmo lines
-    draw_line(gomo, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){100.0f, 0.0f, 0.0f}, (vec3_t){1.0f, 0.0f, 0.0f}); // X axis
-    draw_line(gomo, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 100.0f, 0.0f}, (vec3_t){0.0f, 1.0f, 0.0f}); // Y axis
-    draw_line(gomo, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 0.0f, 100.0f}, (vec3_t){0.0f, 0.0f, 1.0f}); // Z axis
-
-    for (int i = -19; i < 19; i += 2) {
-        for (int j = -19; j < 19; j += 2)
-        {
-            draw_line(gomo, (vec3_t){(i + 1) * 0.0245f, 0.4f, (j + 1) * 0.0245f}, (vec3_t){(i + 1) * 0.0245f, 0.47f, (j + 1) * 0.0245f}, (vec3_t){1.0f, 0.0f, 1.0f});
-        }
-        
     }
 }
 

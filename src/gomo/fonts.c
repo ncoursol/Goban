@@ -208,24 +208,26 @@ void render_all_text(gomo_t *gomo)
 {
     for (int i = 0; i < NB_TEXT; i++) {
         if (gomo->text[i].text != NULL) {
-            vec3_t centerTextPos = {0.0f, 0.0f, 0.0f};
+            vec3_t textCenter = {0.0f, 0.0f, 0.0f};
+            vec3_t renderPos = gomo->text[i].pos;
+            
             if (gomo->text[i].proj == 1) {
-                // Calculate actual text width and height
                 float textWidth = calculate_text_width(gomo, gomo->text[i].font, gomo->text[i].text, gomo->text[i].scale);
                 float textHeight = 48.0f * gomo->text[i].scale; // Using font size of 48
                 
-                centerTextPos.x = gomo->text[i].pos.x + textWidth / 2.0f;
-                centerTextPos.y = gomo->text[i].pos.y + textHeight / 2.0f;
-                centerTextPos.z = gomo->text[i].pos.z;
+                textCenter = gomo->text[i].pos; // This is the center position
+                renderPos.x = gomo->text[i].pos.x - textWidth / 2.0f;  // Start position for text rendering
+                renderPos.y = gomo->text[i].pos.y - textHeight / 2.0f;
+                renderPos.z = gomo->text[i].pos.z;
             }
             
             glUseProgram(gomo->shader->shaderProgramHUD);
-            glUniform3fv(gomo->shaderID.centerTextPosID, 1, (float[3]){centerTextPos.x, centerTextPos.y, centerTextPos.z});
+            glUniform3fv(gomo->shaderID.cornerTextPosID, 1, (float[3]){textCenter.x, textCenter.y, textCenter.z});
             glUniform3fv(gomo->shaderID.playerPosID, 1, (float[3]){gomo->camera->eye.x, gomo->camera->eye.y, gomo->camera->eye.z});
             
             if (gomo->text[i].proj == 1)
-                render_text_3D(gomo, gomo->text[i].font, gomo->text[i].text, gomo->text[i].pos, gomo->text[i].scale, gomo->text[i].color);
-            else
+                render_text_3D(gomo, gomo->text[i].font, gomo->text[i].text, renderPos, gomo->text[i].scale, gomo->text[i].color);
+            else if (HUD)
                 render_text(gomo, gomo->text[i].font, gomo->text[i].text, gomo->text[i].pos, gomo->text[i].scale, gomo->text[i].color);
         }
     }
@@ -316,4 +318,9 @@ void load_fonts(gomo_t *gomo)
     load_ttf(gomo, "resources/Fonts/OxygenMono-Regular.otf", "font_text2");
 
     font_VAO(gomo);
+    add_text_to_render(gomo, "font_text2", "Main Menu", (vec3_t){0.0f, 1.5f, 0.0f}, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 2);
+	add_text_to_render(gomo, "font_text2", "Human VS Human", (vec3_t){0.0f, 1.00f, 0.0f}, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 3);
+	add_text_to_render(gomo, "font_text2", "Human VS IA", (vec3_t){0.0f, 0.80f, 0.0f}, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 4);
+
+
 }

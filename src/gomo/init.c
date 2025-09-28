@@ -384,6 +384,6 @@ void init_all(gomo_t *gomo)
 	gomo->shaderID.mvpID = glGetUniformLocation(gomo->shader->shaderProgram, "MVP");
 	gomo->shaderID.projID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "proj");
 	gomo->shaderID.playerPosID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "playerPos");
-	gomo->shaderID.centerTextPosID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "centerTextPos");
+	gomo->shaderID.cornerTextPosID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "cornerTextPos");
 	gomo->shaderID.timeID = glGetUniformLocation(gomo->shader->shaderProgramStones, "time");
 }

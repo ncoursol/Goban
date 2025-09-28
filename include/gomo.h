@@ -32,14 +32,18 @@
 #define MSPEED 0.005f // Mouse speed
 #define PI 3.14159265359
 #define V_BUFF_SIZE 100000
-#define HUD gomo.camera->options >> 0 & 1		  // Display HUD (yes/no)
-#define LEFT_MOUSE gomo->camera->options >> 5 & 1 // left mouse button press (yes/no)
-#define TOP_VIEW gomo->camera->options >> 8 & 1	  // top view (yes/no)
-#define ANIMATE gomo->camera->options >> 9 & 1	  // animate camera (yes/no)
-#define RAY_T_MIN 0.0001f						  // Minimum ray t value
+												  // 00000000 Options
+#define HUD gomo->camera->options >> 0 & 1		  // |||||||↳ 0 - Display HUD (yes/no)
+#define ANIMATE gomo->camera->options >> 1 & 1	  // ||||||↳ 1 - Animate camera (yes/no)
+#define LEFT_MOUSE gomo->camera->options >> 2 & 1 // |||||↳ 2 - Left mouse button press (yes/no)
+#define TOP_VIEW gomo->camera->options >> 3 & 1	  // ||||↳ 3 - Top view (yes/no)
+#define ROTATION gomo->camera->options >> 4 & 1	  // |||↳ 4 - Rotation (yes/no)
+
+#define RAY_T_MIN 0.0001f
 
 #define NB_TEXTURES 12 // Number of textures
 
+#define MAX_LINES 1000
 #define MAX_MOVES 500
 #define MAX_NAME_LEN 64
 #define MAX_EVENT_LEN 128
@@ -235,7 +239,7 @@ typedef struct shaderID_s
 	GLuint textureID2;
 	GLuint timeID;
 	GLuint playerPosID;
-	GLuint centerTextPosID;
+	GLuint cornerTextPosID;
 	GLuint mvpID;		// MVP ID
 	GLuint projID;		// Ortho ID
 } shaderID_t;
@@ -292,6 +296,7 @@ data_t *data_copy(data_t *a, data_t *b);
 int count_space(char *a);
 int find_closest_case(gomo_t *gomo, vec3_t point);
 int read_sgf_game(gomo_t *gomo, char *filename);
+float calculate_text_width(gomo_t *gomo, char *font, char *text, float scale);
 
 
 // Init fct

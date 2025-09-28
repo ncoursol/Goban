@@ -142,7 +142,7 @@ void init_camera(gomo_t *gomo)
 	vec3_t up;
 
 	set_scale(gomo);
-	gomo->camera->options = 11; // 00001011 (see boolean options include/gomo.h)
+	gomo->camera->options = 16; // 00010000 (see boolean options in include/gomo.h)
 	gomo->camera->fov = 60.0f;
 	gomo->camera->ah = RAD(10.0f);
 	gomo->camera->av = RAD(120.0f);

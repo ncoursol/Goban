@@ -90,7 +90,96 @@ void updateData(gomo_t *gomo)
 	glBindVertexArray(0);
 }
 
-int intersect(ray_t ray, hit_t *intersection)
+int ray_intersects_quad(gomo_t *gomo, ray_t ray, vec3_t quadPos, float halfWidth, float halfHeight)
+{
+	// Compute plane normal: use camera->eye and quadPos like the shader does
+	vec3_t toCamera = sub_vec3(gomo->camera->eye, quadPos);
+	toCamera = norm_vec3(toCamera); // normalize to match shader's normalize()
+	float angle = atan2f(toCamera.x, toCamera.z); // matches shader: atan(toCamera.x, toCamera.z)
+	float cosA = cosf(angle);
+	float sinA = sinf(angle);
+	vec3_t quadNormal = (vec3_t){ sinA, 0.0f, cosA };
+	// quadNormal is already unit length (sin^2+cos^2==1)
+
+	// Denominator for ray-plane intersection
+	float denom = dot_vec3(ray.direction, quadNormal);
+	if (fabsf(denom) < 1e-6f)
+		return 0; // Ray parallel to quad plane
+
+	// Compute t using general plane intersection: t = dot(P0 - O, N) / dot(D, N)
+	vec3_t p0_minus_o = (vec3_t){ quadPos.x - ray.origin.x, quadPos.y - ray.origin.y, quadPos.z - ray.origin.z };
+	float t = dot_vec3(p0_minus_o, quadNormal) / denom;
+	if (t < 0)
+		return 0; // intersection behind origin
+
+	// Intersection point in world space
+	vec3_t intersectionPoint;
+	intersectionPoint.x = ray.origin.x + t * ray.direction.x;
+	intersectionPoint.y = ray.origin.y + t * ray.direction.y;
+	intersectionPoint.z = ray.origin.z + t * ray.direction.z;
+
+	// Undo shader rotation: rotate intersection point by -angle around Y to text-local frame
+	float dx = intersectionPoint.x - quadPos.x;
+	float dz = intersectionPoint.z - quadPos.z;
+	float localX = dx * cosA + dz * sinA; // R(-a) * (dx,dz)
+	float localY = intersectionPoint.y - quadPos.y; // vertical in text local
+
+	if (localX >= -halfWidth && localX <= halfWidth &&
+		localY >= -halfHeight && localY <= halfHeight)
+	{
+		// debug markers
+		draw_line(gomo, (vec3_t){intersectionPoint.x - 0.1f, intersectionPoint.y, intersectionPoint.z}, (vec3_t){intersectionPoint.x + 0.1f, intersectionPoint.y, intersectionPoint.z}, (vec3_t){1.0f, 0.0f, 0.0f});
+		draw_line(gomo, (vec3_t){intersectionPoint.x, intersectionPoint.y - 0.1f, intersectionPoint.z}, (vec3_t){intersectionPoint.x, intersectionPoint.y + 0.1f, intersectionPoint.z}, (vec3_t){1.0f, 0.0f, 0.0f});
+		draw_line(gomo, (vec3_t){intersectionPoint.x, intersectionPoint.y, intersectionPoint.z - 0.1f}, (vec3_t){intersectionPoint.x, intersectionPoint.y, intersectionPoint.z + 0.1f}, (vec3_t){1.0f, 0.0f, 0.0f});
+		// draw normal as a line starting from intersectionPoint in world space
+		vec3_t normalEnd = add_vec3(intersectionPoint, prod_vec3(quadNormal, 0.5f));
+		draw_line(gomo, intersectionPoint, normalEnd, (vec3_t){0.0f, 1.0f, 0.0f});
+		return 1;
+	}
+
+	return 0;
+}
+
+int intersectText(gomo_t *gomo, ray_t ray, hit_t *intersection)
+{
+	for (int i = 0; i < NB_TEXT; i++)
+	{
+		text_t *text = &gomo->text[i];
+		if (!text->id || !text->text || text->proj != 1 || text->id == 2)
+			continue;
+
+		float textWidth = calculate_text_width(gomo, text->font, text->text, text->scale);
+		float textHeight = 48.0f * text->scale;
+		float halfWidth = textWidth * 0.5f;
+		float halfHeight = textHeight * 0.5f;
+
+		// Use stored text->pos as center; ray_intersects_quad will undo shader rotation and test in text-local XY
+		if (ray_intersects_quad(gomo, ray, text->pos, halfWidth, halfHeight))
+		{
+			// recompute t for hit point
+			float angle = gomo->camera->ah;
+			vec3_t quadNormal = (vec3_t){ sinf(angle), 0.0f, cosf(angle) };
+			float denom = dot_vec3(ray.direction, quadNormal);
+			if (fabsf(denom) < 1e-6f)
+				continue;
+			vec3_t p0_minus_o = (vec3_t){ text->pos.x - ray.origin.x, text->pos.y - ray.origin.y, text->pos.z - ray.origin.z };
+			float t = dot_vec3(p0_minus_o, quadNormal) / denom;
+			if (t < 0)
+				continue;
+
+			intersection->hit = text->id;
+			intersection->point.x = ray.origin.x + t * ray.direction.x;
+			intersection->point.y = ray.origin.y + t * ray.direction.y;
+			intersection->point.z = ray.origin.z + t * ray.direction.z;
+			intersection->normal = quadNormal;
+			return 1;
+		}
+	}
+	intersection->hit = -1;
+	return 0;
+}
+
+int intersectBoard(ray_t ray, hit_t *intersection)
 {
     float dDotN = dot_vec3(ray.direction, (vec3_t){0.0f, 1.0f, 0.0f});
 
@@ -142,6 +231,8 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && (action == GLFW_PRESS || action == GLFW_RELEASE))
 	{
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
+		if (ROTATION)
+			return ;
 		if (action == GLFW_PRESS && gomo->nb_stones < 361)
 		{
 			if (gomo->tmp_stone && (!gomo->board[gomo->tmp_stone - 1].state || gomo->board[gomo->tmp_stone - 1].state == 2)) {
@@ -153,9 +244,11 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 	} else if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))
 	{
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
-		if (!(gomo->camera->options >> 8 & 1))
+		if (ROTATION)
+			return ;
+		if (!(gomo->camera->options >> 3 & 1))
 		{
-			gomo->camera->options ^= 1 << 5;
+			gomo->camera->options ^= 1 << 2;
 			if (action == GLFW_PRESS)
 			{
 				glfwSetInputMode(gomo->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -175,7 +268,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 	if (yoffset)
 	{
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
-		if (!(TOP_VIEW) && !(ANIMATE))
+		if (!(TOP_VIEW) && !(ANIMATE) && !(ROTATION))
 		{
 			float zoom = yoffset * (log(gomo->camera->dist + 7.5) - 2);
 			if (gomo->camera->dist - zoom >= 1.0f && gomo->camera->dist - zoom <= 3.4f)
@@ -187,47 +280,41 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 {
 	gomo_t *gomo = glfwGetWindowUserPointer(window);
-	if (gomo->nb_stones < 361)
+	ray_t ray;
+	hit_t res;
+	ray = createRay(gomo, xpos, ypos);
+	gomo->obj = gomo->obj->first;
+	if (!(ROTATION) && gomo->nb_stones < 361 && intersectBoard(ray, &res))
 	{
-		ray_t ray;
-		hit_t res;
-		ray = createRay(gomo, xpos, ypos);
-		gomo->obj = gomo->obj->first;
-		if (intersect(ray, &res))
+		gomo->obj = gomo->obj->next;
+		int closest_case = find_closest_case(gomo, res.point);
+		if (closest_case >= 0 && gomo->board[closest_case].state == 0)
 		{
-			gomo->obj = gomo->obj->next;
-			int closest_case = find_closest_case(gomo, res.point);
-			if (closest_case >= 0 && gomo->board[closest_case].state == 0)
-			{
-				if (gomo->tmp_stone && gomo->tmp_stone - 1 != closest_case) {
-					gomo->board[gomo->tmp_stone - 1].state = 0;
-					gomo->board[gomo->tmp_stone - 1].color = (vec3_t){1.0f, 0.0f, 1.0f};
-				}
-				gomo->tmp_stone = closest_case + 1;
-				gomo->board[closest_case].state = 2;
-				gomo->board[closest_case].color = gomo->nb_stones % 2 ? (vec3_t){0.5f, 0.5f, 0.5f} : (vec3_t){0.8f, 0.8f, 0.8f};
-			} else if (closest_case < 0 && gomo->tmp_stone) {
+			if (gomo->tmp_stone && gomo->tmp_stone - 1 != closest_case) {
 				gomo->board[gomo->tmp_stone - 1].state = 0;
 				gomo->board[gomo->tmp_stone - 1].color = (vec3_t){1.0f, 0.0f, 1.0f};
-				gomo->tmp_stone = 0;
 			}
-			updateData(gomo);
+			gomo->tmp_stone = closest_case + 1;
+			gomo->board[closest_case].state = 2;
+			gomo->board[closest_case].color = gomo->nb_stones % 2 ? (vec3_t){0.5f, 0.5f, 0.5f} : (vec3_t){0.8f, 0.8f, 0.8f};
+		} else if (closest_case < 0 && gomo->tmp_stone) {
+			gomo->board[gomo->tmp_stone - 1].state = 0;
+			gomo->board[gomo->tmp_stone - 1].color = (vec3_t){1.0f, 0.0f, 1.0f};
+			gomo->tmp_stone = 0;
+		}
+		updateData(gomo);
+	} else if (ROTATION && intersectText(gomo, ray, &res)) {
+		if (res.hit == 3) {
+			add_text_to_render(gomo, "font_text2", "Human VS Human", (vec3_t){0.0f, 1.00f, 0.0f}, 0.003f, (vec3_t){1.0f, 1.0f, 1.0f}, 1, 3);
+		} else if (res.hit == 4) {
+			add_text_to_render(gomo, "font_text2", "Human VS IA", (vec3_t){0.0f, 0.80f, 0.0f}, 0.003f, (vec3_t){1.0f, 1.0f, 1.0f}, 1, 4);
 		}
 	}
-}
-
-void move_cursor(gomo_t *gomo, unsigned int type)
-{
-	if (type && gomo->cursor < gomo->game_data->max_move - 1) {
-		gomo->cursor++;
-		gomo->board[gomo->game_data->moves[gomo->cursor].id].state = 1;
-		gomo->board[gomo->game_data->moves[gomo->cursor].id].color = gomo->game_data->moves[gomo->cursor].color;
-		updateData(gomo);
-	} else if (!type && gomo->cursor > 0) {
-		gomo->board[gomo->game_data->moves[gomo->cursor].id].state = 0;
-		gomo->board[gomo->game_data->moves[gomo->cursor].id].color = (vec3_t){1.0f, 0.0f, 1.0f};
-		gomo->cursor--;
-		updateData(gomo);
+	if (res.hit == -1) {
+		if (gomo->text[3].color.x == 1.0f && gomo->text[3].color.y == 1.0f && gomo->text[3].color.z == 1.0f)
+			add_text_to_render(gomo, "font_text2", "Human VS Human", (vec3_t){0.0f, 1.00f, 0.0f}, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 3);
+		if (gomo->text[4].color.x == 1.0f && gomo->text[4].color.y == 1.0f && gomo->text[4].color.z == 1.0f)
+			add_text_to_render(gomo, "font_text2", "Human VS IA", (vec3_t){0.0f, 0.80f, 0.0f}, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 4);
 	}
 }
 
@@ -248,20 +335,11 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		else if (key == GLFW_KEY_P)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-		else if (key == GLFW_KEY_Q)
-			move_cursor(gomo, 0);
-		else if (key == GLFW_KEY_E)
-			move_cursor(gomo, 1);
-		else if (key == GLFW_KEY_SPACE)
+		else if (!(ROTATION) && key == GLFW_KEY_V)
 		{
-			free_null((void *)gomo->camera->mvp);
-			init_camera(gomo);
-		}
-		else if (key == GLFW_KEY_V)
-		{
-			if (TOP_VIEW && !(ANIMATE)) gomo->camera->options ^= 1 << 9; // animate
-			else if (!(TOP_VIEW) && ANIMATE) gomo->camera->options ^= 1 << 9; // animate
-			gomo->camera->options ^= 1 << 8; // free view
+			if (TOP_VIEW && !(ANIMATE)) gomo->camera->options ^= 1 << 1; // animate
+			else if (!(TOP_VIEW) && ANIMATE) gomo->camera->options ^= 1 << 1; // animate
+			gomo->camera->options ^= 1 << 3; // free view
 		}
 	}
 }

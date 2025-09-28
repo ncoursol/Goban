@@ -67,6 +67,8 @@ void updateCamera(gomo_t *gomo)
 	vec3_t up;
 
 	up = (vec3_t){0, 1, 0};
+	if (ROTATION)
+		gomo->camera->ah -= 0.0015f;
 
 	if (LEFT_MOUSE && !(TOP_VIEW) && !(ANIMATE))
 		set_new_camera_angles(gomo);
@@ -133,7 +135,7 @@ void animateCamera(gomo_t *gomo)
 			if (fabsf(target_dist - gomo->camera->dist) < threshold)
 				gomo->camera->dist = target_dist;
 		} else {
-			gomo->camera->options ^= 1 << 9;
+			gomo->camera->options ^= 1 << 1;
 		}
 	}
 }
@@ -200,11 +202,12 @@ int main(void)
 		}
 		glBindVertexArray(0);
 
-		if (HUD) {
+		if (gomo.camera->options >> 0 & 1) { // HUD is enabled
 			render_lines(&gomo);
-			render_all_text(&gomo);
 		}
+		render_all_text(&gomo);
 
+		gomo.nb_lines = 0;
 		glfwSwapBuffers(gomo.window);
 		glfwPollEvents();
 	}
