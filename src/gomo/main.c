@@ -12,169 +12,53 @@
 
 #include "../include/gomo.h"
 
-void set_new_eye(gomo_t *gomo, vec3_t up)
-{
-	float d, ah, av;
-
-	d = gomo->camera->dist;
-	ah = gomo->camera->ah;
-	av = gomo->camera->av;
-
-	if (av < 1.535f)
-		av = 1.535f;
-	if (up.z)
-	{
-		gomo->camera->eye = (vec3_t){
-			(d * -sinf(av) * cosf(ah)) + gomo->camera->center.x + gomo->camera->gap.x,
-			(d * -sinf(av) * sinf(ah)) + gomo->camera->center.y + gomo->camera->gap.y,
-			(d * -cosf(av)) + gomo->camera->center.z + gomo->camera->gap.z};
-	}
-	else
-	{
-		gomo->camera->eye = (vec3_t){
-			(d * -sinf(av) * cosf(ah)) + gomo->camera->center.x + gomo->camera->gap.x,
-			(d * -cosf(av)) + gomo->camera->center.y + gomo->camera->gap.y,
-			(d * -sinf(av) * sinf(ah)) + gomo->camera->center.z + gomo->camera->gap.z,
-		};
-	}
-}
-
-void set_new_camera_angles(gomo_t *gomo)
-{
-	double xpos, ypos;
-	float tmp;
-
-	glfwGetCursorPos(gomo->window, &xpos, &ypos);
-	gomo->camera->ah = xpos * MSPEED;
-	tmp = ypos * MSPEED;
-	if (tmp > PI - 0.05f)
-	{
-		gomo->camera->av = PI - 0.05f;
-		glfwSetCursorPos(gomo->window, gomo->camera->ah / MSPEED, gomo->camera->av / MSPEED);
-	}
-	else if (tmp < 1.0f)
-	{
-		gomo->camera->av = 1.0f;
-		glfwSetCursorPos(gomo->window, gomo->camera->ah / MSPEED, gomo->camera->av / MSPEED);
-	}
-	else
-		gomo->camera->av = tmp;
-}
-
-void updateCamera(gomo_t *gomo)
-{
-	vec3_t new_center;
-	vec3_t up;
-
-	up = (vec3_t){0, 1, 0};
-	if (ROTATION)
-		gomo->camera->ah -= 0.0015f;
-
-	if (LEFT_MOUSE && !(TOP_VIEW) && !(ANIMATE))
-		set_new_camera_angles(gomo);
-
-	set_new_eye(gomo, up);
-
-	new_center = (vec3_t){
-		gomo->camera->center.x + gomo->camera->gap.x,
-		gomo->camera->center.y + gomo->camera->gap.y,
-		gomo->camera->center.z + gomo->camera->gap.z};
-	camera(gomo, new_center, up);
-
-}
-
-void animateCamera(gomo_t *gomo)
-{
-	if (TOP_VIEW) {
-		float target_av = PI - 0.000005f;
-		float target_ah = 0.0f;
-		float target_dist = 1.0f;
-		float threshold = 0.001f;
-		float lerp_speed = 0.1f;
-		
-		// Check if we need to animate
-		if (fabsf(gomo->camera->av - target_av) > threshold || 
-			fabsf(gomo->camera->ah - target_ah) > threshold || 
-			fabsf(gomo->camera->dist - target_dist) > threshold) {
-			
-			// Smooth interpolation with easing
-			gomo->camera->av += (target_av - gomo->camera->av) * lerp_speed;
-			gomo->camera->ah += (target_ah - gomo->camera->ah) * lerp_speed;
-			gomo->camera->dist += (target_dist - gomo->camera->dist) * lerp_speed;
-			
-			// Snap to target values when very close
-			if (fabsf(target_av - gomo->camera->av) < threshold)
-				gomo->camera->av = target_av;
-			if (fabsf(target_ah - gomo->camera->ah) < threshold)
-				gomo->camera->ah = target_ah;
-			if (fabsf(target_dist - gomo->camera->dist) < threshold)
-				gomo->camera->dist = target_dist;
-		}
-	} else if (ANIMATE) {
-		float target_av = PI * 0.75f;
-		float target_ah = 0.0f;
-		float target_dist = 2.0f;
-		float threshold = 0.001f;
-		float lerp_speed = 0.1f;
-		
-		// Check if we need to animate
-		if (fabsf(gomo->camera->av - target_av) > threshold || 
-			fabsf(gomo->camera->ah - target_ah) > threshold || 
-			fabsf(gomo->camera->dist - target_dist) > threshold) {
-			
-			// Smooth interpolation with easing
-			gomo->camera->av += (target_av - gomo->camera->av) * lerp_speed;
-			gomo->camera->ah += (target_ah - gomo->camera->ah) * lerp_speed;
-			gomo->camera->dist += (target_dist - gomo->camera->dist) * lerp_speed;
-			
-			// Snap to target values when very close
-			if (fabsf(target_av - gomo->camera->av) < threshold)
-				gomo->camera->av = target_av;
-			if (fabsf(target_ah - gomo->camera->ah) < threshold)
-				gomo->camera->ah = target_ah;
-			if (fabsf(target_dist - gomo->camera->dist) < threshold)
-				gomo->camera->dist = target_dist;
-		} else {
-			gomo->camera->options ^= 1 << 1;
-		}
-	}
-}
-
 int main(void)
 {
 	gomo_t gomo;
 	int nb_frames = 0;
-	double t, last_t;
+	double t, last_t, current_t, fps_timer;
+	float delta_time;
 
 	init_all(&gomo);
 	last_t = glfwGetTime();
+	fps_timer = last_t;
 
 	// RENDER LOOP
 	while (!glfwWindowShouldClose(gomo.window))
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		animateCamera(&gomo);
-		updateCamera(&gomo);
-
-		// Draw HUD
-
-		t = glfwGetTime();
-		nb_frames++;
-		if (t - last_t >= 1.0) {
-		    double fps = (double)nb_frames / (t - last_t);
-		    double ms_per_frame = 1000.0 / fps;
+		current_t = glfwGetTime();
+		delta_time = (float)(current_t - last_t);
 		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		handleCameraAnimations(&gomo, delta_time);
+		updateCamera(&gomo, delta_time);
+
+		// Update HUD text periodically (not every frame)
+		t = current_t;
+		nb_frames++;
+		if (t - fps_timer >= 0.5 && gomo.camera->options >> 0 & 1) {
+		    double fps = (double)nb_frames / (t - fps_timer);
+		    double ms_per_frame = 1000.0 / fps;
 		    // Use snprintf for better control over precision
 		    char buff[100];
-		    char buff2[100];
-		    snprintf(buff, sizeof(buff), "%.1f fps", fps);
-		    snprintf(buff2, sizeof(buff2), "%.3f ms/f", ms_per_frame);
-		
+
 		    nb_frames = 0;
-		    last_t = t;  // Reset to current time, not last_t + 1.0
-		
-		    add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 0);
-		    add_text_to_render(&gomo, "font_text2", buff2, (vec3_t){80, HEIGHT - 15, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 1);
+		    fps_timer = t;  // Reset fps timer to current time
+
+		    // Only update HUD text if HUD is enabled to avoid unnecessary work
+		    snprintf(buff, sizeof(buff), "%.1f fps", fps);
+		    add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 15, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 0);
+			snprintf(buff, sizeof(buff), "%.3f ms/f", ms_per_frame);
+		    add_text_to_render(&gomo, "font_text2", buff, (vec3_t){110, HEIGHT - 15, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 1);
+		    snprintf(buff, sizeof(buff), "V-Sync : %s", gomo.camera->options >> 5 & 1 ? "ON" : "OFF");
+		    add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 35, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 2);
+		    snprintf(buff, sizeof(buff), "target Location {%.2f, %.2f, %.2f}", gomo.camera->targetPos.x, gomo.camera->targetPos.y, gomo.camera->targetPos.z);
+		    add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 55, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 8);
+		    
+		    snprintf(buff, sizeof(buff), "Animation : %s", gomo.camera->options >> 1 & 1 ? "ON" : "OFF");
+		    add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 75, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 9);
+		    snprintf(buff, sizeof(buff), "Center {%.2f, %.2f, %.2f}", gomo.camera->center.x, gomo.camera->center.y, gomo.camera->center.z);
+		    add_text_to_render(&gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 95, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 10);
 		}
 
 		// Draw each object
@@ -202,14 +86,14 @@ int main(void)
 		}
 		glBindVertexArray(0);
 
-		if (gomo.camera->options >> 0 & 1) { // HUD is enabled
-			render_lines(&gomo);
-		}
+		if (gomo.camera->options >> 0 & 1) // HUD
+			render_all_lines(&gomo);
 		render_all_text(&gomo);
 
-		gomo.nb_lines = 0;
 		glfwSwapBuffers(gomo.window);
 		glfwPollEvents();
+		
+		last_t = current_t;  // Update last_t for next frame's delta calculation
 	}
 	free_all(&gomo, 100);
 	return 0;

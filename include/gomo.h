@@ -24,10 +24,11 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define WIDTH 1280 // 1024
-#define HEIGHT 960 // 768
+#define WIDTH 1920 // 1280
+#define HEIGHT 1080 // 960
 
-#define NB_TEXT 1000
+#define NB_TEXT 100
+#define MAX_LINES 500
 
 #define MSPEED 0.005f // Mouse speed
 #define PI 3.14159265359
@@ -38,12 +39,13 @@
 #define LEFT_MOUSE gomo->camera->options >> 2 & 1 // |||||↳ 2 - Left mouse button press (yes/no)
 #define TOP_VIEW gomo->camera->options >> 3 & 1	  // ||||↳ 3 - Top view (yes/no)
 #define ROTATION gomo->camera->options >> 4 & 1	  // |||↳ 4 - Rotation (yes/no)
+#define V_SYNC gomo->camera->options >> 5 & 1	  // ||↳ 5 - V-Sync (yes/no)
+#define MENU gomo->camera->options >> 6 & 1	  	  // |↳ 6 - Menu (yes/no)
 
 #define RAY_T_MIN 0.0001f
 
 #define NB_TEXTURES 12 // Number of textures
 
-#define MAX_LINES 1000
 #define MAX_MOVES 500
 #define MAX_NAME_LEN 64
 #define MAX_EVENT_LEN 128
@@ -113,11 +115,13 @@ typedef struct text_s
 {
 	int id;
 	int proj;
+	int face_camera;
 	char *font;
 	char *text;
 	float scale;
 	vec3_t pos;
 	vec3_t color;
+	vec3_t rotation; // Euler angles in radians (x, y, z)
 } text_t;
 
 typedef struct data_s
@@ -178,7 +182,9 @@ typedef struct camera_s
 {
 	vec3_t center;		  // Center of the scene
 	vec3_t gap;			  // Gap between the old and the new scene center
-	vec3_t eye;			  // Eye of the cameragt
+	vec3_t eye;			  // Eye of the camera
+	vec3_t targetPos;	  // Target position for animation
+	vec3_t targetCenter;  // Target center for animation
 	unsigned int options; // See #define section
 	float gv;			  // Screen vertical gap
 	float gh;			  // Screen horizontal gap
@@ -240,8 +246,12 @@ typedef struct shaderID_s
 	GLuint timeID;
 	GLuint playerPosID;
 	GLuint cornerTextPosID;
+	GLuint textRotationID;
+	GLuint faceCameraID;
 	GLuint mvpID;		// MVP ID
 	GLuint projID;		// Ortho ID
+	GLuint textColorID;	// Text color uniform
+	GLuint textSamplerID; // Text sampler uniform
 } shaderID_t;
 
 typedef struct shader_s
@@ -273,6 +283,7 @@ typedef struct gomo_s
 	int nb_stones;
 	int nb_lines; // Number of lines to render
 	int tmp_stone;
+	int textHover;
 	unsigned int cursor;
 	hit_t tmp_hit;
 	obj_t *obj;
@@ -298,6 +309,9 @@ int find_closest_case(gomo_t *gomo, vec3_t point);
 int read_sgf_game(gomo_t *gomo, char *filename);
 float calculate_text_width(gomo_t *gomo, char *font, char *text, float scale);
 
+// Camera fct
+void updateCamera(gomo_t *gomo, float delta_time);
+void handleCameraAnimations(gomo_t *gomo, float delta_time);
 
 // Init fct
 void init_all(gomo_t *gomo);
@@ -336,10 +350,20 @@ void create_obj(gomo_t *gomo, float *vertices, float *normals, float *textures);
 
 // Render fct
 void camera(gomo_t *gomo, vec3_t center, vec3_t up);
-void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, float scale, vec3_t color, int proj, int id);
-void draw_line(gomo_t *gomo, vec3_t start, vec3_t end, vec3_t color);
+void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, vec3_t rotation, int face_camera, float scale, vec3_t color, int proj, int id);
+void add_line_to_render(gomo_t *gomo, vec3_t start, vec3_t end, vec3_t color, int id);
+void add_lines_batch(gomo_t *gomo, line_t *lines, int count, int start_id);
 void render_all_text(gomo_t *gomo);
-void render_lines(gomo_t *gomo);
+void render_all_lines(gomo_t *gomo);
+int animateCamera(gomo_t *gomo, vec3_t targetPos, vec3_t targetCenter, float threshold, float lerp_speed, float delta_time);
+void clear_text_to_render(gomo_t *gomo, int id);
+void clear_lines(gomo_t *gomo);
+font_t *find_font_optimized(gomo_t *gomo, char *font_name);
+
+// Tutorial display functions
+void display_tutorial(gomo_t *gomo);
+void change_tutorial(gomo_t *gomo);
+void display_menu(gomo_t *gomo);
 
 // Exit fct
 void free_lines(gomo_t *gomo);

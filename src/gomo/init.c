@@ -37,6 +37,9 @@ void init_glfw(gomo_t *gomo)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(gomo->window);
 
+	/* Control V-Sync behavior */
+	glfwSwapInterval(0);
+
 	glfwSetInputMode(gomo->window, GLFW_STICKY_KEYS, GL_TRUE);
 	glfwSetCursorPos(gomo->window, WIDTH / 2, HEIGHT / 2);
 }
@@ -299,9 +302,10 @@ void init_gomo(gomo_t *gomo)
 	memset(gomo, 0, sizeof(gomo_t));
 	
 	gomo->tmp_stone = 0;
-	gomo->cursor = 0;
+	gomo->cursor = 12;
 	gomo->nb_stones = 0;
 	gomo->nb_lines = 0;
+	gomo->textHover = -1;
 	gomo->tmp_hit = (hit_t){0, 0, (vec3_t){0.0f, 0.0f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}};
 	
 	if (!(gomo->obj = (obj_t *)malloc(sizeof(obj_t))))
@@ -385,5 +389,9 @@ void init_all(gomo_t *gomo)
 	gomo->shaderID.projID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "proj");
 	gomo->shaderID.playerPosID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "playerPos");
 	gomo->shaderID.cornerTextPosID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "cornerTextPos");
+	gomo->shaderID.textRotationID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "textRotation");
+	gomo->shaderID.faceCameraID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "faceCamera");
 	gomo->shaderID.timeID = glGetUniformLocation(gomo->shader->shaderProgramStones, "time");
+	gomo->shaderID.textColorID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "textColor");
+	gomo->shaderID.textSamplerID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "text");
 }

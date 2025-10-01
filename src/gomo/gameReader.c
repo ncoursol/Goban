@@ -2,7 +2,7 @@
 
 int read_sgf_game(gomo_t *gomo, char *filename) {
     printf("Reading SGF file: %s\n", filename);
-    char tmp[250];
+    //char tmp[250];
     FILE *file = fopen(filename, "r");
     printf("File pointer: %p\n", file);
     if (!file) return -1;
@@ -75,13 +75,15 @@ int read_sgf_game(gomo_t *gomo, char *filename) {
         }
     }
     fclose(file);
+    /*
     sprintf(tmp, "Event : %s, round - %s, date - %s", gomo->game_data->event, gomo->game_data->round, gomo->game_data->date);
-    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 60, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 2);
+    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 60, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 6);
 	sprintf(tmp, "Black_player : %s [%s]", gomo->game_data->black_player, gomo->game_data->black_rank);
-    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 90, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 3);
+    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 90, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 7);
 	sprintf(tmp, "White_player : %s [%s]", gomo->game_data->white_player, gomo->game_data->white_rank);
-    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 120, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 4);
+    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 120, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 8);
 	sprintf(tmp, "Komi : %s, Result - %s", gomo->game_data->komi,gomo->game_data->result);
-    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 150, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 5);
+    add_text_to_render(gomo, "font_text2", tmp, (vec3_t){5, HEIGHT - 150, 0.0f}, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 9);
+    */
     return 0;
 }
