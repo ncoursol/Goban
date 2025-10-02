@@ -357,7 +357,8 @@ void render_all_text(gomo_t *gomo);
 void render_all_lines(gomo_t *gomo);
 int animateCamera(gomo_t *gomo, vec3_t targetPos, vec3_t targetCenter, float threshold, float lerp_speed, float delta_time);
 void clear_text_to_render(gomo_t *gomo, int id);
-void clear_lines(gomo_t *gomo);
+void clear_lines_to_render(gomo_t *gomo, int id);
+void clear_lines_batch_to_render(gomo_t *gomo, int start_id, int count);
 font_t *find_font_optimized(gomo_t *gomo, char *font_name);
 
 // Tutorial display functions

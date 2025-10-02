@@ -86,8 +86,7 @@ int main(void)
 		}
 		glBindVertexArray(0);
 
-		if (gomo.camera->options >> 0 & 1) // HUD
-			render_all_lines(&gomo);
+		render_all_lines(&gomo);
 		render_all_text(&gomo);
 
 		glfwSwapBuffers(gomo.window);

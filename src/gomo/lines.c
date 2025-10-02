@@ -1,12 +1,57 @@
 #include "../include/gomo.h"
 
-void clear_lines(gomo_t *gomo)
+void clear_lines_batch_to_render(gomo_t *gomo, int start_id, int count)
 {
-    if (gomo->lines_buffer && gomo->nb_lines > 0) {
-        if (gomo->lines_buffer[(gomo->nb_lines - 1) * 12 + 3] == 0.12f) {
-            gomo->nb_lines -= 4; // Remove debug lines if present
+    int nb_removed = 0;
+    if (start_id < 0 || start_id + count > MAX_LINES || count <= 0)
+        return;
+        
+    if (!gomo->lines_buffer || gomo->nb_lines <= 0)
+        return;
+    
+    for (int id = start_id; id < start_id + count; id++) {
+        if (gomo->lines_buffer[id * 12] || gomo->lines_buffer[id * 12 + 1] || gomo->lines_buffer[id * 12 + 2]) {
+            gomo->lines_buffer[id * 12] = 0.0f;
+            gomo->lines_buffer[id * 12 + 1] = 0.0f;
+            gomo->lines_buffer[id * 12 + 2] = 0.0f;
+            gomo->lines_buffer[id * 12 + 3] = 0.0f;
+            gomo->lines_buffer[id * 12 + 4] = 0.0f;
+            gomo->lines_buffer[id * 12 + 5] = 0.0f;
+            gomo->lines_buffer[id * 12 + 6] = 0.0f;
+            gomo->lines_buffer[id * 12 + 7] = 0.0f;
+            gomo->lines_buffer[id * 12 + 8] = 0.0f;
+            gomo->lines_buffer[id * 12 + 9] = 0.0f;
+            gomo->lines_buffer[id * 12 + 10] = 0.0f;
+            gomo->lines_buffer[id * 12 + 11] = 0.0f;
+            nb_removed++;
         }
     }
+    gomo->nb_lines -= nb_removed;
+    if (gomo->nb_lines < 0) {
+        gomo->nb_lines = 0;
+    }
+}
+
+void clear_lines_to_render(gomo_t *gomo, int id)
+{
+    if (id < 0 || id >= MAX_LINES)
+        return;
+        
+    if (gomo->lines_buffer && gomo->nb_lines > 0) {
+        gomo->lines_buffer[id * 12] = 0.0f;
+        gomo->lines_buffer[id * 12 + 1] = 0.0f;
+        gomo->lines_buffer[id * 12 + 2] = 0.0f;
+        gomo->lines_buffer[id * 12 + 3] = 0.0f;
+        gomo->lines_buffer[id * 12 + 4] = 0.0f;
+        gomo->lines_buffer[id * 12 + 5] = 0.0f;
+        gomo->lines_buffer[id * 12 + 6] = 0.0f;
+        gomo->lines_buffer[id * 12 + 7] = 0.0f;
+        gomo->lines_buffer[id * 12 + 8] = 0.0f;
+        gomo->lines_buffer[id * 12 + 9] = 0.0f;
+        gomo->lines_buffer[id * 12 + 10] = 0.0f;
+        gomo->lines_buffer[id * 12 + 11] = 0.0f;
+    }
+    gomo->nb_lines--;
 }
 
 void add_lines_batch(gomo_t *gomo, line_t *lines, int count, int start_id)
@@ -84,10 +129,19 @@ void render_all_lines(gomo_t *gomo)
     
     glBindVertexArray(gomo->lineVAO);
     glBindBuffer(GL_ARRAY_BUFFER, gomo->lineVBO);
-    
-    size_t buffer_size = gomo->nb_lines * 12 * sizeof(float);
-    glBufferData(GL_ARRAY_BUFFER, buffer_size, gomo->lines_buffer, GL_DYNAMIC_DRAW);
-    
+
+    if (HUD) {
+        size_t buffer_size = gomo->nb_lines * 12 * sizeof(float);
+        glBufferData(GL_ARRAY_BUFFER, buffer_size, gomo->lines_buffer, GL_DYNAMIC_DRAW);
+    } else if (gomo->nb_lines > 375) {
+        size_t buffer_size = (gomo->nb_lines - 375) * 12 * sizeof(float);
+        glBufferData(GL_ARRAY_BUFFER, buffer_size, &gomo->lines_buffer[375 * 12], GL_DYNAMIC_DRAW);
+    } else {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+        return;
+    }
+
     glDrawArrays(GL_LINES, 0, gomo->nb_lines * 2);
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -136,6 +190,7 @@ void init_lines(gomo_t *gomo)
             }
         }
     }
+    // 370 lines used so far
 }
 
 void free_lines(gomo_t *gomo)

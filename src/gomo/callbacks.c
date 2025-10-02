@@ -127,15 +127,13 @@ int ray_intersects_quad(gomo_t *gomo, ray_t ray, vec3_t quadPos, float halfWidth
 	if (localX >= -halfWidth && localX <= halfWidth &&
 		localY >= -halfHeight && localY <= halfHeight)
 	{
-    	clear_lines(gomo);
-
 		// debug markers
-		add_line_to_render(gomo, (vec3_t){intersectionPoint.x - 0.1f, intersectionPoint.y, intersectionPoint.z}, (vec3_t){intersectionPoint.x + 0.1f, intersectionPoint.y, intersectionPoint.z}, (vec3_t){1.0f, 0.0f, 0.0f}, gomo->nb_lines);
-		add_line_to_render(gomo, (vec3_t){intersectionPoint.x, intersectionPoint.y - 0.1f, intersectionPoint.z}, (vec3_t){intersectionPoint.x, intersectionPoint.y + 0.1f, intersectionPoint.z}, (vec3_t){1.0f, 0.0f, 0.0f}, gomo->nb_lines);
-		add_line_to_render(gomo, (vec3_t){intersectionPoint.x, intersectionPoint.y, intersectionPoint.z - 0.1f}, (vec3_t){intersectionPoint.x, intersectionPoint.y, intersectionPoint.z + 0.1f}, (vec3_t){1.0f, 0.0f, 0.0f}, gomo->nb_lines);
+		add_line_to_render(gomo, (vec3_t){intersectionPoint.x - 0.1f, intersectionPoint.y, intersectionPoint.z}, (vec3_t){intersectionPoint.x + 0.1f, intersectionPoint.y, intersectionPoint.z}, (vec3_t){1.0f, 0.0f, 0.0f}, 371);
+		add_line_to_render(gomo, (vec3_t){intersectionPoint.x, intersectionPoint.y - 0.1f, intersectionPoint.z}, (vec3_t){intersectionPoint.x, intersectionPoint.y + 0.1f, intersectionPoint.z}, (vec3_t){1.0f, 0.0f, 0.0f}, 372);
+		add_line_to_render(gomo, (vec3_t){intersectionPoint.x, intersectionPoint.y, intersectionPoint.z - 0.1f}, (vec3_t){intersectionPoint.x, intersectionPoint.y, intersectionPoint.z + 0.1f}, (vec3_t){1.0f, 0.0f, 0.0f}, 373);
 		// draw normal as a line starting from intersectionPoint in world space
 		vec3_t normalEnd = add_vec3(intersectionPoint, prod_vec3(quadNormal, 0.5f));
-		add_line_to_render(gomo, intersectionPoint, normalEnd, (vec3_t){0.12f, 1.0f, 0.0f}, gomo->nb_lines);
+		add_line_to_render(gomo, intersectionPoint, normalEnd, (vec3_t){0.12f, 1.0f, 0.0f}, 374);
 		return 1;
 	}
 
@@ -183,7 +181,6 @@ int intersectText(gomo_t *gomo, ray_t ray, hit_t *intersection)
 		}
 	}
 	intersection->hit = -1;
-	clear_lines(gomo);
 	return 0;
 }
 
@@ -274,8 +271,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 				gomo->camera->targetPos = (vec3_t){RAD(120.0f), RAD(10.0f), 3.0f};
 				gomo->camera->targetCenter = (vec3_t){0.0f, 0.5f, 0.0f};
 				display_menu(gomo);
-			}
-			if ((int)gomo->cursor != gomo->textHover) {
+			} else if ((int)gomo->cursor != gomo->textHover) {
 				gomo->cursor = gomo->textHover;
 				change_tutorial(gomo);
 			}
