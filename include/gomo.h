@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include "game.h"
 
 #define WIDTH 1920 // 1280
 #define HEIGHT 1080 // 960
@@ -144,21 +145,6 @@ typedef struct charact_s
 	unsigned char *bitmap;
 } charact_t;
 
-typedef struct game_data_s
-{
-    char event[MAX_EVENT_LEN];
-    char round[MAX_RESULT_LEN];
-    char black_player[MAX_NAME_LEN];
-    char black_rank[MAX_NAME_LEN];
-    char white_player[MAX_NAME_LEN];
-    char white_rank[MAX_NAME_LEN];
-    char komi[MAX_RESULT_LEN];
-    char result[MAX_RESULT_LEN];
-    char date[MAX_DATE_LEN];
-	move_t *moves;
-	unsigned int max_move;
-} game_data_t;
-
 typedef struct line_s
 {
 	vec3_t start; // Start point of the line
@@ -278,7 +264,6 @@ typedef struct gomo_s
 	unsigned int lineVAO; // Vertex Array Object for lines
 	unsigned int lineVBO; // Vertex Buffer Object for lines
 	unsigned int instanceVBO; // Vertex Buffer Object for instances go stones
-	game_data_t *game_data;
 	grid_t *board;
 	int nb_stones;
 	int nb_lines; // Number of lines to render
@@ -365,6 +350,7 @@ font_t *find_font_optimized(gomo_t *gomo, char *font_name);
 void display_tutorial(gomo_t *gomo);
 void change_tutorial(gomo_t *gomo);
 void display_menu(gomo_t *gomo);
+void display_gameMode(gomo_t *gomo);
 
 // Exit fct
 void free_lines(gomo_t *gomo);

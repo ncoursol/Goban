@@ -198,14 +198,6 @@ void	free_all(gomo_t *gomo, int step)
 			free(gomo->text);
 		}
 		
-		// Free game data
-		if (gomo->game_data) {
-			if (gomo->game_data->moves) {
-				free(gomo->game_data->moves);
-			}
-			free(gomo->game_data);
-		}
-		
 		// Free board
 		free_null((void*)gomo->board);
 		

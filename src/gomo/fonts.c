@@ -386,7 +386,7 @@ void render_all_text(gomo_t *gomo)
     
     // First pass: 3D text
     glUniformMatrix4fv(gomo->shaderID.projID, 1, GL_FALSE, &gomo->camera->mvp[0]);
-    for (int i = 0; i < NB_TEXT; i++) {
+    for (int i = NB_TEXT; i > 0; i--) {
         if (gomo->text[i].text != NULL && gomo->text[i].proj == 1) {
             vec3_t textCenter = {0.0f, 0.0f, 0.0f};
             vec3_t renderPos = gomo->text[i].pos;
@@ -531,5 +531,4 @@ void load_fonts(gomo_t *gomo)
     load_ttf(gomo, "resources/Fonts/OxygenMono-Regular.otf", "font_text2");
 
     font_VAO(gomo);
-    display_menu(gomo);
 }

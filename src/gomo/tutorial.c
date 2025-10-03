@@ -174,45 +174,22 @@ void clear_tutorial(gomo_t *gomo)
             text->text = NULL;
         }
     }
-    for (int i = 380; i < MAX_LINES; i++) {
-        if (gomo->lines_buffer && gomo->nb_lines > 0) {
-            gomo->lines_buffer[i * 12] = 0.0f;
-            gomo->lines_buffer[i * 12 + 1] = 0.0f;
-            gomo->lines_buffer[i * 12 + 2] = 0.0f;
-            gomo->lines_buffer[i * 12 + 3] = 0.0f;
-            gomo->lines_buffer[i * 12 + 4] = 0.0f;
-            gomo->lines_buffer[i * 12 + 5] = 0.0f;
-            gomo->lines_buffer[i * 12 + 6] = 0.0f;
-            gomo->lines_buffer[i * 12 + 7] = 0.0f;
-            gomo->lines_buffer[i * 12 + 8] = 0.0f;
-            gomo->lines_buffer[i * 12 + 9] = 0.0f;
-            gomo->lines_buffer[i * 12 + 10] = 0.0f;
-            gomo->lines_buffer[i * 12 + 11] = 0.0f;
-        }
-    }
+    clear_lines_batch_to_render(gomo, 375, MAX_LINES - 375);
 }
 
 void display_menu(gomo_t *gomo)
 {
-    clear_tutorial(gomo);
-    clear_lines_batch_to_render(gomo, 371, 4);
-
     gomo->textHover = -1;
     add_text_to_render(gomo, "font_text2", "Main Menu", (vec3_t){0.0f, 1.8f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 0.005f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 3);
 	add_text_to_render(gomo, "font_text2", "Human VS Human", (vec3_t){0.0f, 1.00f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 4);
 	add_text_to_render(gomo, "font_text2", "Human VS IA", (vec3_t){0.0f, 0.80f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 5);
     add_text_to_render(gomo, "font_text2", "IA VS IA", (vec3_t){1.0f, 1.0f, 1.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 6);
-    add_text_to_render(gomo, "font_text2", "Tutorial", (vec3_t){-1.0f, 1.0f, -1.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 7);
+    add_text_to_render(gomo, "font_text2", "Gomoku ?", (vec3_t){-1.0f, 1.0f, -1.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 7);
 }
 
 void display_tutorial(gomo_t *gomo)
 {
     clear_lines_batch_to_render(gomo, 371, 4);
-    gomo->textHover = -1;
-
-    for (int i = 3; i < 8; i++)
-        clear_text_to_render(gomo, i);
-
 
     add_text_to_render(gomo, "font_text2", "How to play", (vec3_t){2.0f, 3.2f, 3.2f}, (vec3_t){0.0f, PI, 0.0f}, 0, 0.004f, (vec3_t){0.9f, 0.9f, 0.9f}, 1, 11);
 
@@ -224,7 +201,42 @@ void display_tutorial(gomo_t *gomo)
     add_text_to_render(gomo, "font_text2", "Tips", (vec3_t){2.0f, 1.4f, 3.2f}, (vec3_t){0.0f, PI, 0.0f}, 0, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 16);
 
     // Back button
-    add_text_to_render(gomo, "font_text2", "Back", (vec3_t){2.4f, 0.5f, 3.2f}, (vec3_t){0.0f, PI, 0.0f}, 0, 0.004f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 17);
+    if (gomo->textHover == 7)
+        add_text_to_render(gomo, "font_text2", "Back", (vec3_t){2.4f, 0.5f, 3.2f}, (vec3_t){0.0f, PI, 0.0f}, 0, 0.004f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 17);
+
+    gomo->textHover = -1;
     
     change_tutorial(gomo);
+}
+
+
+void display_gameMode(gomo_t *gomo)
+{
+    clear_lines_batch_to_render(gomo, 371, 4);
+
+    char *mode_text = NULL;
+    switch (gomo->textHover)
+    {
+        case 4:
+            mode_text = "Human VS Human";
+            break;
+        case 5:
+            mode_text = "Human VS IA";
+            break;
+        case 6:
+            mode_text = "IA VS IA";
+            break;
+        default:
+            mode_text = "Unknown Mode";
+            break;
+    }
+
+    for (int i = 3; i < 8; i++)
+        clear_text_to_render(gomo, i);
+
+    gomo->textHover = -1;
+
+    add_text_to_render(gomo, "font_text2", mode_text, (vec3_t){0.7f, 0.0f, 1.0f}, (vec3_t){PI / 2.0f, PI, 0.0f}, 2, 0.004f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 37);
+    //add_text_to_render(gomo, "font_text2", "Overview", (vec3_t){2.0f, 2.6f, 3.2f}, (vec3_t){0.0f, PI, 0.0f}, 0, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 12);
+
 }

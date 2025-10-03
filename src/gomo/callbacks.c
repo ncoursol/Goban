@@ -249,7 +249,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 	} else if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))
 	{
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
-		if (gomo->textHover != -1 && action == GLFW_PRESS && gomo->textHover > 3 && gomo->textHover < 8)
+		if (MENU && gomo->textHover != -1 && action == GLFW_PRESS && gomo->textHover > 3 && gomo->textHover < 8)
 		{
 			gomo->camera->options ^= 1 << 4; // rotate
 			
@@ -258,25 +258,35 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 			if (gomo->textHover == 7) { // Tutorial
 				gomo->camera->targetPos = (vec3_t){PI / 2.0f, PI / 2.0f, 2.7f};
 				gomo->camera->targetCenter = (vec3_t){0.0f, 1.8f, 3.0f};
-
 				display_tutorial(gomo);
+			} else if (gomo->textHover == 4 || gomo->textHover == 5 || gomo->textHover == 6) { // Game modes
+				gomo->camera->options ^= 1 << 6; // menu
+				gomo->camera->targetPos = (vec3_t){PI * 0.75f, 0.0f, 2.0f};
+				for (int i = 3; i < 8; i++)
+       				clear_text_to_render(gomo, i);
+				
+				/*
+				gomo->camera->targetPos = (vec3_t){PI - 0.000005f, (PI / 2.0f), 2.5f};
+				gomo->camera->targetCenter = (vec3_t){0.0f, 0.5f, 0.0f};
+				display_gameMode(gomo);
+				*/
 			}
 		} 
-		else if (gomo->textHover != -1 && action == GLFW_PRESS && MENU && gomo->textHover > 11 && gomo->textHover < 18)
+		else if (gomo->textHover != -1 && action == GLFW_PRESS && gomo->textHover > 11 && gomo->textHover < 18)
 		{
 			if (gomo->textHover == 17) {
 				if (!(ANIMATE))
 					gomo->camera->options ^= 1 << 1; // animate
-				gomo->camera->options ^= 1 << 4; // rotate
 				gomo->camera->targetPos = (vec3_t){RAD(120.0f), RAD(10.0f), 3.0f};
 				gomo->camera->targetCenter = (vec3_t){0.0f, 0.5f, 0.0f};
-				display_menu(gomo);
+				clear_text_to_render(gomo, 17);
+				gomo->textHover = 7;
 			} else if ((int)gomo->cursor != gomo->textHover) {
 				gomo->cursor = gomo->textHover;
 				change_tutorial(gomo);
 			}
 		}
-		else if (!(MENU) && !(gomo->camera->options >> 3 & 1))
+		else if (!(MENU) && !(gomo->camera->options >> 3 & 1) && (gomo->textHover < 12 || gomo->textHover > 16))
 		{
 			gomo->camera->options ^= 1 << 2;
 			if (action == GLFW_PRESS)
@@ -333,7 +343,7 @@ void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 			gomo->tmp_stone = 0;
 		}
 		updateData(gomo);
-	} else if (MENU && intersectText(gomo, ray, &res)) {
+	} else if (intersectText(gomo, ray, &res)) {
 		if ((res.hit > 3 && res.hit < 8) || (res.hit > 11 && res.hit < 19)) {
 			if (gomo->text[res.hit].text != NULL && (gomo->text[res.hit].color.x != 1.0f || gomo->text[res.hit].color.y != 1.0f || gomo->text[res.hit].color.z != 1.0f)) {
 				if (gomo->textHover != -1 && gomo->textHover != res.hit) {

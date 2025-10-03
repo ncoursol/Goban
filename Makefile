@@ -11,29 +11,45 @@
 # **************************************************************************** #
 
 NAME = gomo
-SRCS_DIR = ./src/$(NAME)
-BUILD_DIR = ./build/$(NAME)
 
+# Directories
+GOMO_DIR = ./src/gomo
+GAME_DIR = ./src/game
+BOT_DIR = ./src/bot
+BUILD_DIR = ./build
+
+# External libraries
 LIBGLFW3 = ext/glfw-3.3.5/build/src/libglfw3.a
 LIBGLAD = ext/glad/libglad.a
 LIBFFT = ext/freetype/objs/libfreetype.a
 
 CC = clang
+CXX = clang++
 
-CFLAGS = -Wall -Wextra -Werror
-CFLAGS += -I./src/ -I./ext/glfw-3.3.5/include/ -I./ext/glad/include/ -I./ext/freetype/include/
-CFLAGS += -g3 -ggdb3
-CFLAGS += -DNDEBUG
+FLAGS = -Wall -Wextra -Werror
+FLAGS += -I./include -I./ext/glfw-3.3.5/include/ -I./ext/glad/include/ -I./ext/freetype/include/
+FLAGS += -g3 -ggdb3
+FLAGS += -DNDEBUG
 LDFLAGS = -L./ext/glfw-3.3.5/build/src/ -L./ext/glad/ -L./ext/freetype/objs/
 
 UNAME_S = $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	LDLIBS = -lX11 -lpthread -ldl -lm -lglfw3 -lglad -lfreetype
+	LDLIBS = -lX11 -lpthread -ldl -lm -lglfw3 -lglad -lfreetype -lstdc++
 endif
 
-SRCS = $(shell find $(SRCS_DIR) -type f -name "*.c")
-OBJS = $(SRCS:$(SRCS_DIR)/%.c=$(BUILD_DIR)/%.o)
+# Source files
+C_SRCS = $(wildcard $(GOMO_DIR)/*.c) $(wildcard $(GAME_DIR)/*.c)
+CXX_SRCS = $(wildcard $(BOT_DIR)/*.cpp)
+
+# Object files
+C_OBJS = $(C_SRCS:./src/%.c=$(BUILD_DIR)/%.o)
+CXX_OBJS = $(CXX_SRCS:./src/%.cpp=$(BUILD_DIR)/%.o)
+OBJS = $(C_OBJS) $(CXX_OBJS)
+
+# Dependency files
 DEPS = $(OBJS:.o=.d)
+
+.PHONY: all clean fclean re
 
 all: $(NAME)
 
@@ -49,12 +65,20 @@ $(LIBFFT):
 
 -include $(DEPS)
 
-$(BUILD_DIR)/%.o: $(SRCS_DIR)/%.c Makefile
+$(BUILD_DIR)/%.o: ./src/%.c Makefile
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
+	@echo "Compiling C: $<"
+	@$(CC) $(FLAGS) -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
+
+$(BUILD_DIR)/%.o: ./src/%.cpp Makefile
+	@mkdir -p $(dir $@)
+	@echo "Compiling C++: $<"
+	@$(CXX) $(FLAGS) -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
 
 $(NAME): $(LIBGLFW3) $(LIBGLAD) $(LIBFFT) $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(NAME) $(OBJS) $(LDLIBS)
+	@echo "Linking $(NAME)..."
+	@$(CXX) $(LDFLAGS) -o $(NAME) $(OBJS) $(LDLIBS)
+	@echo "Build complete!"
 
 clean:
 	make clean -C ./ext/glad/
@@ -68,5 +92,10 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+info:
+	@echo "C Sources: $(C_SRCS)"
+	@echo "C++ Sources: $(CXX_SRCS)"
+	@echo "Objects: $(OBJS)"
 
 .PHONY: all clean fclean re

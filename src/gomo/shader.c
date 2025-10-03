@@ -136,10 +136,10 @@ void init_shader(gomo_t *gomo)
 	} shader_pair_t;
 	
 	shader_pair_t shader_pairs[] = {
-		{"src/shaders/vertex.glsl", "src/shaders/frag.glsl", &gomo->shader->shaderProgram},
-		{"src/shaders/vertexStones.glsl", "src/shaders/fragStones.glsl", &gomo->shader->shaderProgramStones},
-		{"src/shaders/vertexHUD.glsl", "src/shaders/fragHUD.glsl", &gomo->shader->shaderProgramHUD},
-		{"src/shaders/vertexLine.glsl", "src/shaders/fragLine.glsl", &gomo->shader->shaderProgramLine}
+		{"src/gomo/shaders/vertex.glsl", "src/gomo/shaders/frag.glsl", &gomo->shader->shaderProgram},
+		{"src/gomo/shaders/vertexStones.glsl", "src/gomo/shaders/fragStones.glsl", &gomo->shader->shaderProgramStones},
+		{"src/gomo/shaders/vertexHUD.glsl", "src/gomo/shaders/fragHUD.glsl", &gomo->shader->shaderProgramHUD},
+		{"src/gomo/shaders/vertexLine.glsl", "src/gomo/shaders/fragLine.glsl", &gomo->shader->shaderProgramLine}
 	};
 	
 	int num_pairs = sizeof(shader_pairs) / sizeof(shader_pairs[0]);

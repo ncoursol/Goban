@@ -336,14 +336,6 @@ void init_gomo(gomo_t *gomo)
 	if (!(gomo->text = (text_t *)malloc(sizeof(text_t) * NB_TEXT)))
 		exit_callback(gomo, 8, "text malloc failed");
 	memset(gomo->text, 0, sizeof(text_t) * NB_TEXT);
-	
-	if (!(gomo->game_data = (game_data_t *)malloc(sizeof(game_data_t))))
-		exit_callback(gomo, 9, "game data malloc failed");
-	memset(gomo->game_data, 0, sizeof(game_data_t));
-	
-	if (!(gomo->game_data->moves = (move_t *)malloc(sizeof(move_t) * MAX_MOVES)))
-		exit_callback(gomo, 10, "game data move malloc failed");
-	memset(gomo->game_data->moves, 0, sizeof(move_t) * MAX_MOVES);
 }
 
 void new_obj(gomo_t *gomo) {
@@ -358,10 +350,6 @@ void new_obj(gomo_t *gomo) {
 	gomo->obj = gomo->obj->next;
 	init_obj(gomo);
 	gomo->obj->first = first;
-}
-
-void read_game(gomo_t *gomo) {
-	read_sgf_game(gomo, "./resources/games/game1.sgf");
 }
 
 void init_all(gomo_t *gomo)
@@ -383,7 +371,6 @@ void init_all(gomo_t *gomo)
 	load_textures(gomo);
 	init_fonts(gomo);
 	load_fonts(gomo);
-	//read_game(gomo);
 
 	gomo->shaderID.mvpID = glGetUniformLocation(gomo->shader->shaderProgram, "MVP");
 	gomo->shaderID.projID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "proj");
@@ -394,4 +381,7 @@ void init_all(gomo_t *gomo)
 	gomo->shaderID.timeID = glGetUniformLocation(gomo->shader->shaderProgramStones, "time");
 	gomo->shaderID.textColorID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "textColor");
 	gomo->shaderID.textSamplerID = glGetUniformLocation(gomo->shader->shaderProgramHUD, "text");
+
+    display_menu(gomo);
+	display_tutorial(gomo);
 }
