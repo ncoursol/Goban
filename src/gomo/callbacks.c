@@ -271,7 +271,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 				display_gameMode(gomo);
 				*/
 			}
-		} 
+		}
 		else if (gomo->textHover != -1 && action == GLFW_PRESS && gomo->textHover > 11 && gomo->textHover < 18)
 		{
 			if (gomo->textHover == 17) {
@@ -354,7 +354,7 @@ void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 			}
 		}
 	}
-	if (gomo->text[res.hit].text != NULL && res.hit == -1 && gomo->textHover != -1) {
+	if (gomo->text[gomo->textHover].text != NULL && res.hit == -1 && gomo->textHover != -1) {
 		add_text_to_render(gomo, gomo->text[gomo->textHover].font, gomo->text[gomo->textHover].text, gomo->text[gomo->textHover].pos, gomo->text[gomo->textHover].rotation, gomo->text[gomo->textHover].face_camera, gomo->text[gomo->textHover].scale, (vec3_t){1.0f, 0.5f, 0.5f}, 1, gomo->textHover);
 		gomo->textHover = -1;
 	}

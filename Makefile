@@ -30,7 +30,7 @@ FLAGS = -Wall -Wextra -Werror
 FLAGS += -I./include -I./ext/glfw-3.3.5/include/ -I./ext/glad/include/ -I./ext/freetype/include/
 FLAGS += -g3 -ggdb3
 FLAGS += -DNDEBUG
-LDFLAGS = -L./ext/glfw-3.3.5/build/src/ -L./ext/glad/ -L./ext/freetype/objs/
+LDFLAGS = -L./ext/glfw-3.3.5/build/src/ -L./ext/glad/ -L./ext/freetype/objs/ -L/usr/lib/gcc/x86_64-linux-gnu/11
 
 UNAME_S = $(shell uname -s)
 ifeq ($(UNAME_S),Linux)

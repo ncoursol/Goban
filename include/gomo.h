@@ -25,8 +25,8 @@
 #include <fcntl.h>
 #include "game.h"
 
-#define WIDTH 1920 // 1280
-#define HEIGHT 1080 // 960
+#define WIDTH 1480 // 1280
+#define HEIGHT 960 // 960
 
 #define NB_TEXT 100
 #define MAX_LINES 500
@@ -55,6 +55,8 @@
 
 #define ABS(x) (x >= 0 ? x : -x)
 #define RAD(x) (x * 0.0174533f)
+
+typedef struct game_s game_t;
 
 typedef struct texture_info_s 
 {
@@ -271,6 +273,7 @@ typedef struct gomo_s
 	int textHover;
 	unsigned int cursor;
 	hit_t tmp_hit;
+	game_t *game;
 	obj_t *obj;
 } gomo_t;
 

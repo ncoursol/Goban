@@ -297,10 +297,7 @@ void init_board(gomo_t *gomo)
 }
 
 void init_gomo(gomo_t *gomo)
-{
-	// Initialize all pointers to NULL first
-	memset(gomo, 0, sizeof(gomo_t));
-	
+{	
 	gomo->tmp_stone = 0;
 	gomo->cursor = 12;
 	gomo->nb_stones = 0;

@@ -98,7 +98,10 @@ int render_loop(gomo_t *gomo)
 int main(int argc, char **argv)
 {
 	gomo_t gomo;
-	game_t game;
+
+	memset(&gomo, 0, sizeof(gomo_t));
+	if (!(gomo.game = (game_t *)malloc(sizeof(game_t))))
+		exit_callback(&gomo, 0, "object malloc failed");
 
 	int verbose = 0;
 	int ret = 0;
@@ -109,7 +112,7 @@ int main(int argc, char **argv)
 	if (argc == 2 && strcmp(argv[1], "-v") == 0)
 		verbose = 1;
 
-	ret = init_game(&game);
+	ret = init_game(gomo.game);
 	if (!ret)
 		return ret;
 	if (verbose) {

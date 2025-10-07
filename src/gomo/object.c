@@ -138,7 +138,6 @@ void set_texture_id(gomo_t *gomo, int i, int *k)
 void create_obj(gomo_t *gomo, float *vertices, float *textures, float *normals)
 {
 	int k = 0;
-	vec3_t norm;
 
 	if (!(gomo->obj->obj = (float *)malloc(sizeof(float) * gomo->obj->nb_vertices * 8)))
 		exit_callback(gomo, 23, "obj realloc failed");
@@ -151,7 +150,7 @@ void create_obj(gomo_t *gomo, float *vertices, float *textures, float *normals)
 		k -= 15;
 
 		// create (or set if already define) the triangle normal
-		norm = create_normal(gomo, normals, k, i);
+		create_normal(gomo, normals, k, i);
 		gomo->obj->faces[i] = gomo->obj->faces[i]->first;
 		// Set UV for each vertices
 		set_texture_uv(gomo, textures, &k, i);
