@@ -29,7 +29,7 @@
 #define HEIGHT 960 // 960
 
 #define NB_TEXT 100
-#define MAX_LINES 500
+#define MAX_LINES 1000
 
 #define MSPEED 0.005f // Mouse speed
 #define PI 3.14159265359
@@ -47,7 +47,7 @@
 
 #define NB_TEXTURES 12 // Number of textures
 
-#define MAX_MOVES 500
+#define MAX_MOVES 1000
 #define MAX_NAME_LEN 64
 #define MAX_EVENT_LEN 128
 #define MAX_RESULT_LEN 16
@@ -348,6 +348,8 @@ void clear_text_to_render(gomo_t *gomo, int id);
 void clear_lines_to_render(gomo_t *gomo, int id);
 void clear_lines_batch_to_render(gomo_t *gomo, int start_id, int count);
 font_t *find_font_optimized(gomo_t *gomo, char *font_name);
+void updateData(gomo_t *gomo);
+void render_helpers(gomo_t *gomo);
 
 // Tutorial display functions
 void display_tutorial(gomo_t *gomo);

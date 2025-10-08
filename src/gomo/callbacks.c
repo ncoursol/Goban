@@ -238,12 +238,13 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
 		if (MENU)
 			return ;
-		if (action == GLFW_PRESS && gomo->nb_stones < 361)
+		if (action == GLFW_PRESS && gomo->tmp_stone && gomo->nb_stones < 361)
 		{
-			if (gomo->tmp_stone && (!gomo->board[gomo->tmp_stone - 1].state || gomo->board[gomo->tmp_stone - 1].state == 2)) {
-				gomo->board[gomo->tmp_stone - 1].state = 1;
-				gomo->board[gomo->tmp_stone - 1].color = gomo->nb_stones % 2 ? (vec3_t){0.0f, 0.0f, 0.0f} : (vec3_t){1.0f, 1.0f, 1.0f};
-				gomo->tmp_stone = 0;
+			int ret = place_stone(gomo->game, (gomo->tmp_stone - 1) / 19, (gomo->tmp_stone - 1) % 19);
+			gomo->tmp_stone = 0;
+			if (ret) {
+				sync_game_state(gomo, gomo->game);
+				render_helpers(gomo);
 			}
 		}
 	} else if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))

@@ -8,6 +8,7 @@ void sync_game_state(gomo_t *gomo, game_t *game)
             gomo->board[i * 19 + j].color = (game->board[i][j] == 1) ? (vec3_t){0.0f, 0.0f, 0.0f} : (game->board[i][j] == 2) ? (vec3_t){1.0f, 1.0f, 1.0f} : (vec3_t){1.0f, 0.0f, 1.0f};
         }
     }
+    updateData(gomo);
 }
 
 int check_double_free_three(game_t *game, unsigned int x, unsigned int y)
@@ -35,13 +36,13 @@ int check_double_free_three(game_t *game, unsigned int x, unsigned int y)
                 continue;
 
             int cell = game->board[xi][yi];
-
-            if (cell == 0) {
-                empty[d]++;
-                last_case[d] = 0;
-            } else if (cell == player_val || i == 0) {
+            
+            if (cell == player_val || i == 0) {
                 count[d]++;
                 last_case[d] = 1;
+            } else if (cell == 0) {
+                empty[d]++;
+                last_case[d] = 0;
             } else {
                 empty[d] = 0;
                 count[d] = 0;
@@ -53,11 +54,14 @@ int check_double_free_three(game_t *game, unsigned int x, unsigned int y)
                 count[d] = 0;
             } else if (count[d] == 1 && empty[d] == 0) {
                 count[d] = 0;
+            } else if (count[d] == 3 && empty[d] >= 2 && last_case[d] == 0) {
+                free_three_count++;
+                empty[d] = 1;
+                count[d] = 0;
+                if (free_three_count > 1)
+                    return 1;
             } else if (empty[d] == 2 && last_case[d] == 0) {
                 empty[d] = 1;
-            } else if (count[d] == 3 && empty[d] >= 2 && last_case[d] == 0) {
-                if (++free_three_count > 1)
-                    return 1;
             }
         }
     }
@@ -71,10 +75,9 @@ int check_valid_move(game_t *game, unsigned int x, unsigned int y)
     if (x >= 19 || y >= 19 || game->board[x][y] != 0)
         return 0;
 
-    /*
     if (check_double_free_three(game, x, y))
         return 0;
-    */
+
     return 1;
 }
 
@@ -276,13 +279,11 @@ int check_five_in_a_row(game_t *game) {
     return 0;
 }*/
 
-int check_win(game_t *game) {
+int check_win(game_t *game, unsigned int x, unsigned int y) {
     if (game->captured_black >= 10 || game->captured_white >= 10)
         return 2;
 
-    int ret = 0;
-    if (!game->current_player)
-        ret = check_five_in_a_row(game);
+    int ret = check_five_in_a_row_at(game, x, y, 0);
 
     return ret;
 }
@@ -307,16 +308,23 @@ int place_stone(game_t *game, unsigned int x, unsigned int y)
 
     game->board[x][y] = game->current_player == 0 ? 1 : 2;
 
-    game->moves[game->move_count].x = x;
-    game->moves[game->move_count].y = y;
-    game->moves[game->move_count].player = game->current_player;
-    game->moves[game->move_count].captured_stones = captured_stones;
+    if (!(game->moves->next = (moves_t *)malloc(sizeof(moves_t))))
+        return 0;
+    game->moves->next->x = x;
+    game->moves->next->y = y;
+    game->moves->next->player = game->current_player;
+    game->moves->next->captured_stones = captured_stones;
+    game->moves->next->next = NULL;
+    game->moves->next->prev = game->moves;
+    game->moves->next->first = game->moves->first;
+    game->moves = game->moves->next;
+
     game->move_count++;
     
     if (captured_stones != NULL)
         remove_captured_stones(game, captured_stones);
 
-    if (check_win(game))
+    if (check_win(game, x, y))
         return 2;
 
     if (game->swap2_step == 0 && game->move_count == 3) {
@@ -328,9 +336,9 @@ int place_stone(game_t *game, unsigned int x, unsigned int y)
     } else {
         game->current_player = 1 - game->current_player;
     }
+    
+    //print_board(game);
     return 1;
-
-    print_board(game);
 }
 
 
@@ -349,16 +357,17 @@ int init_game(game_t *game)
     game->move_count = 0;
     game->swap2_step = 0;
 
-    if (!(game->moves = (moves_t *)malloc(sizeof(moves_t) * 19 * 19)))
+    if (!(game->moves = (moves_t *)malloc(sizeof(moves_t))))
         return 0;
-    memset(game->moves, 0, sizeof(moves_t) * 19 * 19);
+    memset(game->moves, 0, sizeof(moves_t));
 
-    for (int i = 0; i < 19 * 19; i++) {
-        game->moves[i].x = 0;
-        game->moves[i].y = 0;
-        game->moves[i].player = 0;
-        game->moves[i].captured_stones = NULL;
-    }
+    game->moves->x = 0;
+    game->moves->y = 0;
+    game->moves->player = -1;
+    game->moves->captured_stones = NULL;
+    game->moves->next = NULL;
+    game->moves->prev = NULL;
+    game->moves->first = game->moves;
 
     for (int i = 0; i < 2; i++) {
         snprintf(game->players[i].name, sizeof(game->players[i].name), "Player %d", i + 1);

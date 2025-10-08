@@ -3,11 +3,16 @@
 
 #include "gomo.h"
 
+typedef struct gomo_s gomo_t;
+
 typedef struct moves_s {
     unsigned int x;
     unsigned int y;
-    unsigned int player; // 0 for player 1, 1 for player 2
+    int player; // 0 for player 1, 1 for player 2
     unsigned int *captured_stones; // array of captured stones in this move
+    struct moves_s *next;
+    struct moves_s *prev;
+    struct moves_s *first;
 } moves_t;
 
 typedef struct player_s {
@@ -29,5 +34,7 @@ typedef struct game_s {
 
 int init_game(game_t *game);
 int place_stone(game_t *game, unsigned int x, unsigned int y);
+void sync_game_state(gomo_t *gomo, game_t *game);
+int check_double_free_three(game_t *game, unsigned int x, unsigned int y);
 
 #endif
