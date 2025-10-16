@@ -11,7 +11,7 @@ void sync_game_state(gomo_t *gomo, game_t *game)
     updateData(gomo);
 }
 
-int check_double_free_three(game_t *game, unsigned int x, unsigned int y)
+int check_double_free_three(unsigned int board[19][19], unsigned int x, unsigned int y, int player)
 {
     int free_three_count = 0;
 
@@ -23,7 +23,7 @@ int check_double_free_three(game_t *game, unsigned int x, unsigned int y)
     int dx[8] = {1, 0, 1, 1, -1, 0, -1, -1};
     int dy[8] = {0, 1, 1, -1, 0, -1, -1, 1};
 
-    int player_val = (game->current_player == 0) ? 1 : 2;
+    int player_val = (player == 0) ? 1 : 2;
 
     for (int d = 0; d < 8; d++) {
         if (free_three_count > 1)
@@ -37,7 +37,7 @@ int check_double_free_three(game_t *game, unsigned int x, unsigned int y)
             if (xi < 0 || xi >= 19 || yi < 0 || yi >= 19)
                 continue;
 
-            int cell = game->board[xi][yi];
+            int cell = board[xi][yi];
             
             if (cell == player_val || i == 0) {
                 count[d]++;
@@ -80,16 +80,16 @@ int check_valid_move(game_t *game, unsigned int x, unsigned int y)
     if (x >= 19 || y >= 19 || game->board[x][y] != 0)
         return 0;
 
-    if (check_double_free_three(game, x, y))
+    if (check_double_free_three(game->board, x, y, game->current_player))
         return 0;
 
     return 1;
 }
 
-unsigned int *check_captures(game_t *game, unsigned int x, unsigned int y)
+unsigned int *check_captures(unsigned int board[19][19], unsigned int x, unsigned int y, int player, unsigned int *captured_black, unsigned int *captured_white)
 {
-    unsigned int player_val = (game->current_player == 0) ? 1 : 2;
-    unsigned int opponent_val = (game->current_player == 0) ? 2 : 1;
+    unsigned int player_val = (player == 0) ? 1 : 2;
+    unsigned int opponent_val = (player == 0) ? 2 : 1;
     unsigned int *captured_stones = NULL;
     unsigned int capture_count = 0;
 
@@ -101,9 +101,9 @@ unsigned int *check_captures(game_t *game, unsigned int x, unsigned int y)
 
     for (int d = 0; d < 8; d++) {
         if (x + 3 * dx[d] >= 0 && x + 3 * dx[d] < 19 && y + 3 * dy[d] >= 0 && y + 3 * dy[d] < 19) {
-            if (game->board[x + 3 * dx[d]][y + 3 * dy[d]] == player_val &&
-                game->board[x + 2 * dx[d]][y + 2 * dy[d]] == opponent_val &&
-                game->board[x + 1 * dx[d]][y + 1 * dy[d]] == opponent_val) {
+            if (board[x + 3 * dx[d]][y + 3 * dy[d]] == player_val &&
+                board[x + 2 * dx[d]][y + 2 * dy[d]] == opponent_val &&
+                board[x + 1 * dx[d]][y + 1 * dy[d]] == opponent_val) {
                     captured_stones[capture_count++] = (x + 1 * dx[d]) * 19 + (y + 1 * dy[d]);
                     captured_stones[capture_count++] = (x + 2 * dx[d]) * 19 + (y + 2 * dy[d]);
             }
@@ -120,30 +120,31 @@ unsigned int *check_captures(game_t *game, unsigned int x, unsigned int y)
         return NULL;
     }
 
-    if (game->current_player)
-        game->captured_white += capture_count;
+    if (player == 0)
+        *captured_white += capture_count;
     else
-        game->captured_black += capture_count;
+        *captured_black += capture_count;
 
     return captured_stones;
 }
 
-void remove_captured_stones(game_t *game, unsigned int *captured_stones) {
+void remove_captured_stones(unsigned int board[19][19], unsigned int *captured_stones)
+{
     int i = 0;
     int index = 0;
 
     while (captured_stones && captured_stones[i]) {
         index = captured_stones[i] / 19;
-        if (game->board[index][captured_stones[i] - 19 * index])
-            game->board[index][captured_stones[i] - 19 * index] = 0;
+        if (board[index][captured_stones[i] - 19 * index])
+            board[index][captured_stones[i] - 19 * index] = 0;
         i++;
     }
 }
 
-int check_five_in_a_row_at(game_t *game, unsigned int x, unsigned int y, int preview_play)
+int check_five_in_a_row_at(unsigned int board[19][19], unsigned int x, unsigned int y, int player, int preview_play)
 {
-    unsigned int player_val = (game->current_player == 0) ? 1 : 2;
-    player_val = preview_play ? game->board[x][y] ? game->board[x][y] : 3 : player_val;
+    unsigned int player_val = (player == 0) ? 1 : 2;
+    player_val = preview_play ? board[x][y] ? board[x][y] : 3 : player_val;
     if (player_val == 3)
         return 0;
     unsigned int count = 0;
@@ -156,12 +157,12 @@ int check_five_in_a_row_at(game_t *game, unsigned int x, unsigned int y, int pre
     };
 
     for (int d = 0; d < 4; d++) {
-        count = (game->board[x][y] == player_val || preview_play) ? 1 : 0;
+        count = (board[x][y] == player_val || preview_play) ? 1 : 0;
 
         for (int step = 1; step < 5; step++) {
             int nx = (int)x + step * directions[d][0];
             int ny = (int)y + step * directions[d][1];
-            if (nx >= 0 && nx < 19 && ny >= 0 && ny < 19 && game->board[nx][ny] == player_val) {
+            if (nx >= 0 && nx < 19 && ny >= 0 && ny < 19 && board[nx][ny] == player_val) {
                 count++;
             } else {
                 break;
@@ -171,7 +172,7 @@ int check_five_in_a_row_at(game_t *game, unsigned int x, unsigned int y, int pre
         for (int step = 1; step < 5; step++) {
             int nx = (int)x - step * directions[d][0];
             int ny = (int)y - step * directions[d][1];
-            if (nx >= 0 && nx < 19 && ny >= 0 && ny < 19 && game->board[nx][ny] == player_val) {
+            if (nx >= 0 && nx < 19 && ny >= 0 && ny < 19 && board[nx][ny] == player_val) {
                 count++;
             } else {
                 break;
@@ -187,7 +188,7 @@ int check_five_in_a_row_at(game_t *game, unsigned int x, unsigned int y, int pre
 }
 
 // code made by me - 6465 ns/call (avg. 1000000 calls)
-int check_five_in_a_row(game_t *game, int player)
+int check_five_in_a_row(unsigned int board[19][19], int player)
 {
     unsigned int player_val = (player == 0) ? 1 : 2;
     unsigned int tmp[3][15]; // 15 bulks of 5 consecutives rows * 3 directions
@@ -204,7 +205,7 @@ int check_five_in_a_row(game_t *game, int player)
     for (int i = 0; i < 19; i++) {
         rows[i] = 0;
         for (int j = 0; j < 19; j++) {
-            if (game->board[i][j] == player_val)
+            if (board[i][j] == player_val)
                 check_h++;
             else
                 check_h = 0;
@@ -212,7 +213,7 @@ int check_five_in_a_row(game_t *game, int player)
             if (check_h == 5)
                 return 1;
             
-            rows[i] |= (game->board[i][j] == player_val) << (18 - j);
+            rows[i] |= (board[i][j] == player_val) << (18 - j);
         }
         check_h = 0;
         for (int x = 0; x < 3; x++) {
@@ -293,13 +294,13 @@ int check_win(game_t *game, unsigned int x, unsigned int y) {
         return game->current_player + 1;
 
     if (game->moves->winning_state > 2 || game->moves->winning_state == !game->current_player + 1) {
-        ret = check_five_in_a_row_at(game, game->moves->x, game->moves->y, 1);
+        ret = check_five_in_a_row_at(game->board, game->moves->x, game->moves->y, !game->current_player, 1);
         if (ret)
             return !game->current_player + 1;
         else
             game->moves->next->winning_state -= !game->current_player + 1;
     }
-    ret = check_five_in_a_row_at(game, x, y, 0);
+    ret = check_five_in_a_row_at(game->board, x, y, game->current_player, 0);
     if (ret)
         game->moves->next->winning_state += game->current_player + 1;
     return 0;
@@ -336,7 +337,7 @@ int place_stone(game_t *game, unsigned int x, unsigned int y)
     if (!check_valid_move(game, x, y))
         return 0;
 
-    unsigned int *captured_stones = check_captures(game, x, y);
+    unsigned int *captured_stones = check_captures(game->board, x, y, game->current_player, &game->captured_black, &game->captured_white);
 
     game->board[x][y] = game->current_player == 0 ? 1 : 2;
 
@@ -354,7 +355,7 @@ int place_stone(game_t *game, unsigned int x, unsigned int y)
     game->move_count++;
     
     if (captured_stones != NULL)
-        remove_captured_stones(game, captured_stones);
+        remove_captured_stones(game->board, captured_stones);
 
     if ((ret = check_win(game, x, y)) != 0)
         return ret;

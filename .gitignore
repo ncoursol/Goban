@@ -53,4 +53,3 @@ resources/games
 valgrind.log
 .vscode/
 ext/*
-gomo

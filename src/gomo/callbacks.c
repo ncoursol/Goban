@@ -12,6 +12,11 @@
 
 #include "../include/gomo.h"
 
+void render_helpers(gomo_t *gomo) 
+{
+	(void)gomo;
+}
+
 char *getErrorString(int code)
 {
 	if (code == 0x0500)

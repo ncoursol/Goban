@@ -103,23 +103,29 @@ int main(int argc, char **argv)
 	if (!(gomo.game = (game_t *)malloc(sizeof(game_t))))
 		exit_callback(&gomo, 0, "object malloc failed");
 
-	int verbose = 0;
+	int option = 0;
 	int ret = 0;
 
 	if (argc < 1 || argc > 2)
 		return 0;
 
-	if (argc == 2 && strcmp(argv[1], "-v") == 0)
-		verbose = 1;
+	if (argc == 2 && strcmp(argv[1], "-v") == 0) // OpenGL version
+		option = 1;
+	else if (argc == 2 && strcmp(argv[1], "-g") == 0) // Run mcts game generation
+		option = 2;
+		
 
 	ret = init_game(gomo.game);
 	if (!ret)
 		return ret;
-	if (verbose) {
+	if (option == 1) {
 		init_all(&gomo);
 		int res = render_loop(&gomo);
 		if (res)
 			free_all(&gomo, 100);
+	} else if (option == 2) {
+		run_mcts(gomo.game);
+		free_all(&gomo, 0);
 	}
 	return 0;
 }

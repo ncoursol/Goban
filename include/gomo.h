@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "game.h"
+#include "mcts.h"
 
 #define WIDTH 1480 // 1280
 #define HEIGHT 960 // 960
@@ -57,6 +58,7 @@
 #define RAD(x) (x * 0.0174533f)
 
 typedef struct game_s game_t;
+typedef struct node_s node_t;
 
 typedef struct texture_info_s 
 {
@@ -119,10 +121,10 @@ typedef struct text_s
 	int id;
 	int proj;
 	int face_camera;
+	int clickable;
 	char *font;
 	char *text;
 	float scale;
-	int clickable;
 	vec3_t pos;
 	vec3_t color;
 	vec3_t rotation; // Euler angles in radians (x, y, z)

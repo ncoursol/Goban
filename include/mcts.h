@@ -2,9 +2,11 @@
 #define MCTS_H
 
 #include <pthread.h>
-#include "game.h"
+#include "gomo.h"
 
-#define NUM_THREAD CPU_cores
+#define NUM_THREAD 4
+
+typedef struct game_s game_t;
 
 typedef struct      node_s
 {
@@ -21,13 +23,17 @@ typedef struct      node_s
 
 typedef struct thread_data_s
 {
-    int **board_sim;
+    unsigned int board_sim[19][19];
+    int captured_black;
+    int captured_white;
+    int winning_state;
     int thread_id;
     int num_simulations;
     int *results;
     node_t *node;
 } thread_data_t;
 
-void init_mcts(void);
+void    run_mcts(game_t *game);
+node_t  *init_root(void);
 
 #endif

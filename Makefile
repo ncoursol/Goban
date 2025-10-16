@@ -38,7 +38,7 @@ ifeq ($(UNAME_S),Linux)
 endif
 
 # Source files
-C_SRCS = $(wildcard $(GOMO_DIR)/*.c) $(wildcard $(GAME_DIR)/*.c)
+C_SRCS = $(wildcard $(GOMO_DIR)/*.c) $(wildcard $(GAME_DIR)/*.c) $(wildcard $(BOT_DIR)/*.c)
 CXX_SRCS = $(wildcard $(BOT_DIR)/*.cpp)
 
 # Object files

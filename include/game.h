@@ -38,7 +38,11 @@ typedef struct game_s {
 int init_game(game_t *game);
 int place_stone(game_t *game, unsigned int x, unsigned int y);
 void sync_game_state(gomo_t *gomo, game_t *game);
-int check_double_free_three(game_t *game, unsigned int x, unsigned int y);
+int check_double_free_three(unsigned int board[19][19], unsigned int x, unsigned int y, int player);
+int check_five_in_a_row_at(unsigned int board[19][19], unsigned int x, unsigned int y, int player, int preview_play);
+int check_five_in_a_row(unsigned int board[19][19], int player);
+unsigned int *check_captures(unsigned int board[19][19], unsigned int x, unsigned int y, int player, unsigned int *captured_black, unsigned int *captured_white);
+void remove_captured_stones(unsigned int board[19][19], unsigned int *captured_stones);
 void pick_color(game_t *game, int color);
 
 #endif
