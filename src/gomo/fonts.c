@@ -23,7 +23,7 @@ void clear_text_to_render(gomo_t *gomo, int id)
     }
 }
 
-void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, vec3_t rotation, int face_camera, float scale, vec3_t color, int proj, int id)
+void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, vec3_t rotation, int face_camera, int clickable, float scale, vec3_t color, int proj, int id)
 {
     if (id < 0 || id >= NB_TEXT)
         return;
@@ -47,6 +47,7 @@ void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, vec3_t
     gomo->text[id].pos = pos;
     gomo->text[id].scale = scale;
     gomo->text[id].color = color;
+    gomo->text[id].clickable = clickable;
     gomo->text[id].proj = (proj == 1) ? 1 : 0;
     gomo->text[id].rotation = rotation;
     gomo->text[id].face_camera = face_camera;
@@ -386,7 +387,7 @@ void render_all_text(gomo_t *gomo)
     
     // First pass: 3D text
     glUniformMatrix4fv(gomo->shaderID.projID, 1, GL_FALSE, &gomo->camera->mvp[0]);
-    for (int i = NB_TEXT; i > 0; i--) {
+    for (int i = NB_TEXT - 1; i >= 0; i--) {
         if (gomo->text[i].text != NULL && gomo->text[i].proj == 1) {
             vec3_t textCenter = {0.0f, 0.0f, 0.0f};
             vec3_t renderPos = gomo->text[i].pos;

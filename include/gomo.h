@@ -122,6 +122,7 @@ typedef struct text_s
 	char *font;
 	char *text;
 	float scale;
+	int clickable;
 	vec3_t pos;
 	vec3_t color;
 	vec3_t rotation; // Euler angles in radians (x, y, z)
@@ -338,7 +339,7 @@ void create_obj(gomo_t *gomo, float *vertices, float *normals, float *textures);
 
 // Render fct
 void camera(gomo_t *gomo, vec3_t center, vec3_t up);
-void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, vec3_t rotation, int face_camera, float scale, vec3_t color, int proj, int id);
+void add_text_to_render(gomo_t *gomo, char *font, char *text, vec3_t pos, vec3_t rotation, int face_camera, int clickable,float scale, vec3_t color, int proj, int id);
 void add_line_to_render(gomo_t *gomo, vec3_t start, vec3_t end, vec3_t color, int id);
 void add_lines_batch(gomo_t *gomo, line_t *lines, int count, int start_id);
 void render_all_text(gomo_t *gomo);

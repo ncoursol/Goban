@@ -10,6 +10,7 @@ typedef struct moves_s {
     unsigned int y;
     int player; // 0 for player 1, 1 for player 2
     unsigned int *captured_stones; // array of captured stones in this move
+    unsigned int winning_state; // 0 = no win, 1 = player 1, 2 = player 2, 3 = both players
     struct moves_s *next;
     struct moves_s *prev;
     struct moves_s *first;
@@ -17,6 +18,7 @@ typedef struct moves_s {
 
 typedef struct player_s {
     char name[50];
+    unsigned int color; // 0 for black, 1 for white
     unsigned int is_human; // 1 if human, 0 if AI
 
 } player_t;
@@ -24,6 +26,7 @@ typedef struct player_s {
 typedef struct game_s {
     unsigned int board[19][19];     // current state of the game
     unsigned int current_player;    // 0 for player 1, 1 for player 2
+    unsigned int swap2_player;      // -1 if no swap2, 0 if player 1, 1 if player 2
     unsigned int captured_black;
     unsigned int captured_white;
     unsigned int move_count;
@@ -36,5 +39,6 @@ int init_game(game_t *game);
 int place_stone(game_t *game, unsigned int x, unsigned int y);
 void sync_game_state(gomo_t *gomo, game_t *game);
 int check_double_free_three(game_t *game, unsigned int x, unsigned int y);
+void pick_color(game_t *game, int color);
 
 #endif

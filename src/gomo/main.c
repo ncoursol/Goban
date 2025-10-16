@@ -45,18 +45,18 @@ int render_loop(gomo_t *gomo)
 
 		    // Only update HUD text if HUD is enabled to avoid unnecessary work
 		    snprintf(buff, sizeof(buff), "%.1f fps", fps);
-		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 15, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 0);
+		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 15, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 1);
 			snprintf(buff, sizeof(buff), "%.3f ms/f", ms_per_frame);
-		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){110, HEIGHT - 15, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 1);
+		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){110, HEIGHT - 15, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 2);
 		    snprintf(buff, sizeof(buff), "V-Sync : %s", V_SYNC ? "ON" : "OFF");
-		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 35, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 2);
+		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 35, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 3);
 		    snprintf(buff, sizeof(buff), "target Location {%.2f, %.2f, %.2f}", gomo->camera->targetPos.x, gomo->camera->targetPos.y, gomo->camera->targetPos.z);
-		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 55, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 8);
+		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 55, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 4);
 		    
 		    snprintf(buff, sizeof(buff), "Animation : %s", ANIMATE ? "ON" : "OFF");
-		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 75, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 9);
+		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 75, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 5);
 		    snprintf(buff, sizeof(buff), "Center {%.2f, %.2f, %.2f}", gomo->camera->center.x, gomo->camera->center.y, gomo->camera->center.z);
-		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 95, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, 10);
+		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 95, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 6);
 		}
 
 		// Draw each object

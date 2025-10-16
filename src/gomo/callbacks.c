@@ -145,7 +145,7 @@ int intersectText(gomo_t *gomo, ray_t ray, hit_t *intersection)
 	for (int i = 0; i < NB_TEXT; i++)
 	{
 		text_t *text = &gomo->text[i];
-		if (!text->id || !text->text || text->proj != 1 || text->id < 4 || (text->id > 8 && text->id < 12) || text->id > 17)
+		if (!text->id || !text->text || text->proj != 1 || !text->clickable)
 			continue;
 
 		float textWidth = calculate_text_width(gomo, text->font, text->text, text->scale);
@@ -241,62 +241,95 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 		if (action == GLFW_PRESS && gomo->tmp_stone && gomo->nb_stones < 361)
 		{
 			int ret = place_stone(gomo->game, (gomo->tmp_stone - 1) / 19, (gomo->tmp_stone - 1) % 19);
+			char buffer[32];
+			snprintf(buffer, sizeof(buffer), "%s play as", gomo->game->players[gomo->game->current_player].name);
 			gomo->tmp_stone = 0;
-			if (ret) {
-				sync_game_state(gomo, gomo->game);
+			sync_game_state(gomo, gomo->game);
+			if (ret)
+				printf("game over %d\n", ret - 1);
+			if (gomo->game->swap2_step == 4)
 				render_helpers(gomo);
+
+			if ((gomo->game->swap2_step == 1 && gomo->game->move_count == 3) ||
+				(gomo->game->swap2_step == 3 && gomo->game->move_count == 5))
+			{
+				add_text_to_render(gomo, "font_text2", buffer, (vec3_t){0.0f, 1.5f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 0, 0.004f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 5);
+				add_text_to_render(gomo, "font_text2", "Black", (vec3_t){0.0f, 1.3f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 6);
+				add_text_to_render(gomo, "font_text2", "White", (vec3_t){0.0f, 1.1f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 7);
+				if (gomo->game->swap2_step == 1)
+					add_text_to_render(gomo, "font_text2", "Place 2 stones", (vec3_t){0.0f, 0.9f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 8);
+			}
+
+			if ((gomo->camera->targetPos.y == 0.0f && gomo->game->swap2_player == 1) ||
+				(floor(gomo->camera->targetPos.y) == floor(PI) && gomo->game->swap2_player == 0))
+			{
+				if (!(ANIMATE))
+					gomo->camera->options ^= 1 << 1; // animate
+				gomo->camera->targetPos = gomo->game->swap2_player ? (vec3_t){PI * 0.75f, PI, 2.0f} : (vec3_t){PI * 0.75f, 0.0f, 2.0f};
 			}
 		}
-	} else if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))
+	} 
+	else if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))
 	{
 		gomo_t *gomo = glfwGetWindowUserPointer(window);
-		if (MENU && gomo->textHover != -1 && action == GLFW_PRESS && gomo->textHover > 3 && gomo->textHover < 8)
+		if (gomo->textHover != -1 && action == GLFW_PRESS)
 		{
-			gomo->camera->options ^= 1 << 4; // rotate
-			
-			if (!(ANIMATE))
-				gomo->camera->options ^= 1 << 1; // animate
-			if (gomo->textHover == 7) { // Tutorial
-				gomo->camera->targetPos = (vec3_t){PI / 2.0f, PI / 2.0f, 2.7f};
-				gomo->camera->targetCenter = (vec3_t){0.0f, 1.8f, 3.0f};
-				display_tutorial(gomo);
-			} else if (gomo->textHover == 4 || gomo->textHover == 5 || gomo->textHover == 6) { // Game modes
-				gomo->camera->options ^= 1 << 6; // menu
-				gomo->camera->targetPos = (vec3_t){PI * 0.75f, 0.0f, 2.0f};
-				for (int i = 3; i < 8; i++)
-       				clear_text_to_render(gomo, i);
-				
-				/*
-				gomo->camera->targetPos = (vec3_t){PI - 0.000005f, (PI / 2.0f), 2.5f};
-				gomo->camera->targetCenter = (vec3_t){0.0f, 0.5f, 0.0f};
-				display_gameMode(gomo);
-				*/
-			}
-		}
-		else if (gomo->textHover != -1 && action == GLFW_PRESS && gomo->textHover > 11 && gomo->textHover < 18)
-		{
-			if (gomo->textHover == 17) {
+			if (MENU && gomo->textHover == 17) { // back
 				if (!(ANIMATE))
 					gomo->camera->options ^= 1 << 1; // animate
 				gomo->camera->targetPos = (vec3_t){RAD(120.0f), RAD(10.0f), 3.0f};
 				gomo->camera->targetCenter = (vec3_t){0.0f, 0.5f, 0.0f};
 				clear_text_to_render(gomo, 17);
-				gomo->textHover = 7;
-			} else if ((int)gomo->cursor != gomo->textHover) {
-				gomo->cursor = gomo->textHover;
-				change_tutorial(gomo);
+				gomo->textHover = 4; // tutorial
+			} else if (gomo->textHover > 11 && gomo->textHover < 17) {
+				if ((int)gomo->cursor != gomo->textHover) {
+					gomo->cursor = gomo->textHover;
+					change_tutorial(gomo);
+				}
+			} else if (gomo->textHover > 5 && gomo->textHover < 9) {
+				clear_text_to_render(gomo, 5);
+				clear_text_to_render(gomo, 6);
+				clear_text_to_render(gomo, 7);
+				clear_text_to_render(gomo, 8);
+				if (gomo->textHover == 6 || gomo->textHover == 7) {
+					pick_color(gomo->game, gomo->textHover == 6 ? 0 : 1);
+					if ((gomo->camera->targetPos.y == 0.0f && gomo->game->swap2_player == 1) ||
+					(floor(gomo->camera->targetPos.y) == floor(PI) && gomo->game->swap2_player == 0)) {
+						if (!(ANIMATE))
+							gomo->camera->options ^= 1 << 1; // animate
+						gomo->camera->targetPos = gomo->game->swap2_player ? (vec3_t){PI * 0.75f, PI, 2.0f} : (vec3_t){PI * 0.75f, 0.0f, 2.0f};
+					}
+				} else {
+					gomo->game->swap2_step++;
+				}
+			} else if (MENU) {
+				gomo->camera->options ^= 1 << 4; // rotate
+				
+				if (!(ANIMATE))
+					gomo->camera->options ^= 1 << 1; // animate
+				if (gomo->textHover == 4) { // Tutorial
+					gomo->camera->targetPos = (vec3_t){PI / 2.0f, PI / 2.0f, 2.7f};
+					gomo->camera->targetCenter = (vec3_t){0.0f, 1.8f, 3.0f};
+					display_tutorial(gomo);
+				} else if (gomo->textHover == 1 || gomo->textHover == 2 || gomo->textHover == 3) { // Game modes
+					gomo->camera->options ^= 1 << 6; // menu
+					gomo->camera->targetPos = (vec3_t){PI * 0.75f, 0.0f, 2.0f};
+					for (int i = 0; i < 5; i++)
+       					clear_text_to_render(gomo, i);
+				}
 			}
 		}
-		else if (!(MENU) && !(gomo->camera->options >> 3 & 1) && (gomo->textHover < 12 || gomo->textHover > 16))
+		else if (!(MENU) && !(gomo->camera->options >> 3 & 1) && (gomo->textHover < 1 || gomo->textHover > 17))
 		{
-			gomo->camera->options ^= 1 << 2;
-			if (action == GLFW_PRESS)
+			if (action == GLFW_PRESS && !(LEFT_MOUSE))
 			{
+				gomo->camera->options ^= 1 << 2;
 				glfwSetInputMode(gomo->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 				glfwSetCursorPos(gomo->window, gomo->camera->ah / MSPEED, gomo->camera->av / MSPEED);
 			}
-			else if (action == GLFW_RELEASE)
+			else if (action == GLFW_RELEASE && LEFT_MOUSE)
 			{
+				gomo->camera->options ^= 1 << 2;
 				glfwSetInputMode(gomo->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			}
 		}
@@ -325,7 +358,7 @@ void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 	hit_t res;
 	ray = createRay(gomo, xpos, ypos);
 	gomo->obj = gomo->obj->first;
-	if (!(MENU) && gomo->nb_stones < 361 && intersectBoard(ray, &res))
+	if (!(MENU) && gomo->nb_stones < 361 && intersectBoard(ray, &res) && gomo->game->swap2_step != 1 && gomo->game->swap2_step != 3)
 	{
 		gomo->obj = gomo->obj->next;
 		int closest_case = find_closest_case(gomo, res.point);
@@ -345,18 +378,20 @@ void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 		}
 		updateData(gomo);
 	} else if (intersectText(gomo, ray, &res)) {
-		if ((res.hit > 3 && res.hit < 8) || (res.hit > 11 && res.hit < 19)) {
+		if (res.hit && gomo->text[res.hit].clickable) {
 			if (gomo->text[res.hit].text != NULL && (gomo->text[res.hit].color.x != 1.0f || gomo->text[res.hit].color.y != 1.0f || gomo->text[res.hit].color.z != 1.0f)) {
-				if (gomo->textHover != -1 && gomo->textHover != res.hit) {
-					add_text_to_render(gomo, gomo->text[gomo->textHover].font, gomo->text[gomo->textHover].text, gomo->text[gomo->textHover].pos, gomo->text[gomo->textHover].rotation, gomo->text[gomo->textHover].face_camera, gomo->text[gomo->textHover].scale, (vec3_t){1.0f, 0.5f, 0.5f}, 1, gomo->textHover);
+				if (gomo->textHover != -1 && gomo->textHover != res.hit && gomo->text[gomo->textHover].text != NULL) {
+					add_text_to_render(gomo, gomo->text[gomo->textHover].font, gomo->text[gomo->textHover].text, gomo->text[gomo->textHover].pos, gomo->text[gomo->textHover].rotation, gomo->text[gomo->textHover].face_camera, gomo->text[gomo->textHover].clickable, gomo->text[gomo->textHover].scale, (vec3_t){1.0f, 0.5f, 0.5f}, 1, gomo->textHover);
 				}
 				gomo->textHover = res.hit;
-				add_text_to_render(gomo, gomo->text[res.hit].font, gomo->text[res.hit].text, gomo->text[res.hit].pos, gomo->text[res.hit].rotation, gomo->text[res.hit].face_camera, gomo->text[res.hit].scale, (vec3_t){1.0f, 1.0f, 1.0f}, 1, res.hit);
+				if (gomo->textHover != -1 && gomo->text[gomo->textHover].text != NULL)
+					add_text_to_render(gomo, gomo->text[res.hit].font, gomo->text[res.hit].text, gomo->text[res.hit].pos, gomo->text[res.hit].rotation, gomo->text[res.hit].face_camera, gomo->text[res.hit].clickable, gomo->text[res.hit].scale, (vec3_t){1.0f, 1.0f, 1.0f}, 1, res.hit);
 			}
 		}
+		gomo->textHover = res.hit;
 	}
 	if (gomo->text[gomo->textHover].text != NULL && res.hit == -1 && gomo->textHover != -1) {
-		add_text_to_render(gomo, gomo->text[gomo->textHover].font, gomo->text[gomo->textHover].text, gomo->text[gomo->textHover].pos, gomo->text[gomo->textHover].rotation, gomo->text[gomo->textHover].face_camera, gomo->text[gomo->textHover].scale, (vec3_t){1.0f, 0.5f, 0.5f}, 1, gomo->textHover);
+		add_text_to_render(gomo, gomo->text[gomo->textHover].font, gomo->text[gomo->textHover].text, gomo->text[gomo->textHover].pos, gomo->text[gomo->textHover].rotation, gomo->text[gomo->textHover].face_camera, gomo->text[gomo->textHover].clickable, gomo->text[gomo->textHover].scale, (vec3_t){1.0f, 0.5f, 0.5f}, 1, gomo->textHover);
 		gomo->textHover = -1;
 	}
 }

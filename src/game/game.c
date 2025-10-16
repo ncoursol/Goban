@@ -16,19 +16,21 @@ int check_double_free_three(game_t *game, unsigned int x, unsigned int y)
     int free_three_count = 0;
 
     /* per-direction state: 0=horizontal,1=vertical,2=diag 1,3=diag 2 */
-    int empty[4] = {0,0,0,0};
-    int count[4] = {0,0,0,0};
-    int last_case[4] = {-1,-1,-1,-1};
-    int dx[4] = {1, 0, 1, 1};
-    int dy[4] = {0, 1, 1, -1};
+    int empty[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    int count[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    int line[4] = {0, 0, 0, 0};
+    int last_case[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
+    int dx[8] = {1, 0, 1, 1, -1, 0, -1, -1};
+    int dy[8] = {0, 1, 1, -1, 0, -1, -1, 1};
 
     int player_val = (game->current_player == 0) ? 1 : 2;
 
-    for (int i = -4; i <= 4; i++) {
+    for (int d = 0; d < 8; d++) {
         if (free_three_count > 1)
             return 1;
-
-        for (int d = 0; d < 4; d++) {
+        for (int i = -4; i <= 4; i++) {
+            if (line[d > 3 ? d - 4 : d] > 0)
+                break;
             int xi = (int)x + i * dx[d];
             int yi = (int)y + i * dy[d];
 
@@ -56,22 +58,25 @@ int check_double_free_three(game_t *game, unsigned int x, unsigned int y)
                 count[d] = 0;
             } else if (count[d] == 3 && empty[d] >= 2 && last_case[d] == 0) {
                 free_three_count++;
+                line[d > 3 ? d - 4 : d]++;
                 empty[d] = 1;
                 count[d] = 0;
                 if (free_three_count > 1)
                     return 1;
             } else if (empty[d] == 2 && last_case[d] == 0) {
                 empty[d] = 1;
+                count[d] = 0;
             }
         }
     }
-
     return 0;
 }
 
-
 int check_valid_move(game_t *game, unsigned int x, unsigned int y)
 {
+    if (game->swap2_step == 1 || game->swap2_step == 3)
+        return 0;
+
     if (x >= 19 || y >= 19 || game->board[x][y] != 0)
         return 0;
 
@@ -138,6 +143,9 @@ void remove_captured_stones(game_t *game, unsigned int *captured_stones) {
 int check_five_in_a_row_at(game_t *game, unsigned int x, unsigned int y, int preview_play)
 {
     unsigned int player_val = (game->current_player == 0) ? 1 : 2;
+    player_val = preview_play ? game->board[x][y] ? game->board[x][y] : 3 : player_val;
+    if (player_val == 3)
+        return 0;
     unsigned int count = 0;
 
     int directions[4][2] = {
@@ -148,7 +156,7 @@ int check_five_in_a_row_at(game_t *game, unsigned int x, unsigned int y, int pre
     };
 
     for (int d = 0; d < 4; d++) {
-        count = game->board[x][y] == player_val || preview_play ? 1 : preview_play ? 1 : 0;
+        count = (game->board[x][y] == player_val || preview_play) ? 1 : 0;
 
         for (int step = 1; step < 5; step++) {
             int nx = (int)x + step * directions[d][0];
@@ -179,9 +187,9 @@ int check_five_in_a_row_at(game_t *game, unsigned int x, unsigned int y, int pre
 }
 
 // code made by me - 6465 ns/call (avg. 1000000 calls)
-int check_five_in_a_row(game_t *game)
+int check_five_in_a_row(game_t *game, int player)
 {
-    unsigned int player_val = (game->current_player == 0) ? 1 : 2;
+    unsigned int player_val = (player == 0) ? 1 : 2;
     unsigned int tmp[3][15]; // 15 bulks of 5 consecutives rows * 3 directions
     unsigned int rows[19];
     int index = 0, index2 = 0;
@@ -280,12 +288,21 @@ int check_five_in_a_row(game_t *game) {
 }*/
 
 int check_win(game_t *game, unsigned int x, unsigned int y) {
+    int ret = 0;
     if (game->captured_black >= 10 || game->captured_white >= 10)
-        return 2;
+        return game->current_player + 1;
 
-    int ret = check_five_in_a_row_at(game, x, y, 0);
-
-    return ret;
+    if (game->moves->winning_state > 2 || game->moves->winning_state == !game->current_player + 1) {
+        ret = check_five_in_a_row_at(game, game->moves->x, game->moves->y, 1);
+        if (ret)
+            return !game->current_player + 1;
+        else
+            game->moves->next->winning_state -= !game->current_player + 1;
+    }
+    ret = check_five_in_a_row_at(game, x, y, 0);
+    if (ret)
+        game->moves->next->winning_state += game->current_player + 1;
+    return 0;
 }
 
 void print_board(game_t *game) {
@@ -297,14 +314,29 @@ void print_board(game_t *game) {
     }
 }
 
+void pick_color(game_t *game, int color)
+{
+    int player = game->swap2_player;
+    if (game->swap2_step == 1 && game->move_count == 3) {
+        game->players[player].color = !color;
+        game->players[!player].color = color;
+        game->swap2_player = color ? game->swap2_player : !game->swap2_player;
+        game->swap2_step = 4;
+    } else if (game->swap2_step == 3 && game->move_count == 5) {
+        game->players[player].color = !color;
+        game->players[!player].color = color;
+        game->swap2_player = color ? game->swap2_player : !game->swap2_player;
+        game->swap2_step = 4;
+    }
+}
+
 int place_stone(game_t *game, unsigned int x, unsigned int y)
 {
+    int ret = 0;
     if (!check_valid_move(game, x, y))
         return 0;
 
     unsigned int *captured_stones = check_captures(game, x, y);
-    if (captured_stones != NULL)
-        printf("cs: [%d, %d]\n", captured_stones[0], captured_stones[1]);
 
     game->board[x][y] = game->current_player == 0 ? 1 : 2;
 
@@ -314,33 +346,36 @@ int place_stone(game_t *game, unsigned int x, unsigned int y)
     game->moves->next->y = y;
     game->moves->next->player = game->current_player;
     game->moves->next->captured_stones = captured_stones;
+    game->moves->next->winning_state = game->moves->winning_state;
     game->moves->next->next = NULL;
     game->moves->next->prev = game->moves;
     game->moves->next->first = game->moves->first;
-    game->moves = game->moves->next;
 
     game->move_count++;
     
     if (captured_stones != NULL)
         remove_captured_stones(game, captured_stones);
 
-    if (check_win(game, x, y))
-        return 2;
+    if ((ret = check_win(game, x, y)) != 0)
+        return ret;
+
+    game->moves = game->moves->next;
+
+    game->current_player = 1 - game->current_player;
 
     if (game->swap2_step == 0 && game->move_count == 3) {
+        game->swap2_player = !game->swap2_player;
         game->swap2_step = 1;
-        game->current_player = 1 - game->current_player;
     } else if (game->swap2_step == 2 && game->move_count == 5) {
+        game->swap2_player = !game->swap2_player;
         game->swap2_step = 3;
-        game->current_player = 1 - game->current_player;
-    } else {
-        game->current_player = 1 - game->current_player;
+    } else if (game->swap2_step == 4) {
+        game->swap2_player = !game->current_player;
     }
-    
-    //print_board(game);
-    return 1;
-}
 
+    //print_board(game);
+    return 0;
+}
 
 int init_game(game_t *game)
 {
@@ -352,6 +387,7 @@ int init_game(game_t *game)
         }
     }
     game->current_player = 0;
+    game->swap2_player = 0;
     game->captured_black = 0;
     game->captured_white = 0;
     game->move_count = 0;
@@ -365,6 +401,7 @@ int init_game(game_t *game)
     game->moves->y = 0;
     game->moves->player = -1;
     game->moves->captured_stones = NULL;
+    game->moves->winning_state = 0;
     game->moves->next = NULL;
     game->moves->prev = NULL;
     game->moves->first = game->moves;
