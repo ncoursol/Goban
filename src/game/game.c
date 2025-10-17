@@ -306,10 +306,11 @@ int check_win(game_t *game, unsigned int x, unsigned int y) {
     return 0;
 }
 
-void print_board(game_t *game) {
+void print_board(unsigned int board[19][19])
+{
     for (int i = 0; i < 19; i++) {
         for (int j = 0; j < 19; j++) {
-            printf("%c ", game->board[i][j] == 0 ? '.' : game->board[i][j] == 1 ? '1' : '2');
+            printf("%c ", board[i][j] == 0 ? '.' : board[i][j] == 1 ? '1' : '2');
         }
         printf("\n");
     }

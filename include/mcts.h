@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include "gomo.h"
 
-#define NUM_THREAD 4
+#define NUM_THREAD 1
 
 typedef struct game_s game_t;
 
@@ -16,6 +16,7 @@ typedef struct      node_s
     int             x;
     int             y;
     int             color;
+    int             nb_childs;
     pthread_mutex_t mutex;
     struct node_s   *parent;
     struct node_s   **childs;
@@ -34,6 +35,5 @@ typedef struct thread_data_s
 } thread_data_t;
 
 void    run_mcts(game_t *game);
-node_t  *init_root(void);
 
 #endif

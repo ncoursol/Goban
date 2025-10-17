@@ -26,8 +26,8 @@
 #include "game.h"
 #include "mcts.h"
 
-#define WIDTH 1480 // 1280
-#define HEIGHT 960 // 960
+#define WIDTH 1920 // 1280
+#define HEIGHT 1080 // 960
 
 #define NB_TEXT 100
 #define MAX_LINES 1000
