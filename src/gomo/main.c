@@ -114,17 +114,19 @@ int main(int argc, char **argv)
 	else if (argc == 2 && strcmp(argv[1], "-g") == 0) // Run mcts game generation
 		option = 2;
 		
-
+	/*
 	ret = init_game(gomo.game);
 	if (!ret)
 		return ret;
+	*/
 	if (option == 1) {
 		init_all(&gomo);
 		int res = render_loop(&gomo);
 		if (res)
 			free_all(&gomo, 100);
 	} else if (option == 2) {
-		run_mcts(gomo.game);
+		int x, y;
+		run_mcts(gomo.game, &x, &y);
 		free_all(&gomo, 0);
 	}
 	return 0;

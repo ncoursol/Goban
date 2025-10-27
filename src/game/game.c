@@ -379,7 +379,7 @@ int place_stone(game_t *game, unsigned int x, unsigned int y)
     return 0;
 }
 
-int init_game(game_t *game)
+int init_game(game_t *game, int mode)
 {
     memset(game, 0, sizeof(game_t));
 

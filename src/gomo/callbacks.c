@@ -12,11 +12,6 @@
 
 #include "../include/gomo.h"
 
-void render_helpers(gomo_t *gomo) 
-{
-	(void)gomo;
-}
-
 char *getErrorString(int code)
 {
 	if (code == 0x0500)
@@ -317,6 +312,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 					gomo->camera->targetCenter = (vec3_t){0.0f, 1.8f, 3.0f};
 					display_tutorial(gomo);
 				} else if (gomo->textHover == 1 || gomo->textHover == 2 || gomo->textHover == 3) { // Game modes
+					int ret = init_game(gomo->game, gomo->textHover - 1);
 					gomo->camera->options ^= 1 << 6; // menu
 					gomo->camera->targetPos = (vec3_t){PI * 0.75f, 0.0f, 2.0f};
 					for (int i = 0; i < 5; i++)

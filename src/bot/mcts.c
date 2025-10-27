@@ -1,4 +1,4 @@
-#define _POSIX_C_SOURCE 199309L
+#define _POSIX_C_SOURCE 200112L
 #include "mcts.h"
 #include <time.h>
 
@@ -9,9 +9,9 @@ node_t  *init_root(int player_color) {
         return (NULL);
 
     memset(root, 0, sizeof(node_t));
-	root->value = 0;
-	root->visit_count = 0;
-    root->uct = -1;
+	atomic_store(&root->value, 0);
+	atomic_store(&root->visit_count, 0);
+    atomic_store(&root->uct, -1);
     root->x = -1;
     root->y = -1;
     root->color = player_color;
@@ -33,12 +33,12 @@ node_t  *add_new_child(node_t *parent, int index, int x, int y) {
 
 	if (!(child = (node_t*)malloc(sizeof(node_t))))
 		return (NULL);
-	child->value = 0;
-	child->visit_count = 0;
-    child->uct = -1;
+	atomic_store(&child->value, 0);
+	atomic_store(&child->visit_count, 0);
+    atomic_store(&child->uct, -1);
     child->x = x;
     child->y = y;
-    child->color = parent->color;
+    child->color = !parent->color;
     child->nb_childs = parent->nb_childs - 1;
     child->childs = NULL;
 	child->parent = parent;
@@ -85,33 +85,42 @@ int check_win_mcts(unsigned int board_sim[19][19], unsigned int x, unsigned int 
     return 0;
 }
 
-void     random_choice(unsigned int board_sim[19][19], int *x, int *y)
+void     random_choice(unsigned int board_sim[19][19], int *x, int *y, unsigned int *seed)
 {
     int rx, ry;
-    rx = rand() % 19;
-    ry = rand() % 19;
+    rx = rand_r(seed) % 19;
+    ry = rand_r(seed) % 19;
     for (int i = 0; i < 19 * 19; i++) {
-        if (board_sim[rx + i / 19][ry + i % 19] == 0) {
-            *x = rx + i / 19;
-            *y = ry + i % 19;
-            break;
+        int check_x = (rx + i / 19) % 19;
+        int check_y = (ry + i % 19) % 19;
+        if (board_sim[check_x][check_y] == 0) {
+            *x = check_x;
+            *y = check_y;
+            return;
         }
     }
-    rx = -1;
-    ry = -1;
+    *x = -1;
+    *y = -1;
 }
+
+void update_uct(node_t *node) {
+    if (node->visit_count > 0) {
+        float exploit = (float)node->value / node->visit_count;
+        float explore = sqrt(2 * log(node->parent->visit_count) / node->visit_count);
+        atomic_store(&node->uct, exploit + explore);
+    }
+}
+
 
 node_t    *selection(node_t *root, unsigned int board_sim[19][19]) {
     int i;
     int best;
-    float wi;
     while (root->childs[root->nb_childs - 1] && root->childs[0] != NULL) {
         best = 0;
         i = 0;
         while (root->childs[i] && i < root->nb_childs) {
-            wi = ((float)root->childs[i]->visit_count / 2) + root->childs[i]->value;
-            root->childs[i]->uct = (wi / root->childs[i]->visit_count) + sqrt(2) * sqrt(log(root->visit_count) / root->childs[i]->visit_count);
-            if (root->childs[i]->uct > root->childs[best]->uct)
+            update_uct(root->childs[i]);
+            if (atomic_load(&root->childs[i]->uct) > atomic_load(&root->childs[best]->uct))
                 best = i;
             i++;
         }
@@ -145,7 +154,7 @@ int     simulation(node_t *cursor, thread_data_t *thread) {
     int player = cursor->color;
     int winner = 0;
     while (!winner) {
-        random_choice(thread->board_sim, &x, &y);
+        random_choice(thread->board_sim, &x, &y, &thread->rand_seed);
         if (x == -1 || y == -1)
         break;
         thread->board_sim[x][y] = player == 1 ? 1 : 2;
@@ -158,16 +167,15 @@ int     simulation(node_t *cursor, thread_data_t *thread) {
 }
 
 node_t    *backPropagation(node_t *cursor, int sim_result) {
+    int value_to_propagate = sim_result;
+    
     while (cursor->parent != NULL) {
-        pthread_mutex_lock(&cursor->mutex);
-        cursor->visit_count++;
-        cursor->value += cursor->color == 1 ? -sim_result : sim_result;
-        pthread_mutex_unlock(&cursor->mutex);
+        atomic_fetch_add(&cursor->visit_count, 1);
+        atomic_fetch_add(&cursor->value, value_to_propagate);
+        value_to_propagate = -value_to_propagate;
         cursor = cursor->parent;
     }
-    pthread_mutex_lock(&cursor->mutex);
-    cursor->visit_count++;
-    pthread_mutex_unlock(&cursor->mutex);
+    atomic_fetch_add(&cursor->visit_count, 1);
     return (cursor);
 }
 
@@ -186,12 +194,47 @@ void    free_node(node_t *node) {
     free(node);
 }
 
+void    init_load_balancer(load_balancer_t *balancer, int total_sims) {
+    atomic_store(&balancer->global_sim_counter, 0);
+    for (int i = 0; i < NUM_THREAD; i++) {
+        atomic_store(&balancer->thread_sim_counts[i], 0);
+        atomic_store(&balancer->thread_times_ns[i], 0);
+    }
+    pthread_mutex_init(&balancer->balance_mutex, NULL);
+    balancer->active_threads = NUM_THREAD;
+    balancer->total_simulations = total_sims;
+}
+
+void    print_load_balance_stats(load_balancer_t *balancer) {
+    printf("\n=== Dynamic Load Balance Statistics ===\n");
+    for (int i = 0; i < NUM_THREAD; i++) {
+        int sims = atomic_load(&balancer->thread_sim_counts[i]);
+        long long time_ns = atomic_load(&balancer->thread_times_ns[i]);
+        double time_sec = time_ns / 1e9;
+        double sims_per_sec = (time_sec > 0) ? sims / time_sec : 0;
+        printf("Thread %d: %d sims (%.2f%%) in %.3fs (%.2f sims/s)\n", 
+               i, sims, (sims * 100.0) / balancer->total_simulations, 
+               time_sec, sims_per_sec);
+    }
+    printf("=======================================\n\n");
+}
+
 void    *mcts_thread_worker(void *arg) {
     thread_data_t *data = (thread_data_t *)arg;
+    load_balancer_t *balancer = data->balancer;
+    struct timespec start_time, sim_start, sim_end;
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
     
-    for (int i = 0; i < data->num_simulations; i++) {
-        // Create a fresh copy of the board for each simulation
-        //printf("Test\n");
+    int local_sim_count = 0;
+    
+    while (1) {
+        int global_count = atomic_fetch_add(&balancer->global_sim_counter, 1);
+        
+        if (global_count >= balancer->total_simulations)
+            break;
+        
+        clock_gettime(CLOCK_MONOTONIC, &sim_start);
+        
         unsigned int local_board[19][19];
         for (int m = 0; m < 19; m++) {
             for (int n = 0; n < 19; n++) {
@@ -199,13 +242,9 @@ void    *mcts_thread_worker(void *arg) {
             }
         }
         
-        //printf("Thread %d: Starting simulation %d/%d\n", data->thread_id, i + 1, data->num_simulations);
         node_t *selected = selection(data->node, local_board);
-        //printf("Thread %d: Selected node at (%d, %d)\n", data->thread_id, selected->x, selected->y);
         node_t *expanded = expansion(selected, local_board);
-        //printf("Thread %d: Expanded node at (%d, %d)\n", data->thread_id, expanded->x, expanded->y);
         
-        // Create a local copy of thread data for simulation
         thread_data_t sim_data = *data;
         for (int m = 0; m < 19; m++) {
             for (int n = 0; n < 19; n++) {
@@ -214,28 +253,52 @@ void    *mcts_thread_worker(void *arg) {
         }
         
         int winner = simulation(expanded, &sim_data);
-        //printf("Thread %d: Simulation result: %d\n", data->thread_id, winner);
         backPropagation(expanded, winner);
-        //printf("Thread %d: Backpropagation complete for simulation %d/%d\n", data->thread_id, i + 1, data->num_simulations);
+        
+        clock_gettime(CLOCK_MONOTONIC, &sim_end);
+        long long sim_time_ns = (sim_end.tv_sec - sim_start.tv_sec) * 1000000000LL + 
+                                (sim_end.tv_nsec - sim_start.tv_nsec);
+        atomic_fetch_add(&balancer->thread_times_ns[data->thread_id], sim_time_ns);
+        
+        local_sim_count++;
+        atomic_fetch_add(&balancer->thread_sim_counts[data->thread_id], 1);
+        
+        if (local_sim_count % LOAD_BALANCE_CHECK_INTERVAL == 0) {
+            int total_done = atomic_load(&balancer->global_sim_counter);
+            printf("Thread %d: %d local sims, %d/%d global (%.1f%% complete)\n",
+                   data->thread_id, local_sim_count, total_done, 
+                   balancer->total_simulations,
+                   (total_done * 100.0) / balancer->total_simulations);
+        }
     }
+    
+    struct timespec end_time;
+    clock_gettime(CLOCK_MONOTONIC, &end_time);
+    double thread_elapsed = (end_time.tv_sec - start_time.tv_sec) + 
+                           (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+    
+    printf("Thread %d finished: %d simulations in %.3f seconds (%.2f sims/s)\n",
+           data->thread_id, local_sim_count, thread_elapsed, 
+           local_sim_count / thread_elapsed);
+    
     pthread_exit(NULL);
 }
 
-void    run_mcts(game_t *game) {
+void    run_mcts(game_t *game, int *res_x, int *res_y) {
     node_t *root = init_root(game->swap2_player);
     if (!root)
         return;
     
     pthread_t threads[NUM_THREAD];
     thread_data_t thread_data[NUM_THREAD];
-    int total_simulations = 100000;
-    int sims_per_thread = total_simulations / NUM_THREAD;
+    load_balancer_t balancer;
     
-    // Start timing
+    init_load_balancer(&balancer, NUM_SIMULATIONS);
+    
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
     
-    printf("Running MCTS with %d simulations using %d threads...\n", total_simulations, NUM_THREAD);
+    printf("Running MCTS with %d simulations using %d threads...\n", NUM_SIMULATIONS, NUM_THREAD);
     for (int i = 0; i < NUM_THREAD; i++) {
         for (int m = 0; m < 19; m++) {
             for (int n = 0; n < 19; n++) {
@@ -247,37 +310,39 @@ void    run_mcts(game_t *game) {
         thread_data[i].captured_white = game->captured_white;
         thread_data[i].winning_state = 0;
         thread_data[i].thread_id = i;
-        thread_data[i].num_simulations = sims_per_thread;
         thread_data[i].node = root;
-        thread_data[i].results = NULL;
+        thread_data[i].rand_seed = (unsigned int)time(NULL) + i * 1000;
+        thread_data[i].balancer = &balancer;
 
-        printf("Thread %d initialized for %d simulations.\n", i, sims_per_thread);
+        printf("Thread %d initialized with dynamic load balancing.\n", i);
         if (pthread_create(&threads[i], NULL, mcts_thread_worker, &thread_data[i]) != 0) {
             fprintf(stderr, "Error creating thread %d\n", i);
             free_node(root);
+            pthread_mutex_destroy(&balancer.balance_mutex);
             return;
         }
     }
     
     for (int i = 0; i < NUM_THREAD; i++) {
-        printf("Waiting for thread %d to finish...\n", i);
         pthread_join(threads[i], NULL);
     }
 
-    // End timing
     clock_gettime(CLOCK_MONOTONIC, &end_time);
     
-    // Calculate elapsed time
     double elapsed_seconds = (end_time.tv_sec - start_time.tv_sec) + 
                             (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
     
     printf("\n=== MCTS Performance Statistics ===\n");
-    printf("Total simulations: %d\n", total_simulations);
+    printf("Total simulations: %d\n", NUM_SIMULATIONS);
     printf("Number of threads: %d\n", NUM_THREAD);
     printf("Total time: %.3f seconds\n", elapsed_seconds);
-    printf("Simulations per second: %.2f\n", total_simulations / elapsed_seconds);
-    printf("Average time per simulation: %.6f seconds\n", elapsed_seconds / total_simulations);
+    printf("Simulations per second: %.2f\n", NUM_SIMULATIONS / elapsed_seconds);
+    printf("Average time per simulation: %.6f seconds\n", elapsed_seconds / NUM_SIMULATIONS);
     printf("===================================\n\n");
+    
+    print_load_balance_stats(&balancer);
+    
+    pthread_mutex_destroy(&balancer.balance_mutex);
 
     int best = 0;
     int i = 0;
@@ -294,8 +359,12 @@ void    run_mcts(game_t *game) {
         printf("Best Move: (%d, %d) with %d visits and value %d\n", 
                root->childs[best]->x, root->childs[best]->y, 
                root->childs[best]->visit_count, root->childs[best]->value);
+        *res_x = root->childs[best]->x;
+        *res_y = root->childs[best]->y;
     } else {
         printf("No valid moves found.\n");
+        *res_x = -1;
+        *res_y = -1;
     }
 
     free_node(root);
