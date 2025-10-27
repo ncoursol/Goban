@@ -12,6 +12,38 @@
 
 #include "../../include/gomo.h"
 
+void exit_callback(gomo_t *gomo, int state, char *description)
+{
+	fprintf(stderr, "Error: %s [%d]\n", description, state);
+	free_all(gomo, state);
+	exit(1);
+}
+
+char *getErrorString(int code)
+{
+	if (code == 0x0500)
+		return ("GL_INVALID_ENUM");
+	else if (code == 0x0501)
+		return ("GL_INVALID_VALUE");
+	else if (code == 0x0502)
+		return ("GL_INVALID_OPERATION");
+	else if (code == 0x0503)
+		return ("GL_STACK_OVERFLOW");
+	else if (code == 0x0504)
+		return ("GL_STACK_UNDERFLOW");
+	else if (code == 0x0505)
+		return ("GL_OUT_OF_MEMORY");
+	else if (code == 0x0506)
+		return ("GL_INVALID_FRAMEBUFFER_OPERATION");
+	else if (code == 0x0507)
+		return ("GL_CONTEXT_LOST");
+	else if (code == 0x8031)
+		return ("GL_TABLE_TOO_LARGE1");
+	else
+		return ("GL_ERROR");
+	return ("GL_ERROR");
+}
+
 void	free_null(void *a)
 {
 	if (a != NULL) {

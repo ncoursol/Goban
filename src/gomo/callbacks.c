@@ -12,38 +12,6 @@
 
 #include "../include/gomo.h"
 
-char *getErrorString(int code)
-{
-	if (code == 0x0500)
-		return ("GL_INVALID_ENUM");
-	else if (code == 0x0501)
-		return ("GL_INVALID_VALUE");
-	else if (code == 0x0502)
-		return ("GL_INVALID_OPERATION");
-	else if (code == 0x0503)
-		return ("GL_STACK_OVERFLOW");
-	else if (code == 0x0504)
-		return ("GL_STACK_UNDERFLOW");
-	else if (code == 0x0505)
-		return ("GL_OUT_OF_MEMORY");
-	else if (code == 0x0506)
-		return ("GL_INVALID_FRAMEBUFFER_OPERATION");
-	else if (code == 0x0507)
-		return ("GL_CONTEXT_LOST");
-	else if (code == 0x8031)
-		return ("GL_TABLE_TOO_LARGE1");
-	else
-		return ("GL_ERROR");
-	return ("GL_ERROR");
-}
-
-void exit_callback(gomo_t *gomo, int state, char *description)
-{
-	fprintf(stderr, "Error: %s [%d]\n", description, state);
-	free_all(gomo, state);
-	exit(1);
-}
-
 void update_stones(gomo_t *gomo)
 {
 	int i = 0;
@@ -90,247 +58,79 @@ void updateData(gomo_t *gomo)
 	glBindVertexArray(0);
 }
 
-int ray_intersects_quad(gomo_t *gomo, ray_t ray, vec3_t quadPos, float halfWidth, float halfHeight)
-{
-	// Compute plane normal: use camera->eye and quadPos like the shader does
-	vec3_t toCamera = sub_vec3(gomo->camera->eye, quadPos);
-	toCamera = norm_vec3(toCamera); // normalize to match shader's normalize()
-	float angle = atan2f(toCamera.x, toCamera.z); // matches shader: atan(toCamera.x, toCamera.z)
-	float cosA = cosf(angle);
-	float sinA = sinf(angle);
-	vec3_t quadNormal = (vec3_t){ sinA, 0.0f, cosA };
-	// quadNormal is already unit length (sin^2+cos^2==1)
-
-	// Denominator for ray-plane intersection
-	float denom = dot_vec3(ray.direction, quadNormal);
-	if (fabsf(denom) < 1e-6f)
-		return 0; // Ray parallel to quad plane
-
-	// Compute t using general plane intersection: t = dot(P0 - O, N) / dot(D, N)
-	vec3_t p0_minus_o = (vec3_t){ quadPos.x - ray.origin.x, quadPos.y - ray.origin.y, quadPos.z - ray.origin.z };
-	float t = dot_vec3(p0_minus_o, quadNormal) / denom;
-	if (t < 0)
-		return 0; // intersection behind origin
-
-	// Intersection point in world space
-	vec3_t intersectionPoint;
-	intersectionPoint.x = ray.origin.x + t * ray.direction.x;
-	intersectionPoint.y = ray.origin.y + t * ray.direction.y;
-	intersectionPoint.z = ray.origin.z + t * ray.direction.z;
-
-	// Undo shader rotation: rotate intersection point by -angle around Y to text-local frame
-	float dx = intersectionPoint.x - quadPos.x;
-	float dz = intersectionPoint.z - quadPos.z;
-	float localX = dx * cosA - dz * sinA; // Inverse rotation: R(-angle)
-	float localY = intersectionPoint.y - quadPos.y; // vertical in text local
-
-	if (localX >= -halfWidth && localX <= halfWidth &&
-		localY >= -halfHeight && localY <= halfHeight)
-	{
-		// debug markers
-		add_line_to_render(gomo, (vec3_t){intersectionPoint.x - 0.1f, intersectionPoint.y, intersectionPoint.z}, (vec3_t){intersectionPoint.x + 0.1f, intersectionPoint.y, intersectionPoint.z}, (vec3_t){1.0f, 0.0f, 0.0f}, 371);
-		add_line_to_render(gomo, (vec3_t){intersectionPoint.x, intersectionPoint.y - 0.1f, intersectionPoint.z}, (vec3_t){intersectionPoint.x, intersectionPoint.y + 0.1f, intersectionPoint.z}, (vec3_t){1.0f, 0.0f, 0.0f}, 372);
-		add_line_to_render(gomo, (vec3_t){intersectionPoint.x, intersectionPoint.y, intersectionPoint.z - 0.1f}, (vec3_t){intersectionPoint.x, intersectionPoint.y, intersectionPoint.z + 0.1f}, (vec3_t){1.0f, 0.0f, 0.0f}, 373);
-		// draw normal as a line starting from intersectionPoint in world space
-		vec3_t normalEnd = add_vec3(intersectionPoint, prod_vec3(quadNormal, 0.5f));
-		add_line_to_render(gomo, intersectionPoint, normalEnd, (vec3_t){0.12f, 1.0f, 0.0f}, 374);
-		return 1;
-	}
-
-	return 0;
-}
-
-int intersectText(gomo_t *gomo, ray_t ray, hit_t *intersection)
-{
-	for (int i = 0; i < NB_TEXT; i++)
-	{
-		text_t *text = &gomo->text[i];
-		if (!text->id || !text->text || text->proj != 1 || !text->clickable)
-			continue;
-
-		float textWidth = calculate_text_width(gomo, text->font, text->text, text->scale);
-		float textHeight = 48.0f * text->scale;
-		float halfWidth = textWidth * 0.5f;
-		float halfHeight = textHeight * 0.5f;
-
-		// Use stored text->pos as center; ray_intersects_quad will undo shader rotation and test in text-local XY
-		if (ray_intersects_quad(gomo, ray, text->pos, halfWidth, halfHeight))
-		{
-			// recompute t for hit point using same angle calculation as ray_intersects_quad
-			vec3_t toCamera = sub_vec3(gomo->camera->eye, text->pos);
-			toCamera = norm_vec3(toCamera);
-			float angle = atan2f(toCamera.x, toCamera.z);
-			float cosA = cosf(angle);
-			float sinA = sinf(angle);
-			vec3_t quadNormal = (vec3_t){ sinA, 0.0f, cosA };
-			
-			float denom = dot_vec3(ray.direction, quadNormal);
-			if (fabsf(denom) < 1e-6f)
-				continue;
-			vec3_t p0_minus_o = (vec3_t){ text->pos.x - ray.origin.x, text->pos.y - ray.origin.y, text->pos.z - ray.origin.z };
-			float t = dot_vec3(p0_minus_o, quadNormal) / denom;
-			if (t < 0)
-				continue;
-
-			intersection->hit = text->id;
-			intersection->point.x = ray.origin.x + t * ray.direction.x;
-			intersection->point.y = ray.origin.y + t * ray.direction.y;
-			intersection->point.z = ray.origin.z + t * ray.direction.z;
-			intersection->normal = quadNormal;
-			return 1;
-		}
-	}
-	intersection->hit = -1;
-	return 0;
-}
-
-int intersectBoard(ray_t ray, hit_t *intersection)
-{
-    float dDotN = dot_vec3(ray.direction, (vec3_t){0.0f, 1.0f, 0.0f});
-
-    // Use epsilon for floating-point comparison
-    if (fabsf(dDotN) < 1e-6f)
-        return 0;
-
-    float t = (0.43f - ray.origin.y) / ray.direction.y;
-
-    // Ignore intersections behind the ray origin
-    if (t < 0)
-        return 0;
-
-    intersection->point.x = ray.origin.x + t * ray.direction.x;
-    intersection->point.y = -5.904f; // Goban height
-    intersection->point.z = ray.origin.z + t * ray.direction.z;
-
-
-    return 1;
-}
-
-ray_t createRay(gomo_t *gomo, double xpos, double ypos)
-{
-    ray_t ray;
-
-    // Convert screen coordinates to normalized device coordinates (NDC)
-    float ndcX = (2.0f * (float)xpos) / (float)WIDTH - 1.0f;
-    float ndcY = 1.0f - (2.0f * (float)ypos) / (float)HEIGHT;
-	vec4_t ray_clip = {ndcX, ndcY, -1.0f, 1.0f};
-	float *inv_proj = inv_mat4(gomo->camera->projection);
-	float *inv_view = inv_mat4(gomo->camera->view);
-	vec4_t ray_eye = mulv_mat4(inv_proj, ray_clip);
-	ray_eye = (vec4_t){ray_eye.x, ray_eye.y, -1.0f, 0.0f};
-	vec4_t ray_world = mulv_mat4(inv_view, ray_eye);
-	ray.direction = norm_vec3((vec3_t){ray_world.x, ray_world.y, ray_world.z});
-
-	free(inv_proj);
-	free(inv_view);
-
-    ray.origin = gomo->camera->eye;
-	ray.direction = norm_vec3(ray.direction); // Normalize the direction vector
-
-    return ray;
-}
 
 void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 {
 	(void)mods;
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && (action == GLFW_PRESS || action == GLFW_RELEASE))
+	gomo_t *gomo = glfwGetWindowUserPointer(window);
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
 	{
-		gomo_t *gomo = glfwGetWindowUserPointer(window);
-		if (MENU)
-			return ;
-		if (action == GLFW_PRESS && gomo->tmp_stone && gomo->nb_stones < 361)
+		if (can_place_stone(gomo))
 		{
 			int ret = place_stone(gomo->game, (gomo->tmp_stone - 1) / 19, (gomo->tmp_stone - 1) % 19);
-			char buffer[32];
-			snprintf(buffer, sizeof(buffer), "%s play as", gomo->game->players[gomo->game->current_player].name);
-			gomo->tmp_stone = 0;
-			sync_game_state(gomo, gomo->game);
 			if (ret)
 				printf("game over %d\n", ret - 1);
-			if (gomo->game->swap2_step == 4)
-				render_helpers(gomo);
-
-			if ((gomo->game->swap2_step == 1 && gomo->game->move_count == 3) ||
-				(gomo->game->swap2_step == 3 && gomo->game->move_count == 5))
-			{
-				add_text_to_render(gomo, "font_text2", buffer, (vec3_t){0.0f, 1.5f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 0, 0.004f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 5);
-				add_text_to_render(gomo, "font_text2", "Black", (vec3_t){0.0f, 1.3f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 6);
-				add_text_to_render(gomo, "font_text2", "White", (vec3_t){0.0f, 1.1f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 7);
-				if (gomo->game->swap2_step == 1)
-					add_text_to_render(gomo, "font_text2", "Place 2 stones", (vec3_t){0.0f, 0.9f, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 1, 1, 0.003f, (vec3_t){1.0f, 0.5f, 0.5f}, 1, 8);
-			}
-
-			if ((gomo->camera->targetPos.y == 0.0f && gomo->game->swap2_player == 1) ||
-				(floor(gomo->camera->targetPos.y) == floor(PI) && gomo->game->swap2_player == 0))
-			{
-				if (!(ANIMATE))
-					gomo->camera->options ^= 1 << 1; // animate
-				gomo->camera->targetPos = gomo->game->swap2_player ? (vec3_t){PI * 0.75f, PI, 2.0f} : (vec3_t){PI * 0.75f, 0.0f, 2.0f};
-			}
+			gomo->tmp_stone = 0;
+			sync_game_state(gomo, gomo->game);
+			render_helpers(gomo);
+			display_swap2_info(gomo);
+			change_camera_target(gomo);
 		}
 	} 
 	else if (button == GLFW_MOUSE_BUTTON_LEFT && (action == GLFW_PRESS || action == GLFW_RELEASE))
 	{
-		gomo_t *gomo = glfwGetWindowUserPointer(window);
-		if (gomo->textHover != -1 && action == GLFW_PRESS)
+		if (TEXT_HOVER && action == GLFW_PRESS)
 		{
-			if (MENU && gomo->textHover == 17) { // back
+			if (MENU && BACK_BTN) {
 				if (!(ANIMATE))
-					gomo->camera->options ^= 1 << 1; // animate
+					C_ANIMATE;
 				gomo->camera->targetPos = (vec3_t){RAD(120.0f), RAD(10.0f), 3.0f};
 				gomo->camera->targetCenter = (vec3_t){0.0f, 0.5f, 0.0f};
 				clear_text_to_render(gomo, 17);
 				gomo->textHover = 4; // tutorial
-			} else if (gomo->textHover > 11 && gomo->textHover < 17) {
-				if ((int)gomo->cursor != gomo->textHover) {
-					gomo->cursor = gomo->textHover;
-					change_tutorial(gomo);
-				}
-			} else if (gomo->textHover > 5 && gomo->textHover < 9) {
+			} else if (SUMMARY_BTNS && (int)gomo->cursor != gomo->textHover) {
+				gomo->cursor = gomo->textHover;
+				change_tutorial(gomo);
+			} else if (SWAP2_BTNS) {
 				clear_text_to_render(gomo, 5);
 				clear_text_to_render(gomo, 6);
 				clear_text_to_render(gomo, 7);
 				clear_text_to_render(gomo, 8);
-				if (gomo->textHover == 6 || gomo->textHover == 7) {
-					pick_color(gomo->game, gomo->textHover == 6 ? 0 : 1);
-					if ((gomo->camera->targetPos.y == 0.0f && gomo->game->swap2_player == 1) ||
-					(floor(gomo->camera->targetPos.y) == floor(PI) && gomo->game->swap2_player == 0)) {
-						if (!(ANIMATE))
-							gomo->camera->options ^= 1 << 1; // animate
-						gomo->camera->targetPos = gomo->game->swap2_player ? (vec3_t){PI * 0.75f, PI, 2.0f} : (vec3_t){PI * 0.75f, 0.0f, 2.0f};
-					}
+				if (BLACK_BTN || WHITE_BTN) {
+					pick_color(gomo->game, BLACK_BTN ? 0 : 1);
+					change_camera_target(gomo);
 				} else {
 					gomo->game->swap2_step++;
 				}
 			} else if (MENU) {
-				gomo->camera->options ^= 1 << 4; // rotate
-				
+				C_ROTATION;
 				if (!(ANIMATE))
-					gomo->camera->options ^= 1 << 1; // animate
-				if (gomo->textHover == 4) { // Tutorial
-					gomo->camera->targetPos = (vec3_t){PI / 2.0f, PI / 2.0f, 2.7f};
-					gomo->camera->targetCenter = (vec3_t){0.0f, 1.8f, 3.0f};
+					C_ANIMATE;
+				if (TUTO_BTN) {
+					gomo->camera->targetPos = TUTO_POS;
+					gomo->camera->targetCenter = TUTO_CENTER;
 					display_tutorial(gomo);
-				} else if (gomo->textHover == 1 || gomo->textHover == 2 || gomo->textHover == 3) { // Game modes
-					int ret = init_game(gomo->game, gomo->textHover - 1);
-					gomo->camera->options ^= 1 << 6; // menu
-					gomo->camera->targetPos = (vec3_t){PI * 0.75f, 0.0f, 2.0f};
+				} else if (GAMEMODE_BTNS) {
+					if (!init_game(gomo->game, gomo->textHover - 1))
+						return;
+					C_MENU;
+					gomo->camera->targetPos = P1_POS;
 					for (int i = 0; i < 5; i++)
        					clear_text_to_render(gomo, i);
 				}
 			}
 		}
-		else if (!(MENU) && !(gomo->camera->options >> 3 & 1) && (gomo->textHover < 1 || gomo->textHover > 17))
+		else if (!(MENU) && !(TOP_VIEW) && (gomo->textHover < 1 || gomo->textHover > 17))
 		{
 			if (action == GLFW_PRESS && !(LEFT_MOUSE))
 			{
-				gomo->camera->options ^= 1 << 2;
+				C_LEFT_MOUSE;
 				glfwSetInputMode(gomo->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 				glfwSetCursorPos(gomo->window, gomo->camera->ah / MSPEED, gomo->camera->av / MSPEED);
 			}
 			else if (action == GLFW_RELEASE && LEFT_MOUSE)
 			{
-				gomo->camera->options ^= 1 << 2;
+				C_LEFT_MOUSE;
 				glfwSetInputMode(gomo->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			}
 		}
@@ -381,17 +181,17 @@ void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 	} else if (intersectText(gomo, ray, &res)) {
 		if (res.hit && gomo->text[res.hit].clickable) {
 			if (gomo->text[res.hit].text != NULL && (gomo->text[res.hit].color.x != 1.0f || gomo->text[res.hit].color.y != 1.0f || gomo->text[res.hit].color.z != 1.0f)) {
-				if (gomo->textHover != -1 && gomo->textHover != res.hit && gomo->text[gomo->textHover].text != NULL) {
+				if (TEXT_HOVER && gomo->textHover != res.hit && gomo->text[gomo->textHover].text != NULL) {
 					add_text_to_render(gomo, gomo->text[gomo->textHover].font, gomo->text[gomo->textHover].text, gomo->text[gomo->textHover].pos, gomo->text[gomo->textHover].rotation, gomo->text[gomo->textHover].face_camera, gomo->text[gomo->textHover].clickable, gomo->text[gomo->textHover].scale, (vec3_t){1.0f, 0.5f, 0.5f}, 1, gomo->textHover);
 				}
 				gomo->textHover = res.hit;
-				if (gomo->textHover != -1 && gomo->text[gomo->textHover].text != NULL)
+				if (TEXT_HOVER && gomo->text[gomo->textHover].text != NULL)
 					add_text_to_render(gomo, gomo->text[res.hit].font, gomo->text[res.hit].text, gomo->text[res.hit].pos, gomo->text[res.hit].rotation, gomo->text[res.hit].face_camera, gomo->text[res.hit].clickable, gomo->text[res.hit].scale, (vec3_t){1.0f, 1.0f, 1.0f}, 1, res.hit);
 			}
 		}
 		gomo->textHover = res.hit;
 	}
-	if (gomo->text[gomo->textHover].text != NULL && res.hit == -1 && gomo->textHover != -1) {
+	if (gomo->text[gomo->textHover].text != NULL && res.hit == -1 && TEXT_HOVER) {
 		add_text_to_render(gomo, gomo->text[gomo->textHover].font, gomo->text[gomo->textHover].text, gomo->text[gomo->textHover].pos, gomo->text[gomo->textHover].rotation, gomo->text[gomo->textHover].face_camera, gomo->text[gomo->textHover].clickable, gomo->text[gomo->textHover].scale, (vec3_t){1.0f, 0.5f, 0.5f}, 1, gomo->textHover);
 		gomo->textHover = -1;
 	}
@@ -407,7 +207,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 		if (key == GLFW_KEY_ESCAPE)
 			glfwSetWindowShouldClose(window, GLFW_TRUE);
 		else if (key == GLFW_KEY_H) {
-			gomo->camera->options ^= 1 << 0;
+			C_HUD;
 			if (!HUD) {
 		        clear_text_to_render(gomo, 0);
 		        clear_text_to_render(gomo, 1);
@@ -425,18 +225,18 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 		else if (!(MENU) && key == GLFW_KEY_V)
 		{
-			vec3_t tmp_target = (vec3_t){PI - 0.000005f, 0.0f, 1.0f};
+			vec3_t tmp_target = TOP_POS;
 			if (!(ANIMATE))
-				gomo->camera->options ^= 1 << 1; // animate
+				C_ANIMATE;
 			if (gomo->camera->targetPos.x != tmp_target.x || gomo->camera->targetPos.y != tmp_target.y || gomo->camera->targetPos.z != tmp_target.z) {
 				gomo->camera->targetPos = tmp_target;
 			} else {
-				gomo->camera->targetPos = (vec3_t){PI * 0.75f, 0.0f, 2.0f};
+				gomo->camera->targetPos = P1_POS;
 			}
 		}
 		else if (key == GLFW_KEY_Y)
 		{
-			gomo->camera->options ^= 1 << 5; // V-Sync
+			C_V_SYNC;
 			glfwSwapInterval(V_SYNC ? 1 : 0);
 		}
 	}

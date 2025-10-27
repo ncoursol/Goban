@@ -12,6 +12,79 @@
 
 #include "../include/gomo.h"
 
+// Thread function that runs MCTS in the background
+void *ai_compute_thread(void *arg)
+{
+	ai_thread_data_t *data = (ai_thread_data_t *)arg;
+	int x, y;
+	
+	// Run MCTS computation
+	run_mcts(data->game, &x, &y);
+	
+	// Store results
+	pthread_mutex_lock(&data->mutex);
+	data->x = x;
+	data->y = y;
+	data->has_result = 1;
+	data->is_computing = 0;
+	pthread_mutex_unlock(&data->mutex);
+	
+	return NULL;
+}
+
+void play_ai_move(gomo_t *gomo)
+{
+	if (!gomo->game || !gomo->game->mode || gomo->game->game_over != 0)
+		return;
+	
+	// Only process if it's AI's turn
+	if (gomo->game->players[gomo->game->swap2_player].is_human || gomo->game->swap2_step == 1 || gomo->game->swap2_step == 3)
+		return;
+	
+	pthread_mutex_lock(&gomo->ai_thread.mutex);
+	
+	// If AI is not computing and doesn't have a result, start computation
+	if (!gomo->ai_thread.is_computing && !gomo->ai_thread.has_result) {
+		gomo->ai_thread.is_computing = 1;
+		gomo->ai_thread.game = gomo->game;
+		gomo->ai_thread.start_time = glfwGetTime();
+		pthread_mutex_unlock(&gomo->ai_thread.mutex);
+		pthread_create(&gomo->ai_thread.thread, NULL, ai_compute_thread, &gomo->ai_thread);
+		return;
+	}
+	
+	// If AI has finished computing, check if minimum delay has passed
+	if (gomo->ai_thread.has_result) {
+		double current_time = glfwGetTime();
+		double elapsed = current_time - gomo->ai_thread.start_time;
+		
+		// Only apply move if minimum delay has passed
+		if (elapsed >= gomo->ai_thread.min_delay) {
+			int x = gomo->ai_thread.x;
+			int y = gomo->ai_thread.y;
+			gomo->ai_thread.has_result = 0;
+			pthread_mutex_unlock(&gomo->ai_thread.mutex);
+			
+			// Wait for thread to finish
+			pthread_join(gomo->ai_thread.thread, NULL);
+			
+			// Apply the move
+			int ret = place_stone(gomo->game, x, y);
+			if (ret) {
+				gomo->game->game_over = ret;
+				return;
+			}
+			sync_game_state(gomo, gomo->game);
+			render_helpers(gomo);
+			display_swap2_info(gomo);
+			change_camera_target(gomo);
+			return;
+		}
+	}
+	
+	pthread_mutex_unlock(&gomo->ai_thread.mutex);
+}
+
 int render_loop(gomo_t *gomo)
 {
 	int nb_frames = 0;
@@ -57,7 +130,16 @@ int render_loop(gomo_t *gomo)
 		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 75, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 5);
 		    snprintf(buff, sizeof(buff), "Center {%.2f, %.2f, %.2f}", gomo->camera->center.x, gomo->camera->center.y, gomo->camera->center.z);
 		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 95, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 6);
+
+			snprintf(buff, sizeof(buff), "current color: [%d]", gomo->game->current_player);
+		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 125, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 7);
+			snprintf(buff, sizeof(buff), "swap2_player: [%d]", gomo->game->swap2_player);
+		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 145, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 8);
+			snprintf(buff, sizeof(buff), "swap2_step: [%d]", gomo->game->swap2_step);
+		    add_text_to_render(gomo, "font_text2", buff, (vec3_t){5, HEIGHT - 165, 0.0f}, (vec3_t){0.0f, 0.0f, 0.0f}, 0, 0, 0.3f, (vec3_t){0.9f, 0.9f, 0.9f}, 0, NB_TEXT - 9);
 		}
+
+		play_ai_move(gomo);
 
 		// Draw each object
 		gomo->obj = gomo->obj->first;
@@ -103,8 +185,14 @@ int main(int argc, char **argv)
 	if (!(gomo.game = (game_t *)malloc(sizeof(game_t))))
 		exit_callback(&gomo, 0, "object malloc failed");
 
+	// Initialize AI thread data
+	pthread_mutex_init(&gomo.ai_thread.mutex, NULL);
+	gomo.ai_thread.is_computing = 0;
+	gomo.ai_thread.has_result = 0;
+	gomo.ai_thread.game = NULL;
+	gomo.ai_thread.min_delay = 0.3; // Minimum 0.3 second delay
+
 	int option = 0;
-	int ret = 0;
 
 	if (argc < 1 || argc > 2)
 		return 0;
@@ -113,20 +201,37 @@ int main(int argc, char **argv)
 		option = 1;
 	else if (argc == 2 && strcmp(argv[1], "-g") == 0) // Run mcts game generation
 		option = 2;
-		
-	/*
-	ret = init_game(gomo.game);
-	if (!ret)
-		return ret;
-	*/
+	
 	if (option == 1) {
 		init_all(&gomo);
 		int res = render_loop(&gomo);
-		if (res)
+		if (res) {
+			// Clean up AI thread if still running
+			pthread_mutex_lock(&gomo.ai_thread.mutex);
+			if (gomo.ai_thread.is_computing) {
+				pthread_mutex_unlock(&gomo.ai_thread.mutex);
+				pthread_join(gomo.ai_thread.thread, NULL);
+			} else {
+				pthread_mutex_unlock(&gomo.ai_thread.mutex);
+			}
+			pthread_mutex_destroy(&gomo.ai_thread.mutex);
 			free_all(&gomo, 100);
+		}
 	} else if (option == 2) {
-		int x, y;
+		int x, y, ret;
+		ret = init_game(gomo.game, 1);
+		if (!ret)
+			return ret;
+		gomo.game->board[1][1] = 1;
+		gomo.game->board[2][2] = 1;
+		gomo.game->board[3][3] = 1;
+		gomo.game->board[4][4] = 1;
+		print_board(gomo.game->board);
 		run_mcts(gomo.game, &x, &y);
+		gomo.game->board[x][y] = gomo.game->current_player == 0 ? 1 : 2;
+		print_board(gomo.game->board);
+
+		pthread_mutex_destroy(&gomo.ai_thread.mutex);
 		free_all(&gomo, 0);
 	}
 	return 0;

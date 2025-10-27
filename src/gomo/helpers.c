@@ -15,6 +15,8 @@ void add_helper(gomo_t *gomo, int index, vec3_t color, int type, int id)
 
 void render_helpers(gomo_t *gomo)
 {
+    if (gomo->game->swap2_step != 4)
+        return;
     int p1 = -1, p2 = -1;
     int number_of_helpers = 2;
     vec3_t helper_color1, helper_color2;

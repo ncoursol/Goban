@@ -393,7 +393,9 @@ int init_game(game_t *game, int mode)
     game->captured_black = 0;
     game->captured_white = 0;
     game->move_count = 0;
+    game->mode = mode;
     game->swap2_step = 0;
+    game->game_over = 0;
 
     if (!(game->moves = (moves_t *)malloc(sizeof(moves_t))))
         return 0;
@@ -410,16 +412,18 @@ int init_game(game_t *game, int mode)
 
     for (int i = 0; i < 2; i++) {
         snprintf(game->players[i].name, sizeof(game->players[i].name), "Player %d", i + 1);
-        game->players[i].is_human = 1;
+        game->players[i].is_human = mode == 0 ? 1 : mode == 1 && i == 0 ? 1 : 0;
     }
+    game->players[0].color = 1;
+    game->players[1].color = 0;
 
-    /*
-    for (int i = 0; i < 19; i++) {
-        for (int j = 0; j < 19; j++) {
-            if (j % 5 && i % 5)
-                game->board[i][j] = 1; // star points
-        }
-    }*/
+    if (mode == 1) {
+        srand((unsigned int)time(NULL));
+        int white_player = rand() % 2;
+        game->players[white_player].color = 1;    
+        game->players[1 - white_player].color = 0;
+        game->swap2_player = 1 - white_player;
+    }
 
     return 1;
 }

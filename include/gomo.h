@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <pthread.h>
 #include "game.h"
 #include "mcts.h"
 
@@ -31,10 +32,12 @@
 
 #define NB_TEXT 100
 #define MAX_LINES 1000
+#define NB_TEXTURES 12
 
 #define MSPEED 0.005f // Mouse speed
 #define PI 3.14159265359
 #define V_BUFF_SIZE 100000
+#define RAY_T_MIN 0.0001f
 												  // 00000000 Options
 #define HUD gomo->camera->options >> 0 & 1		  // |||||||↳ 0 - Display HUD (yes/no)
 #define ANIMATE gomo->camera->options >> 1 & 1	  // ||||||↳ 1 - Animate camera (yes/no)
@@ -44,9 +47,13 @@
 #define V_SYNC gomo->camera->options >> 5 & 1	  // ||↳ 5 - V-Sync (yes/no)
 #define MENU gomo->camera->options >> 6 & 1	  	  // |↳ 6 - Menu (yes/no)
 
-#define RAY_T_MIN 0.0001f
-
-#define NB_TEXTURES 12 // Number of textures
+#define C_HUD gomo->camera->options ^= 1 << 0
+#define C_ANIMATE gomo->camera->options ^= 1 << 1
+#define C_LEFT_MOUSE gomo->camera->options ^= 1 << 2
+#define C_TOP_VIEW gomo->camera->options ^= 1 << 3
+#define C_ROTATION gomo->camera->options ^= 1 << 4
+#define C_V_SYNC gomo->camera->options ^= 1 << 5
+#define C_MENU gomo->camera->options ^= 1 << 6
 
 #define MAX_MOVES 1000
 #define MAX_NAME_LEN 64
@@ -56,6 +63,22 @@
 
 #define ABS(x) (x >= 0 ? x : -x)
 #define RAD(x) (x * 0.0174533f)
+
+#define TEXT_HOVER gomo->textHover != -1
+#define TUTO_BTN gomo->textHover == 4
+#define BLACK_BTN gomo->textHover == 6
+#define WHITE_BTN gomo->textHover == 7
+#define BACK_BTN gomo->textHover == 17
+#define GAMEMODE_BTNS gomo->textHover > 0 && gomo->textHover < 4
+#define SWAP2_BTNS gomo->textHover > 5 && gomo->textHover < 9
+#define SUMMARY_BTNS gomo->textHover > 11 && gomo->textHover < 17
+
+#define P1_POS (vec3_t){PI * 0.75f, PI, 2.0f}
+#define P2_POS (vec3_t){PI * 0.75f, 0.0f, 2.0f}
+#define TUTO_POS (vec3_t){PI / 2.0f, PI / 2.0f, 2.7f}
+#define TUTO_CENTER (vec3_t){0.0f, 1.8f, 3.0f}
+#define TOP_POS (vec3_t){PI - 0.000005f, 0.0f, 3.0f}
+
 
 typedef struct game_s game_t;
 typedef struct node_s node_t;
@@ -253,6 +276,19 @@ typedef struct shader_s
 	unsigned int shaderProgramLine;	// Shader program for Lines
 } shader_t;
 
+typedef struct ai_thread_data_s
+{
+	game_t *game;
+	int x;
+	int y;
+	int is_computing;
+	int has_result;
+	double start_time;
+	double min_delay;
+	pthread_t thread;
+	pthread_mutex_t mutex;
+} ai_thread_data_t;
+
 typedef struct gomo_s
 {
 	GLFWwindow *window;
@@ -278,6 +314,7 @@ typedef struct gomo_s
 	hit_t tmp_hit;
 	game_t *game;
 	obj_t *obj;
+	ai_thread_data_t ai_thread;
 } gomo_t;
 
 // Callbacks fct
@@ -353,6 +390,17 @@ void clear_lines_batch_to_render(gomo_t *gomo, int start_id, int count);
 font_t *find_font_optimized(gomo_t *gomo, char *font_name);
 void updateData(gomo_t *gomo);
 void render_helpers(gomo_t *gomo);
+
+// RayCasting fct
+ray_t createRay(gomo_t *gomo, double xpos, double ypos);
+int ray_intersects_quad(gomo_t *gomo, ray_t ray, vec3_t quadPos, float halfWidth, float halfHeight);
+int intersectBoard(ray_t ray, hit_t *intersection);
+int intersectText(gomo_t *gomo, ray_t ray, hit_t *intersection);
+
+// Checkers fct
+int can_place_stone(gomo_t *gomo);
+void display_swap2_info(gomo_t *gomo);
+void change_camera_target(gomo_t *gomo);
 
 // Tutorial display functions
 void display_tutorial(gomo_t *gomo);

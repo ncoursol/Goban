@@ -3,10 +3,11 @@
 
 #include <pthread.h>
 #include <stdatomic.h>
+#include <unistd.h>
 #include "gomo.h"
 
-#define NUM_THREAD 4
-#define NUM_SIMULATIONS 100000
+#define MAX_THREADS 128
+#define NUM_SIMULATIONS 500000
 #define LOAD_BALANCE_CHECK_INTERVAL 1000
 
 typedef struct game_s game_t;
@@ -28,8 +29,8 @@ typedef struct      node_s
 typedef struct load_balancer_s
 {
     atomic_int global_sim_counter;
-    atomic_int thread_sim_counts[NUM_THREAD];
-    atomic_llong thread_times_ns[NUM_THREAD];
+    atomic_int thread_sim_counts[MAX_THREADS];
+    atomic_llong thread_times_ns[MAX_THREADS];
     pthread_mutex_t balance_mutex;
     int active_threads;
     int total_simulations;

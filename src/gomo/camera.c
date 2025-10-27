@@ -257,9 +257,9 @@ void handleCameraAnimations(gomo_t *gomo, float delta_time)
 		int animating = animateCamera(gomo, gomo->camera->targetPos, gomo->camera->targetCenter, 0.001f, 4.0f, delta_time);
 
 		if (!animating) {
-			gomo->camera->options ^= 1 << 1;
+			C_ANIMATE;
 			if (MENU && !(ROTATION) && gomo->camera->targetPos.x == RAD(120.0f) && gomo->camera->targetPos.y == RAD(10.0f) && gomo->camera->targetPos.z == 3.0f) {
-				gomo->camera->options ^= 1 << 4;
+				C_ROTATION;
 			} else if (!(MENU)) {
 				gomo->textHover = -1;
 			}

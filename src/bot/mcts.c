@@ -21,6 +21,7 @@ node_t  *init_root(int player_color) {
     pthread_mutex_init(&root->mutex, NULL);
 
     if (!(root->childs = (node_t**)malloc(sizeof(node_t*) * root->nb_childs))) {
+        pthread_mutex_destroy(&root->mutex);
         free(root);
         return (NULL);
     }
@@ -45,6 +46,7 @@ node_t  *add_new_child(node_t *parent, int index, int x, int y) {
     pthread_mutex_init(&child->mutex, NULL);
 
     if (!(child->childs = (node_t**)malloc(sizeof(node_t*) * child->nb_childs))) {
+        pthread_mutex_destroy(&child->mutex);
         free(child);
         return (NULL);
     }
@@ -80,8 +82,11 @@ int check_win_mcts(unsigned int board_sim[19][19], unsigned int x, unsigned int 
             *winning_state -= !current_player + 1;
     }
     ret = check_five_in_a_row_at(board_sim, x, y, current_player, 0);
-    if (ret)
+    if (ret) {
         *winning_state += current_player + 1;
+        return current_player + 1;  // Return winner immediately!
+    }
+    
     return 0;
 }
 
@@ -125,7 +130,7 @@ node_t    *selection(node_t *root, unsigned int board_sim[19][19]) {
             i++;
         }
         root = root->childs[best];
-        board_sim[root->x][root->y] = root->color == 1 ? 1 : 2;
+        board_sim[root->x][root->y] = root->color == 0 ? 1 : 2;
     }
     return (root);
 }
@@ -134,18 +139,28 @@ node_t    *expansion(node_t *cursor, unsigned int board_sim[19][19]) {
     int child_count = 0;
     int x = -1;
     int y = -1;
+    node_t *new_child;
 
+    pthread_mutex_lock(&cursor->mutex);
+    
     while (cursor->childs && cursor->childs[child_count] != NULL) {
         child_count++;
     }
     
     find_next_empty(board_sim, &x, &y, child_count);
 
-    if (x == -1 || y == -1)
+    if (x == -1 || y == -1) {
+        pthread_mutex_unlock(&cursor->mutex);
+        return (cursor);
+    }
+
+    new_child = add_new_child(cursor, child_count, x, y);
+    pthread_mutex_unlock(&cursor->mutex);
+    if (!new_child)
         return (cursor);
     
-    board_sim[x][y] = cursor->color == 1 ? 1 : 2;
-    return (add_new_child(cursor, child_count, x, y));
+    board_sim[x][y] = cursor->color == 0 ? 2 : 1;
+    return (new_child);
 }
 
 int     simulation(node_t *cursor, thread_data_t *thread) {
@@ -194,20 +209,20 @@ void    free_node(node_t *node) {
     free(node);
 }
 
-void    init_load_balancer(load_balancer_t *balancer, int total_sims) {
+void    init_load_balancer(load_balancer_t *balancer, int total_sims, int num_threads) {
     atomic_store(&balancer->global_sim_counter, 0);
-    for (int i = 0; i < NUM_THREAD; i++) {
+    for (int i = 0; i < num_threads; i++) {
         atomic_store(&balancer->thread_sim_counts[i], 0);
         atomic_store(&balancer->thread_times_ns[i], 0);
     }
     pthread_mutex_init(&balancer->balance_mutex, NULL);
-    balancer->active_threads = NUM_THREAD;
+    balancer->active_threads = num_threads;
     balancer->total_simulations = total_sims;
 }
 
 void    print_load_balance_stats(load_balancer_t *balancer) {
     printf("\n=== Dynamic Load Balance Statistics ===\n");
-    for (int i = 0; i < NUM_THREAD; i++) {
+    for (int i = 0; i < balancer->active_threads; i++) {
         int sims = atomic_load(&balancer->thread_sim_counts[i]);
         long long time_ns = atomic_load(&balancer->thread_times_ns[i]);
         double time_sec = time_ns / 1e9;
@@ -262,7 +277,7 @@ void    *mcts_thread_worker(void *arg) {
         
         local_sim_count++;
         atomic_fetch_add(&balancer->thread_sim_counts[data->thread_id], 1);
-        
+        /*
         if (local_sim_count % LOAD_BALANCE_CHECK_INTERVAL == 0) {
             int total_done = atomic_load(&balancer->global_sim_counter);
             printf("Thread %d: %d local sims, %d/%d global (%.1f%% complete)\n",
@@ -270,36 +285,63 @@ void    *mcts_thread_worker(void *arg) {
                    balancer->total_simulations,
                    (total_done * 100.0) / balancer->total_simulations);
         }
+        */
     }
     
     struct timespec end_time;
     clock_gettime(CLOCK_MONOTONIC, &end_time);
+    /*
     double thread_elapsed = (end_time.tv_sec - start_time.tv_sec) + 
                            (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
-    
     printf("Thread %d finished: %d simulations in %.3f seconds (%.2f sims/s)\n",
            data->thread_id, local_sim_count, thread_elapsed, 
            local_sim_count / thread_elapsed);
+    */
     
     pthread_exit(NULL);
 }
 
 void    run_mcts(game_t *game, int *res_x, int *res_y) {
-    node_t *root = init_root(game->swap2_player);
+    // Get number of CPU cores available
+    int num_threads = (int)sysconf(_SC_NPROCESSORS_ONLN);
+    if (num_threads <= 0 || num_threads > MAX_THREADS) {
+        num_threads = 8; // Fallback to 8 threads if detection fails
+    }
+    
+    printf("\n\e[1;33mDetected %d CPU cores, using %d threads for MCTS\e[0m\n", num_threads, num_threads);
+    
+    // Count empty cells on the board
+    int empty_cells = 0;
+    for (int i = 0; i < 19; i++) {
+        for (int j = 0; j < 19; j++) {
+            if (game->board[i][j] == 0) empty_cells++;
+        }
+    }
+    
+    node_t *root = init_root(game->current_player);
     if (!root)
         return;
     
-    pthread_t threads[NUM_THREAD];
-    thread_data_t thread_data[NUM_THREAD];
+    // Update root's nb_childs to match actual empty cells
+    root->nb_childs = empty_cells;
+    free(root->childs);
+    if (!(root->childs = (node_t**)malloc(sizeof(node_t*) * root->nb_childs))) {
+        free_node(root);
+        return;
+    }
+    memset(root->childs, 0, sizeof(node_t*) * root->nb_childs);
+    
+    pthread_t threads[MAX_THREADS];
+    thread_data_t thread_data[MAX_THREADS];
     load_balancer_t balancer;
     
-    init_load_balancer(&balancer, NUM_SIMULATIONS);
+    init_load_balancer(&balancer, NUM_SIMULATIONS, num_threads);
     
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
     
-    printf("Running MCTS with %d simulations using %d threads...\n", NUM_SIMULATIONS, NUM_THREAD);
-    for (int i = 0; i < NUM_THREAD; i++) {
+    //printf("Running MCTS with %d simulations using %d threads...\n", NUM_SIMULATIONS, num_threads);
+    for (int i = 0; i < num_threads; i++) {
         for (int m = 0; m < 19; m++) {
             for (int n = 0; n < 19; n++) {
                 thread_data[i].board_sim[m][n] = game->board[m][n];
@@ -314,7 +356,7 @@ void    run_mcts(game_t *game, int *res_x, int *res_y) {
         thread_data[i].rand_seed = (unsigned int)time(NULL) + i * 1000;
         thread_data[i].balancer = &balancer;
 
-        printf("Thread %d initialized with dynamic load balancing.\n", i);
+        //printf("Thread %d initialized with dynamic load balancing.\n", i);
         if (pthread_create(&threads[i], NULL, mcts_thread_worker, &thread_data[i]) != 0) {
             fprintf(stderr, "Error creating thread %d\n", i);
             free_node(root);
@@ -323,7 +365,7 @@ void    run_mcts(game_t *game, int *res_x, int *res_y) {
         }
     }
     
-    for (int i = 0; i < NUM_THREAD; i++) {
+    for (int i = 0; i < num_threads; i++) {
         pthread_join(threads[i], NULL);
     }
 
@@ -331,16 +373,15 @@ void    run_mcts(game_t *game, int *res_x, int *res_y) {
     
     double elapsed_seconds = (end_time.tv_sec - start_time.tv_sec) + 
                             (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
-    
-    printf("\n=== MCTS Performance Statistics ===\n");
+    printf("\e[1;34m=== MCTS Performance Statistics ===\e[0m\n");
     printf("Total simulations: %d\n", NUM_SIMULATIONS);
-    printf("Number of threads: %d\n", NUM_THREAD);
+    printf("Number of threads: %d\n", num_threads);
     printf("Total time: %.3f seconds\n", elapsed_seconds);
     printf("Simulations per second: %.2f\n", NUM_SIMULATIONS / elapsed_seconds);
     printf("Average time per simulation: %.6f seconds\n", elapsed_seconds / NUM_SIMULATIONS);
-    printf("===================================\n\n");
+    printf("\e[1;34m===================================\e[0m\n\n");
     
-    print_load_balance_stats(&balancer);
+    //print_load_balance_stats(&balancer);
     
     pthread_mutex_destroy(&balancer.balance_mutex);
 
