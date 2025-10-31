@@ -7,7 +7,7 @@
 #include "gomo.h"
 
 #define MAX_THREADS 128
-#define NUM_SIMULATIONS 500000
+#define NUM_SIMULATIONS 100000
 #define LOAD_BALANCE_CHECK_INTERVAL 1000
 
 typedef struct game_s game_t;

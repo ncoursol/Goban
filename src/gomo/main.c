@@ -226,7 +226,8 @@ int main(int argc, char **argv)
 		gomo.game->board[2][2] = 1;
 		gomo.game->board[3][3] = 1;
 		gomo.game->board[4][4] = 1;
-		print_board(gomo.game->board);
+		//print_board(gomo.game->board);
+		gomo.game->current_player = 0;
 		run_mcts(gomo.game, &x, &y);
 		gomo.game->board[x][y] = gomo.game->current_player == 0 ? 1 : 2;
 		print_board(gomo.game->board);

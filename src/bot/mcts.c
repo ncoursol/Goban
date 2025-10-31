@@ -14,7 +14,7 @@ node_t  *init_root(int player_color) {
     atomic_store(&root->uct, -1);
     root->x = -1;
     root->y = -1;
-    root->color = player_color;
+    root->color = !player_color;
     root->nb_childs = 19 * 19;
     root->childs = NULL;
     root->parent = NULL;
@@ -82,10 +82,8 @@ int check_win_mcts(unsigned int board_sim[19][19], unsigned int x, unsigned int 
             *winning_state -= !current_player + 1;
     }
     ret = check_five_in_a_row_at(board_sim, x, y, current_player, 0);
-    if (ret) {
+    if (ret)
         *winning_state += current_player + 1;
-        return current_player + 1;  // Return winner immediately!
-    }
     
     return 0;
 }
@@ -109,10 +107,15 @@ void     random_choice(unsigned int board_sim[19][19], int *x, int *y, unsigned 
 }
 
 void update_uct(node_t *node) {
-    if (node->visit_count > 0) {
-        float exploit = (float)node->value / node->visit_count;
-        float explore = sqrt(2 * log(node->parent->visit_count) / node->visit_count);
-        atomic_store(&node->uct, exploit + explore);
+    int visit = atomic_load(&node->visit_count);
+    if (visit > 0 && node->parent) {
+        int parent_visit = atomic_load(&node->parent->visit_count);
+        int value = atomic_load(&node->value);
+        if (parent_visit > 0) {
+            float exploit = (float)value / visit;
+            float explore = sqrt(2 * log(parent_visit) / visit);
+            atomic_store(&node->uct, exploit + explore);
+        }
     }
 }
 
@@ -120,6 +123,7 @@ void update_uct(node_t *node) {
 node_t    *selection(node_t *root, unsigned int board_sim[19][19]) {
     int i;
     int best;
+
     while (root->childs[root->nb_childs - 1] && root->childs[0] != NULL) {
         best = 0;
         i = 0;
@@ -139,12 +143,18 @@ node_t    *expansion(node_t *cursor, unsigned int board_sim[19][19]) {
     int child_count = 0;
     int x = -1;
     int y = -1;
-    node_t *new_child;
+    node_t *new_child = NULL;
 
     pthread_mutex_lock(&cursor->mutex);
     
     while (cursor->childs && cursor->childs[child_count] != NULL) {
         child_count++;
+    }
+    
+    // Check if we've already expanded all children
+    if (child_count >= cursor->nb_childs) {
+        pthread_mutex_unlock(&cursor->mutex);
+        return (cursor);
     }
     
     find_next_empty(board_sim, &x, &y, child_count);
@@ -155,42 +165,52 @@ node_t    *expansion(node_t *cursor, unsigned int board_sim[19][19]) {
     }
 
     new_child = add_new_child(cursor, child_count, x, y);
+    
+    // Keep the lock until after we update the board_sim
+    if (new_child) {
+        board_sim[x][y] = new_child->color + 1;
+    }
+    
     pthread_mutex_unlock(&cursor->mutex);
+    
     if (!new_child)
         return (cursor);
     
-    board_sim[x][y] = cursor->color == 0 ? 2 : 1;
     return (new_child);
 }
 
 int     simulation(node_t *cursor, thread_data_t *thread) {
     int x = cursor->x;
     int y = cursor->y;
-    int player = cursor->color;
+    int player = !cursor->color;
     int winner = 0;
+
+    // Only check win if cursor has valid coordinates (not root node)
+    if (x >= 0 && y >= 0) {
+        winner = check_win_mcts(thread->board_sim, x, y, thread->captured_black, thread->captured_white, !player, &thread->winning_state);
+    }
+    
     while (!winner) {
         random_choice(thread->board_sim, &x, &y, &thread->rand_seed);
         if (x == -1 || y == -1)
-        break;
-        thread->board_sim[x][y] = player == 1 ? 1 : 2;
+            break;
+        thread->board_sim[x][y] = player == 1 ? 2 : 1;
         winner = check_win_mcts(thread->board_sim, x, y, thread->captured_black, thread->captured_white, player, &thread->winning_state);
         if (winner != 0)
-            return (winner - 1 == cursor->color ? 1 : -1);
-        player = player == 1 ? 0 : 1;
+            return winner;
+        player = !player;
     }
-    return (winner);
+    return winner;
 }
 
 node_t    *backPropagation(node_t *cursor, int sim_result) {
-    int value_to_propagate = sim_result;
-    
     while (cursor->parent != NULL) {
         atomic_fetch_add(&cursor->visit_count, 1);
-        atomic_fetch_add(&cursor->value, value_to_propagate);
-        value_to_propagate = -value_to_propagate;
+        atomic_fetch_add(&cursor->value, cursor->color == sim_result ? 1 : -1);
         cursor = cursor->parent;
     }
     atomic_fetch_add(&cursor->visit_count, 1);
+    atomic_fetch_add(&cursor->value, cursor->color == sim_result ? 1 : -1);
     return (cursor);
 }
 
@@ -241,7 +261,6 @@ void    *mcts_thread_worker(void *arg) {
     clock_gettime(CLOCK_MONOTONIC, &start_time);
     
     int local_sim_count = 0;
-    
     while (1) {
         int global_count = atomic_fetch_add(&balancer->global_sim_counter, 1);
         
@@ -258,9 +277,18 @@ void    *mcts_thread_worker(void *arg) {
         }
         
         node_t *selected = selection(data->node, local_board);
+        
         node_t *expanded = expansion(selected, local_board);
         
+        // Only check for win if we actually expanded to a new node (x and y are valid)
+        if (expanded->x >= 0 && expanded->y >= 0) {
+            int ret = check_five_in_a_row_at(local_board, expanded->x, expanded->y, expanded->color, 0);
+            if (ret)
+                data->winning_state += !expanded->color + 1;
+        }
+
         thread_data_t sim_data = *data;
+        sim_data.winning_state = data->winning_state;
         for (int m = 0; m < 19; m++) {
             for (int n = 0; n < 19; n++) {
                 sim_data.board_sim[m][n] = local_board[m][n];
@@ -268,7 +296,8 @@ void    *mcts_thread_worker(void *arg) {
         }
         
         int winner = simulation(expanded, &sim_data);
-        backPropagation(expanded, winner);
+
+        backPropagation(expanded, winner - 1);
         
         clock_gettime(CLOCK_MONOTONIC, &sim_end);
         long long sim_time_ns = (sim_end.tv_sec - sim_start.tv_sec) * 1000000000LL + 
@@ -307,7 +336,9 @@ void    run_mcts(game_t *game, int *res_x, int *res_y) {
     if (num_threads <= 0 || num_threads > MAX_THREADS) {
         num_threads = 8; // Fallback to 8 threads if detection fails
     }
-    
+
+    num_threads = 2;
+
     printf("\n\e[1;33mDetected %d CPU cores, using %d threads for MCTS\e[0m\n", num_threads, num_threads);
     
     // Count empty cells on the board
@@ -402,6 +433,11 @@ void    run_mcts(game_t *game, int *res_x, int *res_y) {
                root->childs[best]->visit_count, root->childs[best]->value);
         *res_x = root->childs[best]->x;
         *res_y = root->childs[best]->y;
+        
+        // Only print debug info if first child exists
+        if (root->childs[0]) {
+            printf("[0][0] move: value = %d, visits = %d\n", root->childs[0]->value, root->childs[0]->visit_count);
+        }
     } else {
         printf("No valid moves found.\n");
         *res_x = -1;
