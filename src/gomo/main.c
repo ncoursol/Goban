@@ -222,15 +222,15 @@ int main(int argc, char **argv)
 		ret = init_game(gomo.game, 1);
 		if (!ret)
 			return ret;
-		gomo.game->board[1][1] = 1;
-		gomo.game->board[2][2] = 1;
-		gomo.game->board[3][3] = 1;
-		gomo.game->board[4][4] = 1;
-		//print_board(gomo.game->board);
+		
+		printf("Starting MCTS vs MCTS game generation...\n");
+		gomo.game->board[10][10] = 1;
+		gomo.game->board[10][11] = 1;
+		gomo.game->board[10][12] = 1;
+		gomo.game->board[10][13] = 1;
 		gomo.game->current_player = 0;
 		run_mcts(gomo.game, &x, &y);
 		gomo.game->board[x][y] = gomo.game->current_player == 0 ? 1 : 2;
-		print_board(gomo.game->board);
 
 		pthread_mutex_destroy(&gomo.ai_thread.mutex);
 		free_all(&gomo, 0);

@@ -8,7 +8,7 @@ typedef struct gomo_s gomo_t;
 typedef struct moves_s {
     unsigned int x;
     unsigned int y;
-    int player; // 0 for player 1, 1 for player 2
+    int         player; // 0 for player 1, 1 for player 2
     unsigned int *captured_stones; // array of captured stones in this move
     unsigned int winning_state; // 0 = no win, 1 = player 1, 2 = player 2, 3 = both players
     struct moves_s *next;

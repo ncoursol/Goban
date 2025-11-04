@@ -115,10 +115,13 @@ unsigned int *check_captures(unsigned int board[19][19], unsigned int x, unsigne
         return NULL;
     }
 
-    if (!realloc(captured_stones, sizeof(unsigned int) * (capture_count + 1))) {
+    unsigned int *temp = realloc(captured_stones, sizeof(unsigned int) * (capture_count + 1));
+    if (!temp) {
         free(captured_stones);
         return NULL;
     }
+    captured_stones = temp;
+    captured_stones[capture_count] = 0;
 
     if (player == 0)
         *captured_white += capture_count;
