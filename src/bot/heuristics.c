@@ -144,7 +144,8 @@ float *weightmap(unsigned int board[19][19], int *valid_moves, int max_size, int
 int select_weighted_move(unsigned int board[19][19], int *valid_moves, int max_size, int player) {
     float *w = weightmap(board, valid_moves, max_size, player);
     float total = 0.0f;
-    for (int i = 0; i < max_size; i++) total += w[i];
+    for (int i = 0; i < max_size; i++)
+        total += w[i];
 
     int chosen_move = -1;
     if (total <= 0.0f) {
@@ -155,7 +156,12 @@ int select_weighted_move(unsigned int board[19][19], int *valid_moves, int max_s
             int y = valid_moves[i] % 19;
             if (board[x][y] == 0) legal_count++;
         }
-        if (legal_count == 0) { free(w); return -1; }
+
+        if (legal_count == 0) {
+            free(w);
+            return -1;
+        }
+        
         int r = rand() % legal_count;
         for (int i = 0; i < max_size; i++) {
             int x = valid_moves[i] / 19;
