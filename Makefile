@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 NAME = gomo
+ARENA = mcts_arena
 
 # Directories
 GOMO_DIR = ./src/gomo
@@ -39,6 +40,8 @@ endif
 
 # Source files
 C_SRCS = $(wildcard $(GOMO_DIR)/*.c) $(wildcard $(GAME_DIR)/*.c) $(wildcard $(BOT_DIR)/*.c)
+# Exclude v1 and v2 from main build (they're for arena only)
+C_SRCS := $(filter-out ./src/bot/mcts_v1.c ./src/bot/mcts_v2.c ./src/bot/mcts_arena.c ./src/bot/gui_stubs.c, $(C_SRCS))
 CXX_SRCS = $(wildcard $(BOT_DIR)/*.cpp)
 
 # Object files
@@ -49,9 +52,11 @@ OBJS = $(C_OBJS) $(CXX_OBJS)
 # Dependency files
 DEPS = $(OBJS:.o=.d)
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re arena
 
 all: $(NAME)
+
+arena: $(ARENA)
 
 $(LIBGLFW3):
 	cmake -S ./ext/glfw-3.3.5/ -B ./ext/glfw-3.3.5/build/
@@ -80,6 +85,36 @@ $(NAME): $(LIBGLFW3) $(LIBGLAD) $(LIBFFT) $(OBJS)
 	@$(CXX) $(LDFLAGS) -o $(NAME) $(OBJS) $(LDLIBS)
 	@echo "Build complete!"
 
+# Arena-specific build (without GUI dependencies)
+ARENA_GAME_SRCS = $(wildcard $(GAME_DIR)/*.c)
+ARENA_BOT_SRCS = $(BOT_DIR)/heuristics.c $(BOT_DIR)/mcts_v1.c $(BOT_DIR)/mcts_v2.c $(BOT_DIR)/mcts_arena.c $(BOT_DIR)/gui_stubs.c
+ARENA_TOOLS_SRCS = ./src/tools/mcts_arena_main.c
+
+ARENA_GAME_OBJS = $(ARENA_GAME_SRCS:./src/game/%.c=$(BUILD_DIR)/arena_game/%.o)
+ARENA_BOT_OBJS = $(ARENA_BOT_SRCS:./src/bot/%.c=$(BUILD_DIR)/arena_bot/%.o)
+ARENA_TOOLS_OBJS = $(ARENA_TOOLS_SRCS:./src/tools/%.c=$(BUILD_DIR)/arena_tools/%.o)
+ARENA_OBJS = $(ARENA_GAME_OBJS) $(ARENA_BOT_OBJS) $(ARENA_TOOLS_OBJS)
+
+$(BUILD_DIR)/arena_game/%.o: ./src/game/%.c Makefile
+	@mkdir -p $(dir $@)
+	@echo "Compiling Arena C: $<"
+	@$(CC) $(FLAGS) -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
+
+$(BUILD_DIR)/arena_bot/%.o: ./src/bot/%.c Makefile
+	@mkdir -p $(dir $@)
+	@echo "Compiling Arena C: $<"
+	@$(CC) $(FLAGS) -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
+
+$(BUILD_DIR)/arena_tools/%.o: ./src/tools/%.c Makefile
+	@mkdir -p $(dir $@)
+	@echo "Compiling Arena C: $<"
+	@$(CC) $(FLAGS) -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
+
+$(ARENA): $(ARENA_OBJS)
+	@echo "Linking $(ARENA)..."
+	@$(CC) $(LDFLAGS) -o $(ARENA) $(ARENA_OBJS) -lpthread -lm
+	@echo "Arena build complete!"
+
 clean:
 	make clean -C ./ext/glad/
 	cd ./ext/freetype/ && make clean
@@ -89,7 +124,7 @@ fclean: clean
 	make fclean -C ./ext/glad/
 	rm -rf ./ext/glfw-3.3.5/build
 	rm -rf ./ext/freetype/objs/*
-	rm -f $(NAME)
+	rm -f $(NAME) $(ARENA)
 
 re: fclean all
 

@@ -38,6 +38,7 @@ typedef struct game_s {
 } game_t;
 
 int init_game(game_t *game, int mode);
+void cleanup_game(game_t *game);
 void print_board(unsigned int board[19][19]);
 int place_stone(game_t *game, unsigned int x, unsigned int y);
 void sync_game_state(gomo_t *gomo, game_t *game);

@@ -1,5 +1,5 @@
-#ifndef MCTS_H
-#define MCTS_H
+#ifndef MCTS_V2_H
+#define MCTS_V2_H
 
 #include <pthread.h>
 #include <stdatomic.h>
@@ -8,15 +8,15 @@
 #include "gomo.h"
 
 #define MAX_THREADS 128
-#define NUM_SIMULATIONS 200000
+#define NUM_SIMULATIONS_V2 200000
 
-#define MCTS_TOP_K 32
+#define MCTS_TOP_K_V2 32
 
 #define LOAD_BALANCE_CHECK_INTERVAL 1000
 
 typedef struct game_s game_t;
 
-typedef struct      node_s
+typedef struct      node_v2_s
 {
     atomic_int      value;
     atomic_int      visit_count;
@@ -31,11 +31,11 @@ typedef struct      node_s
     int             valid_moves[361];
     int             sorted_once;         // Track if valid_moves were sorted
     pthread_mutex_t mutex;
-    struct node_s   *parent;
-    struct node_s   **childs;
-}   node_t;
+    struct node_v2_s   *parent;
+    struct node_v2_s   **childs;
+}   node_v2_t;
 
-typedef struct load_balancer_s
+typedef struct load_balancer_v2_s
 {
     atomic_int global_sim_counter;
     atomic_int thread_sim_counts[MAX_THREADS];
@@ -44,10 +44,10 @@ typedef struct load_balancer_s
     pthread_mutex_t balance_mutex;
     int active_threads;
     int total_simulations;
-} load_balancer_t;
+} load_balancer_v2_t;
 
 
-typedef struct thread_data_s
+typedef struct thread_data_v2_s
 {
     unsigned int board_sim[19][19];
     int captured_black;
@@ -55,20 +55,20 @@ typedef struct thread_data_s
     int winning_state;
     int thread_id;
     unsigned int rand_seed;
-    node_t *node;
-    load_balancer_t *balancer;
+    node_v2_t *node;
+    load_balancer_v2_t *balancer;
     float weights_buffer[361];  // Pre-allocated buffer for expansion
-} thread_data_t;
+} thread_data_v2_t;
 
-typedef struct      mcts_s
+typedef struct      mcts_v2_s
 {
     unsigned int board[19][19];
     unsigned int captured_black;
     unsigned int captured_white;
     unsigned int winning_state;
-}   mcts_t;
+}   mcts_v2_t;
 
-void    run_mcts(game_t *game, int *res_x, int *res_y);
+void    run_mcts_v2(game_t *game, int *res_x, int *res_y, int num_simulations);
 int     select_weighted_move(unsigned int board[19][19], int *valid_moves, int max_size, int player);
 float   *weightmap(unsigned int board[19][19], int *valid_moves, int max_size, int player);
 int     find_urgent_move(unsigned int board[19][19], int player);

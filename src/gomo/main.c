@@ -224,9 +224,6 @@ int main(int argc, char **argv)
 			return ret;
 		
 		printf("Starting MCTS vs MCTS game generation...\n");
-		gomo.game->board[10][10] = 1;
-		gomo.game->board[10][11] = 2;
-		gomo.game->board[10][12] = 2;
 		gomo.game->current_player = 0;
 		run_mcts(gomo.game, &x, &y);
 		gomo.game->board[x][y] = gomo.game->current_player == 0 ? 1 : 2;

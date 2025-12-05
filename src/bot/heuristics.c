@@ -195,6 +195,57 @@ int select_weighted_move(unsigned int board[19][19], int *valid_moves, int max_s
     free(w);
     return chosen_move;
 }
+
+// Fast threat detection (cheaper than get_move_score)
+int quick_threat_check(unsigned int board[19][19], int x, int y, int player) {
+    unsigned int player_val = player + 1;
+    int dx[4] = {1, 0, 1, 1};
+    int dy[4] = {0, 1, 1, -1};
+    
+    for (int d = 0; d < 4; d++) {
+        int count = 0;
+        for (int step = -2; step <= 2; step++) {
+            int nx = x + step * dx[d];
+            int ny = y + step * dy[d];
+            if (nx >= 0 && nx < 19 && ny >= 0 && ny < 19) {
+                if (board[nx][ny] == player_val)
+                    count++;
+                else if (board[nx][ny] != 0)
+                    count = 0;
+            }
+        }
+        if (count >= 2)
+            return 1;
+    }
+    return 0;
+}
+
+// Find immediate winning/blocking moves
+int find_urgent_move(unsigned int board[19][19], int player) {
+    // Check for immediate win for current player
+    for (int i = 0; i < 19; i++) {
+        for (int j = 0; j < 19; j++) {
+            if (board[i][j] == 0) {
+                if (check_five_in_a_row_at(board, i, j, player, 1))
+                    return i * 19 + j;
+            }
+        }
+    }
+    
+    // Check for immediate block (opponent about to win)
+    int opponent = !player;
+    for (int i = 0; i < 19; i++) {
+        for (int j = 0; j < 19; j++) {
+            if (board[i][j] == 0) {
+                if (check_five_in_a_row_at(board, i, j, opponent, 1))
+                    return i * 19 + j;
+            }
+        }
+    }
+    
+    return -1;  // No urgent move
+}
+
 /*
 int get_nb_empty_positions(unsigned int board[19][19], int x, int y, int valid_moves[361])
 {

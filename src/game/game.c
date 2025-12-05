@@ -93,7 +93,8 @@ unsigned int *check_captures(unsigned int board[19][19], unsigned int x, unsigne
     unsigned int *captured_stones = NULL;
     unsigned int capture_count = 0;
 
-    if (!(captured_stones = (unsigned int *)malloc(sizeof(unsigned int) * 16)))
+    // Allocate 17 to have space for up to 16 captures + null terminator
+    if (!(captured_stones = (unsigned int *)malloc(sizeof(unsigned int) * 17)))
         return NULL;
 
     int dx[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
@@ -429,4 +430,28 @@ int init_game(game_t *game, int mode)
     }
 
     return 1;
+}
+void cleanup_game(game_t *game) {
+    if (!game || !game->moves) return;
+    
+    // Start from the first node in the list
+    moves_t *first = game->moves->first;
+    moves_t *current = first;
+    
+    // Free all nodes in the linked list
+    while (current) {
+        moves_t *next = current->next;
+        
+        // Free captured stones array if any
+        if (current->captured_stones) {
+            free(current->captured_stones);
+            current->captured_stones = NULL;
+        }
+        
+        free(current);
+        current = next;
+    }
+    
+    // Nullify the moves pointer to avoid dangling reference
+    game->moves = NULL;
 }
