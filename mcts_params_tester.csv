@@ -1,0 +1,50 @@
+,,,,,,,,,,,,,,,,,,
+Round 1: Arena Results on 10 games (winrate in %),,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,Default,Aggressive,Defensive,Deep_search,Wide_search,,,Max_children,Explo_const,W_capture,W_block_cap,W_open_four,W_block_four,W_open_three,W_block_three,W_center,W_win,sim_depth_lim
+Default,,70%,30%,80%,60%,,Default,15,1.414,10,8,40,30,6,4,0.1,10000,1000
+Aggressive,30%,,20%,70%,70%,,Aggressive,12,1.2,15,6,50,25,10,3,0.15,10000,1000
+Defensive,70%,80%,,90%,70%,,Defensive,20,1.6,8,12,35,45,4,8,0.1,10000,1000
+Deep_search,20%,30%,10%,,50%,,Deep_search,8,1.414,10,8,40,30,6,4,0.1,10000,1000
+Wide_search,40%,30%,30%,50%,,,Wide_search,40,1.414,10,8,40,30,6,4,0.1,10000,1000
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+Round 2: Arena results on 20 games (winrate %) + infos,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,Default,Aggressive,Defensive,Deep_search,Wide_search,,,Max_children,Explo_const,W_capture,W_block_cap,W_open_four,W_block_four,W_open_three,W_block_three,W_center,W_win,sim_depth_lim
+Default,,40%,80%,65%,45%,,Default,20,1.6,8,12,35,45,4,8,0.1,10000,1000
+Aggressive,60%,,70%,60%,70%,,Aggressive,17,1.414,13,10,45,40,8,7,0.15,10000,1000
+Defensive,20%,30%,,60%,30%,,Defensive,25,1.8,6,16,30,60,2,12,0.1,10000,1000
+Deep_search,35%,40%,40%,,60%,,Deep_search,13,1.6,8,12,35,45,4,8,0.1,10000,1000
+Wide_search,55%,30%,70%,40%,,,Wide_search,45,1.6,8,12,35,45,4,8,0.1,10000,1000
+,,,,,,,,,,,,,,,,,,
+Mean play time on 20 games (diff in %),,,,,,,,,,,,,,,,,,
+,Default,Aggressive,Defensive,Deep_search,Wide_search,,,,,,,,,,,,,
+Default,,-3.90%,2.16%,2.10%,9.00%,2.34%,,,,,,,,,,,,
+Aggressive,3.90%,,4.60%,1.55%,4.84%,3.66%,,,,,,,,,,,,
+Defensive,-2.16%,-4.60%,,-4.30%,5.60%,-1.10%,,,,,,,,,,,,
+Deep_search,-2.10%,-1.55%,4.30%,,5.30%,2.68%,,,,,,,,,,,,
+Wide_search,-9.00%,-4.84%,-5.60%,-5.30%,,-5.25%,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+Round 3: Arena results on 20 games (winrate %) + infos,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,Default,Aggressive,Defensive,Deep_search,Wide_search,,,Max_children,Explo_const,W_capture,W_block_cap,W_open_four,W_block_four,W_open_three,W_block_three,W_center,W_win,sim_depth_lim
+Default,,55%,45%,45%,55%,,Default,17,1.414,13,10,45,40,8,7,0.15,10000,1000
+Aggressive,45%,,50%,50%,50%,,Aggressive,14,1.3,16,8,50,35,10,5,0.18,10000,1000
+Defensive,55%,50%,,40%,75%,,Defensive,20,1.5,10,14,40,50,6,10,0.12,10000,1000
+Deep_search,55%,50%,60%,,45%,,Deep_search,17,1.45,12,11,45,42,8,8,0.14,10000,1000
+Wide_search,45%,50%,25%,55%,,,Wide_search,22,1.35,14,9,48,38,9,6,0.16,10000,1000
+,,,,,,,,,,,,,,,,,,
+Mean play time on 20 games (diff in %),,,,,,,,,,,,,,,,,,
+,Default,Aggressive,Defensive,Deep_search,Wide_search,,,,,,,,,,,,,
+Default,,0.60%,0.60%,0.40%,1.34%,0.74%,,,,,,,,,,,,
+Aggressive,-0.60%,,-6.90%,-4.96%,-5.70%,-5.85%,,,,,,,,,,,,
+Defensive,-0.60%,6.90%,,1.10%,0.00%,2.67%,,,,,,,,,,,,
+Deep_search,-0.40%,4.96%,-1.10%,,4.85%,2.90%,,,,,,,,,,,,
+Wide_search,-1.34%,5.70%,0.00%,-4.85%,,0.28%,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,Default,Initial,Winner1,,,,,Max_children,Explo_const,W_capture,W_block_cap,W_open_four,W_block_four,W_open_three,W_block_three,W_center,W_win,sim_depth_lim
+Default,,50%,30%,,,,Default,17,1.414,13,10,45,40,8,7,0.15,10000,1000
+Initial,50%,,35%,,,,Initial,15,1.414,10,8,40,30,6,4,0.1,10000,1000
+Winner1,70%,65%,,,,,Winner1,20,1.6,8,12,35,45,4,8,0.1,10000,1000

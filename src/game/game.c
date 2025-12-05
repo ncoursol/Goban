@@ -1,5 +1,6 @@
 #include "../include/game.h"
 
+#ifndef ARENA_STANDALONE
 void sync_game_state(gomo_t *gomo, game_t *game)
 {
     for (int i = 0; i < 19; i++) {
@@ -10,6 +11,7 @@ void sync_game_state(gomo_t *gomo, game_t *game)
     }
     updateData(gomo);
 }
+#endif
 
 int check_double_free_three(unsigned int board[19][19], unsigned int x, unsigned int y, int player)
 {

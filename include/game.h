@@ -40,6 +40,7 @@ typedef struct game_s {
 int init_game(game_t *game, int mode);
 void cleanup_game(game_t *game);
 void print_board(unsigned int board[19][19]);
+int check_valid_move(game_t *game, unsigned int x, unsigned int y);
 int place_stone(game_t *game, unsigned int x, unsigned int y);
 void sync_game_state(gomo_t *gomo, game_t *game);
 int check_double_free_three(unsigned int board[19][19], unsigned int x, unsigned int y, int player);

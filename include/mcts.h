@@ -8,9 +8,8 @@
 #include "gomo.h"
 
 #define MAX_THREADS 128
-#define NUM_SIMULATIONS 200000
-
-#define MCTS_TOP_K 32
+#define NUM_SIMULATIONS 400000
+#define MAX_CHILDREN_PER_NODE 17  // Limit branching factor for deeper search
 
 #define LOAD_BALANCE_CHECK_INTERVAL 1000
 
@@ -21,15 +20,13 @@ typedef struct      node_s
     atomic_int      value;
     atomic_int      visit_count;
     _Atomic float   uct;
-    _Atomic float   cached_parent_log;  // Cache log(parent visits) for UCT calculation
-    atomic_int      virtual_losses;      // Virtual loss for reducing lock contention
     int             x;
     int             y;
     int             player; // 0 for player 1, 1 for player 2
-    int             nb_childs;
-    int             max_childs;
+    atomic_int      nb_childs;  // Must be atomic for thread-safe access
+    int             max_childs;      // capped to MAX_CHILDREN_PER_NODE
+    int             num_valid_moves; // actual number of valid moves (for sorting)
     int             valid_moves[361];
-    int             sorted_once;         // Track if valid_moves were sorted
     pthread_mutex_t mutex;
     struct node_s   *parent;
     struct node_s   **childs;
@@ -38,6 +35,7 @@ typedef struct      node_s
 typedef struct load_balancer_s
 {
     atomic_int global_sim_counter;
+    atomic_int max_depth;
     atomic_int thread_sim_counts[MAX_THREADS];
     atomic_llong thread_times_ns[MAX_THREADS];
     atomic_llong thread_phase_times_ns[MAX_THREADS][4]; // per-thread phase times (selection, expansion, simulation, backpropagation)
@@ -46,6 +44,8 @@ typedef struct load_balancer_s
     int total_simulations;
 } load_balancer_t;
 
+
+typedef struct bot_config_s bot_config_t;
 
 typedef struct thread_data_s
 {
@@ -57,7 +57,7 @@ typedef struct thread_data_s
     unsigned int rand_seed;
     node_t *node;
     load_balancer_t *balancer;
-    float weights_buffer[361];  // Pre-allocated buffer for expansion
+    bot_config_t *config;  // Bot configuration for this thread
 } thread_data_t;
 
 typedef struct      mcts_s
@@ -71,7 +71,6 @@ typedef struct      mcts_s
 void    run_mcts(game_t *game, int *res_x, int *res_y);
 int     select_weighted_move(unsigned int board[19][19], int *valid_moves, int max_size, int player);
 float   *weightmap(unsigned int board[19][19], int *valid_moves, int max_size, int player);
-int     find_urgent_move(unsigned int board[19][19], int player);
-int     quick_threat_check(unsigned int board[19][19], int x, int y, int player);
+void    weightmap_inplace(unsigned int board[19][19], int *valid_moves, int max_size, int player, float *weights);
 
 #endif

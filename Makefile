@@ -11,7 +11,6 @@
 # **************************************************************************** #
 
 NAME = gomo
-ARENA = mcts_arena
 
 # Directories
 GOMO_DIR = ./src/gomo
@@ -40,8 +39,6 @@ endif
 
 # Source files
 C_SRCS = $(wildcard $(GOMO_DIR)/*.c) $(wildcard $(GAME_DIR)/*.c) $(wildcard $(BOT_DIR)/*.c)
-# Exclude v1 and v2 from main build (they're for arena only)
-C_SRCS := $(filter-out ./src/bot/mcts_v1.c ./src/bot/mcts_v2.c ./src/bot/mcts_arena.c ./src/bot/gui_stubs.c, $(C_SRCS))
 CXX_SRCS = $(wildcard $(BOT_DIR)/*.cpp)
 
 # Object files
@@ -52,11 +49,9 @@ OBJS = $(C_OBJS) $(CXX_OBJS)
 # Dependency files
 DEPS = $(OBJS:.o=.d)
 
-.PHONY: all clean fclean re arena
+.PHONY: all clean fclean re
 
 all: $(NAME)
-
-arena: $(ARENA)
 
 $(LIBGLFW3):
 	cmake -S ./ext/glfw-3.3.5/ -B ./ext/glfw-3.3.5/build/
@@ -85,35 +80,24 @@ $(NAME): $(LIBGLFW3) $(LIBGLAD) $(LIBFFT) $(OBJS)
 	@$(CXX) $(LDFLAGS) -o $(NAME) $(OBJS) $(LDLIBS)
 	@echo "Build complete!"
 
-# Arena-specific build (without GUI dependencies)
-ARENA_GAME_SRCS = $(wildcard $(GAME_DIR)/*.c)
-ARENA_BOT_SRCS = $(BOT_DIR)/heuristics.c $(BOT_DIR)/mcts_v1.c $(BOT_DIR)/mcts_v2.c $(BOT_DIR)/mcts_arena.c $(BOT_DIR)/gui_stubs.c
-ARENA_TOOLS_SRCS = ./src/tools/mcts_arena_main.c
+# Arena executable for bot testing
+ARENA_SRCS = $(BOT_DIR)/arena.c $(BOT_DIR)/bot_config.c $(BOT_DIR)/mcts.c $(BOT_DIR)/heuristics.c $(GAME_DIR)/game.c
+ARENA_OBJS = $(BUILD_DIR)/bot/arena_main.o $(BUILD_DIR)/bot/bot_config.o $(BUILD_DIR)/bot/mcts.o $(BUILD_DIR)/bot/heuristics.o $(BUILD_DIR)/game/game_arena.o
 
-ARENA_GAME_OBJS = $(ARENA_GAME_SRCS:./src/game/%.c=$(BUILD_DIR)/arena_game/%.o)
-ARENA_BOT_OBJS = $(ARENA_BOT_SRCS:./src/bot/%.c=$(BUILD_DIR)/arena_bot/%.o)
-ARENA_TOOLS_OBJS = $(ARENA_TOOLS_SRCS:./src/tools/%.c=$(BUILD_DIR)/arena_tools/%.o)
-ARENA_OBJS = $(ARENA_GAME_OBJS) $(ARENA_BOT_OBJS) $(ARENA_TOOLS_OBJS)
-
-$(BUILD_DIR)/arena_game/%.o: ./src/game/%.c Makefile
-	@mkdir -p $(dir $@)
-	@echo "Compiling Arena C: $<"
-	@$(CC) $(FLAGS) -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
-
-$(BUILD_DIR)/arena_bot/%.o: ./src/bot/%.c Makefile
-	@mkdir -p $(dir $@)
-	@echo "Compiling Arena C: $<"
-	@$(CC) $(FLAGS) -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
-
-$(BUILD_DIR)/arena_tools/%.o: ./src/tools/%.c Makefile
-	@mkdir -p $(dir $@)
-	@echo "Compiling Arena C: $<"
-	@$(CC) $(FLAGS) -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
-
-$(ARENA): $(ARENA_OBJS)
-	@echo "Linking $(ARENA)..."
-	@$(CC) $(LDFLAGS) -o $(ARENA) $(ARENA_OBJS) -lpthread -lm
+arena: $(LIBFFT) $(BUILD_DIR)/bot/arena_main.o $(BUILD_DIR)/bot/bot_config.o $(BUILD_DIR)/bot/mcts.o $(BUILD_DIR)/bot/heuristics.o $(BUILD_DIR)/game/game_arena.o
+	@echo "Linking arena..."
+	@$(CC) $(LDFLAGS) -o arena $(BUILD_DIR)/bot/arena_main.o $(BUILD_DIR)/bot/bot_config.o $(BUILD_DIR)/bot/mcts.o $(BUILD_DIR)/bot/heuristics.o $(BUILD_DIR)/game/game_arena.o -lpthread -lm -lfreetype
 	@echo "Arena build complete!"
+
+$(BUILD_DIR)/bot/arena_main.o: $(BOT_DIR)/arena.c Makefile
+	@mkdir -p $(dir $@)
+	@echo "Compiling Arena: $<"
+	@$(CC) $(FLAGS) -DARENA_STANDALONE -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
+
+$(BUILD_DIR)/game/game_arena.o: $(GAME_DIR)/game.c Makefile
+	@mkdir -p $(dir $@)
+	@echo "Compiling Game (arena): $<"
+	@$(CC) $(FLAGS) -DARENA_STANDALONE -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
 
 clean:
 	make clean -C ./ext/glad/
@@ -124,7 +108,8 @@ fclean: clean
 	make fclean -C ./ext/glad/
 	rm -rf ./ext/glfw-3.3.5/build
 	rm -rf ./ext/freetype/objs/*
-	rm -f $(NAME) $(ARENA)
+	rm -f $(NAME)
+	rm -f arena
 
 re: fclean all
 
@@ -133,4 +118,4 @@ info:
 	@echo "C++ Sources: $(CXX_SRCS)"
 	@echo "Objects: $(OBJS)"
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re arena

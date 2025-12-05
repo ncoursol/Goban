@@ -69,39 +69,70 @@ void create_opens(unsigned int board[19][19], unsigned int x, unsigned int y, in
     }
 }
 
+// Helper function to check if position has adjacent stones (faster early-exit)
+static inline int has_adjacent_stone(unsigned int board[19][19], int x, int y) {
+    for (int dx = -1; dx <= 1; dx++) {
+        for (int dy = -1; dy <= 1; dy++) {
+            if (dx == 0 && dy == 0) continue;
+            int nx = x + dx, ny = y + dy;
+            if (nx >= 0 && nx < 19 && ny >= 0 && ny < 19 && board[nx][ny] != 0)
+                return 1;
+        }
+    }
+    return 0;
+}
+
 int get_move_score(unsigned int board[19][19], int x, int y, int player)
 {
     int score = 0;
-    int player_val = 0, opponent_val = 0;
+    int player_captures = 0, opponent_captures = 0;
     int p_three = 0, o_three = 0, p_four = 0, o_four = 0;
 
-    if (check_five_in_a_row_at(board, x, y, player, 0))
-        return 10000;
-
-    create_opens(board, x, y, player, &p_three, &o_three, &p_four, &o_four);
-
-    // if create open four
-    if (p_four > 0)
-        score += 40 * p_four;
-    // if block opponent open four
-    if (o_four > 0)
-        score += 30 * o_four;
-
-    // if create open three
-    if (p_three > 0)
-        score += 6;
-    // if block opponent open three
-    if (o_three > 0)
-        score += 4;
-    
-    create_captures(board, x, y, player, &player_val, &opponent_val);
+    // Check captures first (cheaper than five-in-a-row check)
+    create_captures(board, x, y, player, &player_captures, &opponent_captures);
 
     // if allow a capture
-    if (player_val > 0)
-        score += 10 * (player_val / 2);
+    if (player_captures > 0)
+        score += 13 * (player_captures / 2);
     // if prevent opponent capture
-    if (opponent_val > 0)
-        score += 8 * (opponent_val / 2);
+    if (opponent_captures > 0)
+        score += 10 * (opponent_captures / 2);
+
+    // Only check expensive patterns if near existing stones
+    if (score > 0 || has_adjacent_stone(board, x, y)) {
+        unsigned int player_val = (player == 0) ? 1 : 2;
+        unsigned int opponent_val = (player == 0) ? 2 : 1;
+        
+        // Check if this move wins for us
+        board[x][y] = player_val;
+        int is_win = check_five_in_a_row_at(board, x, y, player, 0);
+        board[x][y] = 0;  // Restore
+        if (is_win)
+            return 10000;
+        
+        // Check if opponent would win here (must block!)
+        board[x][y] = opponent_val;
+        int opp_wins = check_five_in_a_row_at(board, x, y, !player, 0);
+        board[x][y] = 0;  // Restore
+        if (opp_wins)
+            return 9000;  // Very high priority to block
+
+        create_opens(board, x, y, player, &p_three, &o_three, &p_four, &o_four);
+
+        // if create open four
+        if (p_four > 0)
+            score += 45 * p_four;
+        // if block opponent open four
+        if (o_four > 0)
+            score += 40 * o_four;
+
+        // if create open three
+        if (p_three > 0)
+            score += 8;
+        // if block opponent open three
+        if (o_three > 0)
+            score += 7;
+    }
 
     return score;
 }
@@ -112,33 +143,30 @@ int get_distance_to_center(int x, int y) {
     return (abs(center_x - x) + abs(center_y - y));
 }
 
+void weightmap_inplace(unsigned int board[19][19], int *valid_moves, int max_size, int player, float *weights) {
+    for (int i = 0; i < max_size; i++) {
+        int x = valid_moves[i] / 19;
+        int y = valid_moves[i] - x * 19;
+        if (board[x][y] == 0) {
+            float dist_term = 1.0f / (1.0f + get_distance_to_center(x, y) * 0.15f);
+            float score_term = (float)get_move_score(board, x, y, player) / 10.0f;
+            weights[i] = dist_term + score_term;
+            if (weights[i] < 0.0f)
+                weights[i] = 0.0f;
+        } else {
+            weights[i] = 0.0f;
+        }
+    }
+}
+
 float *weightmap(unsigned int board[19][19], int *valid_moves, int max_size, int player) {
-    float *weightmap = (float *)malloc(sizeof(float) * max_size);
-    if (!weightmap) {
+    float *weights = (float *)malloc(sizeof(float) * max_size);
+    if (!weights) {
         perror("Failed to allocate memory for weightmap");
         exit(EXIT_FAILURE);
     }
-
-    for (int i = 0; i < max_size; i++)
-        weightmap[i] = 0.0f;
-
-    for (int i = 0; i < max_size; i++) {
-        int x = valid_moves[i] / 19;
-        int y = valid_moves[i] % 19;
-        if (board[x][y] == 0) {
-            float dist_term = 1.0f / (1.0f + get_distance_to_center(x, y) * 0.1f);
-            float score_term = (float)get_move_score(board, x, y, player) / 10.0f;
-
-            weightmap[i] = dist_term + score_term;
-
-            if (weightmap[i] < 0.0f)
-                weightmap[i] = 0.0f;
-        } else {
-            weightmap[i] = 0.0f;
-        }
-    }
-
-    return weightmap;
+    weightmap_inplace(board, valid_moves, max_size, player, weights);
+    return weights;
 }
 
 int select_weighted_move(unsigned int board[19][19], int *valid_moves, int max_size, int player) {
