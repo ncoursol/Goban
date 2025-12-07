@@ -1,0 +1,11 @@
+# Python dependencies for training data loading and neural network training
+
+# Core scientific computing
+numpy>=1.20.0
+
+# Deep learning (choose one or both)
+torch>=1.10.0  # PyTorch for the example training script
+
+# Optional but recommended
+matplotlib>=3.3.0  # For visualization
+tensorboard>=2.8.0  # For training monitoring

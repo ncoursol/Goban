@@ -37,8 +37,8 @@ ifeq ($(UNAME_S),Linux)
 	LDLIBS = -lX11 -lpthread -ldl -lm -lglfw3 -lglad -lfreetype -lstdc++
 endif
 
-# Source files
-C_SRCS = $(wildcard $(GOMO_DIR)/*.c) $(wildcard $(GAME_DIR)/*.c) $(wildcard $(BOT_DIR)/*.c)
+# Source files (exclude game_generator.c and data_generation.c from main build)
+C_SRCS = $(filter-out $(BOT_DIR)/game_generator.c $(BOT_DIR)/data_generation.c, $(wildcard $(GOMO_DIR)/*.c) $(wildcard $(GAME_DIR)/*.c) $(wildcard $(BOT_DIR)/*.c))
 CXX_SRCS = $(wildcard $(BOT_DIR)/*.cpp)
 
 # Object files
@@ -99,6 +99,27 @@ $(BUILD_DIR)/game/game_arena.o: $(GAME_DIR)/game.c Makefile
 	@echo "Compiling Game (arena): $<"
 	@$(CC) $(FLAGS) -DARENA_STANDALONE -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
 
+# Game generator for training data
+game_generator: $(LIBFFT) $(BUILD_DIR)/bot/game_generator_main.o $(BUILD_DIR)/bot/data_generation.o $(BUILD_DIR)/bot/bot_config.o $(BUILD_DIR)/bot/mcts.o $(BUILD_DIR)/bot/heuristics.o $(BUILD_DIR)/game/game_generator.o
+	@echo "Linking game_generator..."
+	@$(CC) $(LDFLAGS) -o game_generator $(BUILD_DIR)/bot/game_generator_main.o $(BUILD_DIR)/bot/data_generation.o $(BUILD_DIR)/bot/bot_config.o $(BUILD_DIR)/bot/mcts.o $(BUILD_DIR)/bot/heuristics.o $(BUILD_DIR)/game/game_generator.o -lpthread -lm -lfreetype
+	@echo "Game generator build complete!"
+
+$(BUILD_DIR)/bot/game_generator_main.o: $(BOT_DIR)/game_generator.c Makefile
+	@mkdir -p $(dir $@)
+	@echo "Compiling Game Generator: $<"
+	@$(CC) $(FLAGS) -DARENA_STANDALONE -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
+
+$(BUILD_DIR)/bot/data_generation.o: $(BOT_DIR)/data_generation.c Makefile
+	@mkdir -p $(dir $@)
+	@echo "Compiling Data Generation: $<"
+	@$(CC) $(FLAGS) -DARENA_STANDALONE -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
+
+$(BUILD_DIR)/game/game_generator.o: $(GAME_DIR)/game.c Makefile
+	@mkdir -p $(dir $@)
+	@echo "Compiling Game (generator): $<"
+	@$(CC) $(FLAGS) -DARENA_STANDALONE -MMD -MP -MF $(@:.o=.d) -o $@ -c $<
+
 clean:
 	make clean -C ./ext/glad/
 	cd ./ext/freetype/ && make clean
@@ -110,6 +131,7 @@ fclean: clean
 	rm -rf ./ext/freetype/objs/*
 	rm -f $(NAME)
 	rm -f arena
+	rm -f game_generator
 
 re: fclean all
 
@@ -118,4 +140,4 @@ info:
 	@echo "C++ Sources: $(CXX_SRCS)"
 	@echo "Objects: $(OBJS)"
 
-.PHONY: all clean fclean re arena
+.PHONY: all clean fclean re arena game_generator

@@ -9,7 +9,7 @@ typedef struct bot_config_s
     char name[64];              // Bot name for display
     
     // MCTS parameters
-    int num_simulations;        // Number of MCTS simulations
+    double time_limit;          // Time limit in seconds for MCTS (0 = use default)
     int max_children;           // Max children per node (branching factor)
     float exploration_constant; // UCT exploration constant (sqrt(2) = 1.414 default)
     

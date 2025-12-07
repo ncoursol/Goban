@@ -5,7 +5,7 @@
 // Final optimized configuration (based on 3 rounds of testing)
 bot_config_t BOT_DEFAULT = {
     .name = "Default",
-    .num_simulations = 100000,
+    .time_limit = 0.5,
     .max_children = 17,
     .exploration_constant = 1.414f,
     .weight_capture = 13.0f,
@@ -23,7 +23,7 @@ bot_config_t BOT_DEFAULT = {
 // Aggressive variant
 bot_config_t BOT_AGGRESSIVE = {
     .name = "Aggressive",
-    .num_simulations = 100000,
+    .time_limit = 0.5,
     .max_children = 14,
     .exploration_constant = 1.3f,
     .weight_capture = 16.0f,
@@ -41,7 +41,7 @@ bot_config_t BOT_AGGRESSIVE = {
 // Defensive variant
 bot_config_t BOT_DEFENSIVE = {
     .name = "Defensive",
-    .num_simulations = 100000,
+    .time_limit = 0.5,
     .max_children = 20,
     .exploration_constant = 1.6f,
     .weight_capture = 8.0f,
@@ -59,7 +59,7 @@ bot_config_t BOT_DEFENSIVE = {
 // Deep search variant (narrower tree)
 bot_config_t BOT_DEEP_SEARCH = {
     .name = "DeepSearch",
-    .num_simulations = 100000,
+    .time_limit = 0.5,
     .max_children = 15,
     .exploration_constant = 1.414f,
     .weight_capture = 10.0f,
@@ -77,7 +77,7 @@ bot_config_t BOT_DEEP_SEARCH = {
 // Wide search variant (broader tree)
 bot_config_t BOT_WIDE_SEARCH = {
     .name = "WideSearch",
-    .num_simulations = 100000,
+    .time_limit = 0.5,
     .max_children = 22,
     .exploration_constant = 1.35f,
     .weight_capture = 14.0f,
@@ -103,7 +103,7 @@ bot_config_t create_bot_config(const char *name)
 void print_bot_config(bot_config_t *config)
 {
     printf("\n=== Bot Configuration: %s ===\n", config->name);
-    printf("  Simulations: %d\n", config->num_simulations);
+    printf("  Time limit: %.1f seconds\n", config->time_limit);
     printf("  Max children: %d\n", config->max_children);
     printf("  Exploration: %.3f\n", config->exploration_constant);
     printf("  Weights:\n");

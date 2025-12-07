@@ -8,9 +8,6 @@
 #include <string.h>
 #include <stdio.h>
 
-// Global config pointer for configurable MCTS (set before thread creation)
-static bot_config_t *current_config = NULL;
-
 int get_empty_positions(unsigned int board[19][19], int x, int y, int valid_moves[361])
 {
     int count = 0;
@@ -27,7 +24,7 @@ int get_empty_positions(unsigned int board[19][19], int x, int y, int valid_move
     return count;
 }
 
-node_t *create_node(int x, int y, node_t *parent, mcts_t *mcts, int parent_player)
+node_t *create_node(int x, int y, node_t *parent, mcts_t *mcts, int parent_player, bot_config_t *config)
 {
     node_t *node = (node_t *)malloc(sizeof(node_t));
     if (!node)
@@ -55,7 +52,7 @@ node_t *create_node(int x, int y, node_t *parent, mcts_t *mcts, int parent_playe
     atomic_store(&node->nb_childs, 0);
     node->num_valid_moves = max_childs; // store actual count for sorting
     // Limit branching factor for deeper search (use config if available)
-    int max_children_limit = current_config ? current_config->max_children : MAX_CHILDREN_PER_NODE;
+    int max_children_limit = config ? config->max_children : MAX_CHILDREN_PER_NODE;
     node->max_childs = (max_childs > max_children_limit) ? max_children_limit : max_childs;
     node->player = !parent_player;
     pthread_mutex_init(&node->mutex, NULL);
@@ -167,7 +164,7 @@ float calculate_uct(node_t *node)
     return exploitation + exploration;
 }
 
-float calculate_uct_with_log(node_t *node, float log_parent_visits)
+float calculate_uct_with_log(node_t *node, float log_parent_visits, bot_config_t *config)
 {
     if (node->visit_count == 0)
         return INFINITY;
@@ -175,14 +172,14 @@ float calculate_uct_with_log(node_t *node, float log_parent_visits)
     int value = atomic_load(&node->value);
     int visit = atomic_load(&node->visit_count);
 
-    float exploration_constant = current_config ? current_config->exploration_constant : 1.414f;
+    float exploration_constant = config ? config->exploration_constant : 1.414f;
     float exploitation = (float)value / (float)visit;
     float exploration = exploration_constant * sqrtf(log_parent_visits / (float)visit);
 
     return exploitation + exploration;
 }
 
-node_t *selection(node_t *node, mcts_t *mcts, int *depth)
+node_t *selection(node_t *node, mcts_t *mcts, int *depth, bot_config_t *config)
 {
     int nb = atomic_load(&node->nb_childs);
     if (nb == 0 || nb < node->max_childs)
@@ -193,9 +190,9 @@ node_t *selection(node_t *node, mcts_t *mcts, int *depth)
     float log_parent = logf((float)atomic_load(&node->visit_count));
     node_t *best = node->childs[0];
 
-    float best_uct = calculate_uct_with_log(best, log_parent);
+    float best_uct = calculate_uct_with_log(best, log_parent, config);
     for (int i = 1; i < nb; i++) {
-        float uct = calculate_uct_with_log(node->childs[i], log_parent);
+        float uct = calculate_uct_with_log(node->childs[i], log_parent, config);
         if (uct > best_uct) {
             best_uct = uct;
             best = node->childs[i];
@@ -215,7 +212,7 @@ node_t *selection(node_t *node, mcts_t *mcts, int *depth)
         return best;
     }
 
-    return selection(best, mcts, depth);
+    return selection(best, mcts, depth, config);
 }
 
 // Partial sort: find top N best moves instead of sorting all
@@ -245,14 +242,20 @@ static void partial_sort_moves(int *valid_moves, float *weights, int max_size, i
     }
 }
 
-node_t *expansion(node_t *node, mcts_t *mcts)
+node_t *expansion(node_t *node, mcts_t *mcts, bot_config_t *config)
 {
     if (!node)
         return NULL;
     
+    // Reserve a slot atomically before taking the lock
+    int nb = atomic_load(&node->nb_childs);
+    if (nb >= node->max_childs)
+        return NULL;
+    
     pthread_mutex_lock(&node->mutex);
 
-    int nb = atomic_load(&node->nb_childs);
+    // Re-check after acquiring lock (double-check pattern)
+    nb = atomic_load(&node->nb_childs);
     
     // If first expansion, sort valid_moves by heuristic score once
     if (nb == 0 && node->max_childs > 1) {
@@ -280,48 +283,74 @@ node_t *expansion(node_t *node, mcts_t *mcts)
         return NULL;
     }
 
-    node_t *child = create_node(x, y, node, mcts, node->player);
+    node_t *child = create_node(x, y, node, mcts, node->player, config);
     if (!child) {
         pthread_mutex_unlock(&node->mutex);
         return NULL;
     }
-    // Write child pointer first, then atomically increment nb_childs
-    // This ensures other threads see a valid pointer before they can access it
+    
+    // Atomically claim the slot and write the pointer
     node->childs[nb] = child;
+    // Memory fence to ensure child pointer is visible before incrementing counter
+    atomic_thread_fence(memory_order_release);
     atomic_store(&node->nb_childs, nb + 1);
+    
     pthread_mutex_unlock(&node->mutex);
 
     return child;
 }
 
-int simulation(node_t *node, mcts_t sim_mcts, unsigned int *seed)
+int simulation(node_t *node, mcts_t sim_mcts, unsigned int *seed, int current_depth)
 {
     int ret = 0;
-    int limit = 1000;
+    // Adaptive simulation depth: shallower sims deeper in tree
+    int limit = 200 - (current_depth / 2);
+    if (limit < 50) limit = 50;  // Minimum 50 moves
+    
     int prev_x = -1, prev_y = -1;
-
-    node_t sim_node = *node;
-    memcpy(sim_node.valid_moves, node->valid_moves, sizeof(int) * node->max_childs);
+    int sim_x = node->x;
+    int sim_y = node->y;
+    int sim_player = node->player;
+    int sim_moves = 0;
+    
+    // Copy only valid_moves we'll actually use
+    int local_moves[361];
+    memcpy(local_moves, node->valid_moves, sizeof(int) * node->max_childs);
+    int max_childs = node->max_childs;
 
     if (node->parent != NULL) {
         prev_x = node->parent->x;
         prev_y = node->parent->y;
     }
 
-    while ((ret = check_win_mcts(&sim_mcts, sim_node.x, sim_node.y, prev_x, prev_y, sim_node.player)) == -1 && limit-- > 0)
+    while ((ret = check_win_mcts(&sim_mcts, sim_x, sim_y, prev_x, prev_y, sim_player)) == -1 && limit-- > 0)
     {
-        sim_node.player = !sim_node.player;
-        prev_x = sim_node.x;
-        prev_y = sim_node.y;
-        sim_node.nb_childs++;
+        sim_player = !sim_player;
+        prev_x = sim_x;
+        prev_y = sim_y;
+        sim_moves++;
 
-        get_random_move(&sim_node, &sim_mcts, &sim_node.x, &sim_node.y, seed);
-
-        if (sim_node.x == -1 || sim_node.y == -1)
+        // Inline random move selection to avoid function call overhead
+        int choice = rand_r(seed) % max_childs;
+        int found = 0;
+        for (int i = 0; i < max_childs; i++) {
+            int idx = (choice + i) % max_childs;
+            int move = local_moves[idx];
+            int x = move / 19;
+            int y = move % 19;
+            if (sim_mcts.board[x][y] == 0) {
+                sim_x = x;
+                sim_y = y;
+                found = 1;
+                break;
+            }
+        }
+        
+        if (!found)
             break;
 
-        sim_mcts.board[sim_node.x][sim_node.y] = sim_node.player + 1;
-        unsigned int *captured = check_captures(sim_mcts.board, sim_node.x, sim_node.y, sim_node.player, &sim_mcts.captured_black, &sim_mcts.captured_white);
+        sim_mcts.board[sim_x][sim_y] = sim_player + 1;
+        unsigned int *captured = check_captures(sim_mcts.board, sim_x, sim_y, sim_player, &sim_mcts.captured_black, &sim_mcts.captured_white);
         if (captured) {
             remove_captured_stones(sim_mcts.board, captured);
             free(captured);
@@ -379,7 +408,7 @@ void get_best_move(node_t *root, int *res_x, int *res_y, game_t *game)
     }
 }
 
-void    init_load_balancer(load_balancer_t *balancer, int total_sims, int num_threads) {
+void    init_load_balancer(load_balancer_t *balancer, double time_limit, int num_threads) {
     atomic_store(&balancer->global_sim_counter, 0);
     atomic_store(&balancer->max_depth, 0);
     for (int i = 0; i < num_threads; i++) {
@@ -391,7 +420,8 @@ void    init_load_balancer(load_balancer_t *balancer, int total_sims, int num_th
     }
     pthread_mutex_init(&balancer->balance_mutex, NULL);
     balancer->active_threads = num_threads;
-    balancer->total_simulations = total_sims;
+    balancer->time_limit_seconds = time_limit;
+    clock_gettime(CLOCK_MONOTONIC, &balancer->start_time);
 }
 
 void    *mcts_thread_worker(void *arg) {
@@ -399,9 +429,7 @@ void    *mcts_thread_worker(void *arg) {
     node_t *root = data->node;
     load_balancer_t *balancer = data->balancer;
     int thread_id = data->thread_id;
-    
-    // Set global config from thread data (all threads share same config)
-    current_config = data->config;
+    bot_config_t *config = data->config;
     
     // Thread-local random seed for rand_r
     unsigned int seed = data->rand_seed;
@@ -412,14 +440,19 @@ void    *mcts_thread_worker(void *arg) {
     
     clock_gettime(CLOCK_MONOTONIC, &thread_start);
 
-    // Each thread runs until global simulation counter reaches total_simulations
+    // Each thread runs until time limit is reached
     while (1) {
-        // Check if we've reached the total simulation limit
-        int current_global_count = atomic_fetch_add(&balancer->global_sim_counter, 1);
-        if (current_global_count >= balancer->total_simulations) {
-            atomic_fetch_sub(&balancer->global_sim_counter, 1);
+        // Check if we've exceeded the time limit
+        struct timespec current_time;
+        clock_gettime(CLOCK_MONOTONIC, &current_time);
+        double elapsed = (current_time.tv_sec - balancer->start_time.tv_sec) + 
+                        (current_time.tv_nsec - balancer->start_time.tv_nsec) / 1e9;
+        
+        if (elapsed >= balancer->time_limit_seconds) {
             break;
         }
+        
+        atomic_fetch_add(&balancer->global_sim_counter, 1);
 
         mcts_t sim_mcts;
         memcpy(sim_mcts.board, data->board_sim, sizeof(unsigned int) * 19 * 19);
@@ -432,7 +465,7 @@ void    *mcts_thread_worker(void *arg) {
         // Selection phase
         clock_gettime(CLOCK_MONOTONIC, &phase_start);
         int current_depth = 0;
-        node = selection(node, &sim_mcts, &current_depth);
+        node = selection(node, &sim_mcts, &current_depth, config);
         clock_gettime(CLOCK_MONOTONIC, &phase_end);
         
         // Update max depth atomically
@@ -450,7 +483,7 @@ void    *mcts_thread_worker(void *arg) {
         if (nb >= 0) {  // nb_childs is negative for terminal nodes
             // Expansion phase
             clock_gettime(CLOCK_MONOTONIC, &phase_start);
-            node = expansion(node, &sim_mcts);
+            node = expansion(node, &sim_mcts, config);
             clock_gettime(CLOCK_MONOTONIC, &phase_end);
             long long expansion_ns = (phase_end.tv_sec - phase_start.tv_sec) * 1000000000LL + 
                                      (phase_end.tv_nsec - phase_start.tv_nsec);
@@ -464,7 +497,7 @@ void    *mcts_thread_worker(void *arg) {
             
             // Simulation phase
             clock_gettime(CLOCK_MONOTONIC, &phase_start);
-            sim_result = simulation(node, sim_mcts, &seed);
+            sim_result = simulation(node, sim_mcts, &seed, current_depth);
             clock_gettime(CLOCK_MONOTONIC, &phase_end);
             long long simulation_ns = (phase_end.tv_sec - phase_start.tv_sec) * 1000000000LL + 
                                       (phase_end.tv_nsec - phase_start.tv_nsec);
@@ -500,10 +533,10 @@ void run_mcts(game_t *game, int *res_x, int *res_y) {
         num_threads = 8; // Fallback to 8 threads if detection fails
     }
 
-    printf("\n\e[1;33mDetected %d CPU cores, using %d threads for MCTS\e[0m\n", num_threads, num_threads);
+    printf("\n\e[1;33mDetected %d CPU cores, using %d threads for MCTS (%.1fs time limit)\e[0m\n", num_threads, num_threads, TIME_LIMIT_SECONDS);
 
     mcts_t mcts = init_mcts(game);
-    node_t *root = create_node(-1, -1, NULL, &mcts, game->current_player);
+    node_t *root = create_node(-1, -1, NULL, &mcts, game->current_player, NULL);
     
     if (!root) {
         *res_x = -1;
@@ -515,17 +548,14 @@ void run_mcts(game_t *game, int *res_x, int *res_y) {
     thread_data_t thread_data[MAX_THREADS];
     load_balancer_t balancer;
     
-    init_load_balancer(&balancer, NUM_SIMULATIONS, num_threads);
+    init_load_balancer(&balancer, TIME_LIMIT_SECONDS, num_threads);
 
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
+    int threads_created = 0;
     for (int i = 0; i < num_threads; i++) {
-        for (int m = 0; m < 19; m++) {
-            for (int n = 0; n < 19; n++) {
-                thread_data[i].board_sim[m][n] = mcts.board[m][n];
-            }
-        }
+        memcpy(thread_data[i].board_sim, mcts.board, sizeof(unsigned int) * 19 * 19);
         thread_data[i].captured_black = mcts.captured_black;
         thread_data[i].captured_white = mcts.captured_white;
         thread_data[i].winning_state = mcts.winning_state;
@@ -533,13 +563,21 @@ void run_mcts(game_t *game, int *res_x, int *res_y) {
         thread_data[i].node = root;
         thread_data[i].rand_seed = (unsigned int)time(NULL) + i * 1000;
         thread_data[i].balancer = &balancer;
+        thread_data[i].config = NULL;
 
         if (pthread_create(&threads[i], NULL, mcts_thread_worker, &thread_data[i]) != 0) {
             fprintf(stderr, "Error creating thread %d\n", i);
+            // Join already created threads
+            for (int j = 0; j < threads_created; j++) {
+                pthread_join(threads[j], NULL);
+            }
             free_tree(root);
             pthread_mutex_destroy(&balancer.balance_mutex);
+            *res_x = -1;
+            *res_y = -1;
             return;
         }
+        threads_created++;
     }
 
     for (int i = 0; i < num_threads; i++) {
@@ -556,7 +594,7 @@ void run_mcts(game_t *game, int *res_x, int *res_y) {
     int max_depth = atomic_load(&balancer.max_depth);
     
     printf("\e[1;34m=== MCTS Performance Statistics ===\e[0m\n");
-    printf("Total simulations: %d / %d requested\n", total_sims, NUM_SIMULATIONS);
+    printf("Total simulations: %d\n", total_sims);
     printf("Number of threads: %d\n", num_threads);
     printf("Max tree depth reached: %d\n", max_depth);
     printf("Total time: %.3f seconds\n", elapsed_seconds);
@@ -595,12 +633,69 @@ void run_mcts(game_t *game, int *res_x, int *res_y) {
     free_tree(root);
 }
 
+// Run MCTS and return the root tree (for training data extraction)
+// WARNING: Caller must free the returned tree with free_tree()
+node_t* run_mcts_return_tree(game_t *game, int *res_x, int *res_y) {
+    // Get number of CPU cores available
+    int num_threads = (int)sysconf(_SC_NPROCESSORS_ONLN);
+    if (num_threads <= 0 || num_threads > MAX_THREADS) {
+        num_threads = 8;
+    }
+
+    mcts_t mcts = init_mcts(game);
+    node_t *root = create_node(-1, -1, NULL, &mcts, game->current_player, NULL);
+    
+    if (!root) {
+        *res_x = -1;
+        *res_y = -1;
+        return NULL;
+    }
+    
+    pthread_t threads[MAX_THREADS];
+    thread_data_t thread_data[MAX_THREADS];
+    load_balancer_t balancer;
+    
+    init_load_balancer(&balancer, TIME_LIMIT_SECONDS, num_threads);
+
+    int threads_created = 0;
+    for (int i = 0; i < num_threads; i++) {
+        memcpy(thread_data[i].board_sim, mcts.board, sizeof(unsigned int) * 19 * 19);
+        thread_data[i].captured_black = mcts.captured_black;
+        thread_data[i].captured_white = mcts.captured_white;
+        thread_data[i].winning_state = mcts.winning_state;
+        thread_data[i].thread_id = i;
+        thread_data[i].node = root;
+        thread_data[i].rand_seed = (unsigned int)time(NULL) + i * 1000;
+        thread_data[i].balancer = &balancer;
+        thread_data[i].config = NULL;
+
+        if (pthread_create(&threads[i], NULL, mcts_thread_worker, &thread_data[i]) != 0) {
+            for (int j = 0; j < threads_created; j++) {
+                pthread_join(threads[j], NULL);
+            }
+            free_tree(root);
+            pthread_mutex_destroy(&balancer.balance_mutex);
+            *res_x = -1;
+            *res_y = -1;
+            return NULL;
+        }
+        threads_created++;
+    }
+
+    for (int i = 0; i < num_threads; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    get_best_move(root, res_x, res_y, game);
+    pthread_mutex_destroy(&balancer.balance_mutex);
+    
+    // Return root WITHOUT freeing it - caller is responsible
+    return root;
+}
+
 // Run MCTS with a specific bot configuration
 void run_mcts_with_config(game_t *game, int *res_x, int *res_y, bot_config_t *config)
 {
-    // Set thread-local config
-    current_config = config;
-    
     // Get number of CPU cores available
     int num_threads = config->num_threads;
     if (num_threads <= 0) {
@@ -611,12 +706,11 @@ void run_mcts_with_config(game_t *game, int *res_x, int *res_y, bot_config_t *co
     }
 
     mcts_t mcts = init_mcts(game);
-    node_t *root = create_node(-1, -1, NULL, &mcts, game->current_player);
+    node_t *root = create_node(-1, -1, NULL, &mcts, game->current_player, config);
     
     if (!root) {
         *res_x = -1;
         *res_y = -1;
-        current_config = NULL;
         return;
     }
     
@@ -624,17 +718,16 @@ void run_mcts_with_config(game_t *game, int *res_x, int *res_y, bot_config_t *co
     thread_data_t thread_data[MAX_THREADS];
     load_balancer_t balancer;
     
-    init_load_balancer(&balancer, config->num_simulations, num_threads);
+    // Use config time limit if available, otherwise use default
+    double time_limit = config->time_limit > 0 ? config->time_limit : TIME_LIMIT_SECONDS;
+    init_load_balancer(&balancer, time_limit, num_threads);
 
     struct timespec start_time, end_time;
     clock_gettime(CLOCK_MONOTONIC, &start_time);
 
+    int threads_created = 0;
     for (int i = 0; i < num_threads; i++) {
-        for (int m = 0; m < 19; m++) {
-            for (int n = 0; n < 19; n++) {
-                thread_data[i].board_sim[m][n] = mcts.board[m][n];
-            }
-        }
+        memcpy(thread_data[i].board_sim, mcts.board, sizeof(unsigned int) * 19 * 19);
         thread_data[i].captured_black = mcts.captured_black;
         thread_data[i].captured_white = mcts.captured_white;
         thread_data[i].winning_state = mcts.winning_state;
@@ -645,12 +738,17 @@ void run_mcts_with_config(game_t *game, int *res_x, int *res_y, bot_config_t *co
         thread_data[i].config = config;  // Pass config to thread
 
         if (pthread_create(&threads[i], NULL, mcts_thread_worker, &thread_data[i]) != 0) {
-            fprintf(stderr, "Error creating thread %d\n", i);
+            // Join already created threads
+            for (int j = 0; j < threads_created; j++) {
+                pthread_join(threads[j], NULL);
+            }
             free_tree(root);
             pthread_mutex_destroy(&balancer.balance_mutex);
-            current_config = NULL;
+            *res_x = -1;
+            *res_y = -1;
             return;
         }
+        threads_created++;
     }
 
     for (int i = 0; i < num_threads; i++) {
@@ -662,5 +760,4 @@ void run_mcts_with_config(game_t *game, int *res_x, int *res_y, bot_config_t *co
     get_best_move(root, res_x, res_y, game);
     pthread_mutex_destroy(&balancer.balance_mutex);
     free_tree(root);
-    current_config = NULL;
 }
