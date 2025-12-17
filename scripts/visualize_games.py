@@ -81,6 +81,8 @@ def show_statistics(data_dir):
     
     total_samples = 0
     total_moves = 0
+    min_game = 1000
+    id_min = 0
     winners = {"Player 1": 0, "Player 2": 0, "Draw": 0}
     move_lengths = []
     
@@ -91,6 +93,9 @@ def show_statistics(data_dir):
         total_samples += game['num_training_samples']
         total_moves += game['total_moves']
         move_lengths.append(game['total_moves'])
+        if game['total_moves'] < min_game:
+            min_game = game['total_moves']
+            id_min = game['game_id']
         
         if game['winner'] == 0:
             winners["Player 1"] += 1
@@ -105,6 +110,7 @@ def show_statistics(data_dir):
     print(f"Average moves per game: {total_moves / len(game_files):.1f}")
     print(f"Shortest game: {min(move_lengths)} moves")
     print(f"Longest game: {max(move_lengths)} moves")
+    print(f"Shortest game id: {id_min}")
     print()
     
     print("Win distribution:")
