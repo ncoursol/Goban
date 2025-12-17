@@ -8,7 +8,7 @@
 #include "gomo.h"
 
 #define MAX_THREADS 128
-#define TIME_LIMIT_SECONDS 1.5  // Time limit for MCTS in seconds
+#define TIME_LIMIT_SECONDS 0.5  // Time limit for MCTS in seconds
 #define MAX_CHILDREN_PER_NODE 17  // Limit branching factor for deeper search
 
 #define LOAD_BALANCE_CHECK_INTERVAL 1000
