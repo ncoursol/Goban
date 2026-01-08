@@ -15,7 +15,7 @@ int current_player (4 bytes)
 unsigned int captured_black (4 bytes)
 unsigned int captured_white (4 bytes)
 int move_number (4 bytes)
-
+```
             INPUT: (batch, 7, 19, 19)
                      │
                      ▼
@@ -62,3 +62,4 @@ int move_number (4 bytes)
 │  (batch, 361)   │    │  (batch, 1)     │
 │  Move logits    │    │  Win prob       │
 └─────────────────┘    └─────────────────┘
+```
