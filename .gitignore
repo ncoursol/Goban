@@ -53,3 +53,5 @@ resources/games
 valgrind.log
 .vscode/
 ext/*
+checkpoints/
+.env

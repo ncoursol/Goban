@@ -1,13 +1,18 @@
-# Goban
-3d goban with opengl (in progress...)
+# Gomoku (in progress..)
+Creation of a Gomoku like game with 3D OpenGl visuals with the implementation of an 'AlphaGo' like AI bot.
 
-Binary Format from save_game_data:
-Header:
+Build with an mcts, with auto-generated games and my own Convolutional Neural Network
 
+## Binary Format from save_game_data:
+
+### Header:
+```
 int num_samples (4 bytes)
 int winner (4 bytes)
-For each sample:
+```
 
+### For each sample:
+```
 unsigned int board[19][19] (361 × 4 = 1444 bytes)
 float policy[19][19] (361 × 4 = 1444 bytes)
 float value (4 bytes)
@@ -15,7 +20,28 @@ int current_player (4 bytes)
 unsigned int captured_black (4 bytes)
 unsigned int captured_white (4 bytes)
 int move_number (4 bytes)
+```
 
+## Screenshots
+
+![Main Menu](screenshots/Menu.png)
+
+![3D Board view](screenshots/Board.png)
+
+![Top Board View](screenshots/BoardTop.png)
+
+## First CNN raw training (not implemented with MCTS yet)  
+![Training graphs](screenshots/Train.png)
+
+## Statistics of all my generated games (we can notice the 3% more winrate for the first player)  
+![Games statistics](screenshots/Stats.png)
+
+## Detail of the game #235  
+![Game 235 show](screenshots/Show.png)
+
+## Feature Extraction Protocol
+
+```
             INPUT: (batch, 7, 19, 19)
                      │
                      ▼
@@ -62,3 +88,4 @@ int move_number (4 bytes)
 │  (batch, 361)   │    │  (batch, 1)     │
 │  Move logits    │    │  Win prob       │
 └─────────────────┘    └─────────────────┘
+```

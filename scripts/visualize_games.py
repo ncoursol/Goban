@@ -28,9 +28,9 @@ def print_board(board, move_x=None, move_y=None):
             if cell == 0:
                 print(" .", end=" ")
             elif cell == 1:
-                print(" ●", end=" ")  # Black
+                print(" ○", end=" ")  # Black
             elif cell == 2:
-                print(" ○", end=" ")  # White
+                print(" ●", end=" ")  # White
             else:
                 print(" ?", end=" ")
             

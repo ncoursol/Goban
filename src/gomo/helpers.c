@@ -3,7 +3,7 @@
 void add_helper(gomo_t *gomo, int index, vec3_t color, int type, int id)
 {
     float size[3] = {0.2f, 0.1f, 0.02f};
-    vec3_t center = {gomo->board[index].pos.x, 0.435f, gomo->board[index].pos.z};
+    vec3_t center = {gomo->board[index].pos.x, 0.438f, gomo->board[index].pos.z};
     line_t initial_lines[] = {
         {center, {center.x, center.y + size[type], center.z}, color}, // | line
         {{center.x + 0.025f, center.y, center.z - 0.025f}, {center.x - 0.025f, center.y, center.z + 0.025f}, color}, // / line
@@ -44,7 +44,7 @@ void render_helpers(gomo_t *gomo)
 
     for (int i = 0; i < 19; i++) {
         for (int j = 0; j < 19; j++) {
-            if (check_double_free_three(gomo->game->board, i, j, gomo->game->swap2_player) && gomo->game->board[i][j] == 0) {
+            if (check_double_free_three(gomo->game->board, i, j, !gomo->game->swap2_player) && gomo->game->board[i][j] == 0) {
                 add_helper(gomo, i * 19 + j, (vec3_t){1.0f, 0.0f, 0.0f}, 1, number_of_helpers++);
             }
         }

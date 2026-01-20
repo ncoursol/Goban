@@ -16,7 +16,7 @@ from data_loader import DataLoader
 
 
 class GomokuDataset(Dataset):
-    """PyTorch Dataset wrapper for Gomoku training data with optional augmentation"""
+    """PyTorch Dataset wrapper for Gomoku training data"""
     def __init__(self, X, policy_y, value_y, augment=False):
         self.X = torch.from_numpy(X)
         self.policy_y = torch.from_numpy(policy_y)
@@ -37,20 +37,14 @@ class GomokuDataset(Dataset):
         return x, policy, value
     
     def _apply_augmentation(self, x, policy):
-        """
-        Apply random rotation (0, 90, 180, 270 degrees) and/or flip.
-        This gives 8 possible transformations (D4 symmetry group).
-        """
-        # Reshape policy to 19x19 for transformation
+        """Apply random rotation and flip (D4 symmetry)"""
         policy_2d = policy.view(19, 19)
         
-        # Random rotation (0, 1, 2, or 3 times 90 degrees)
         k = torch.randint(0, 4, (1,)).item()
         if k > 0:
             x = torch.rot90(x, k, dims=[1, 2])
             policy_2d = torch.rot90(policy_2d, k, dims=[0, 1])
         
-        # Random horizontal flip
         if torch.rand(1).item() > 0.5:
             x = torch.flip(x, dims=[2])
             policy_2d = torch.flip(policy_2d, dims=[1])
@@ -59,17 +53,14 @@ class GomokuDataset(Dataset):
 
 
 class GomokuTrainer:
-    def __init__(self, model, device='cuda', lr=0.001, weight_decay=1e-4):
+    def __init__(self, model, device='cuda', lr=0.001, weight_decay=1e-4, value_weight=0.1):
         self.model = model.to(device)
         self.device = device
         self.optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
-        self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(
-            self.optimizer, mode='min', factor=0.5, patience=5
-        )
         
         # Loss functions
-        self.policy_loss_fn = nn.CrossEntropyLoss()
         self.value_loss_fn = nn.MSELoss()
+        self.value_weight = value_weight
         
         # Training history
         self.history = {
@@ -79,28 +70,14 @@ class GomokuTrainer:
             'val_loss': [],
             'val_policy_loss': [],
             'val_value_loss': [],
-            'policy_accuracy': [],
-            'lr': []
+            'policy_accuracy': []
         }
     
     def compute_loss(self, policy_logits, value_pred, policy_target, value_target):
-        """
-        Compute combined loss for policy and value heads.
-        
-        Policy loss: Cross-entropy between predicted logits and target distribution
-        Value loss: MSE between predicted value and target value
-        """
-        # Policy loss - treat target as probability distribution
-        # Use KL divergence style loss: sum(-target * log_softmax(pred))
         log_probs = torch.log_softmax(policy_logits, dim=1)
         policy_loss = -torch.sum(policy_target * log_probs, dim=1).mean()
-        
-        # Value loss
         value_loss = self.value_loss_fn(value_pred, value_target)
-        
-        # Combined loss (policy is typically weighted more)
-        total_loss = policy_loss + value_loss
-        
+        total_loss = policy_loss + self.value_weight * value_loss
         return total_loss, policy_loss, value_loss
     
     def compute_policy_accuracy(self, policy_logits, policy_target):
@@ -126,17 +103,13 @@ class GomokuTrainer:
             value_y = value_y.to(self.device)
             
             self.optimizer.zero_grad()
-            
             policy_logits, value_pred = self.model(X)
             loss, policy_loss, value_loss = self.compute_loss(
                 policy_logits, value_pred, policy_y, value_y
             )
             
             loss.backward()
-            
-            # Gradient clipping for stability
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
-            
             self.optimizer.step()
             
             total_loss += loss.item()
@@ -145,7 +118,6 @@ class GomokuTrainer:
             total_accuracy += self.compute_policy_accuracy(policy_logits, policy_y)
             num_batches += 1
             
-            # Update progress bar
             pbar.set_postfix({
                 'loss': f'{total_loss/num_batches:.4f}',
                 'acc': f'{total_accuracy/num_batches*100:.1f}%'
@@ -199,14 +171,7 @@ class GomokuTrainer:
             'accuracy': total_accuracy / num_batches
         }
     
-    def train(self, train_loader, val_loader=None, epochs=100, save_dir='checkpoints', 
-              save_every=10, early_stopping_patience=20):
-        save_path = Path(save_dir)
-        save_path.mkdir(parents=True, exist_ok=True)
-        
-        best_val_loss = float('inf')
-        patience_counter = 0
-        
+    def train(self, train_loader, val_loader=None, epochs=100):
         print(f"Training on {self.device}")
         print(f"Model parameters: {count_parameters(self.model):,}")
         print(f"Training samples: {len(train_loader.dataset)}")
@@ -217,30 +182,24 @@ class GomokuTrainer:
         for epoch in range(1, epochs + 1):
             start_time = time.time()
             
-            # Training
             train_metrics = self.train_epoch(train_loader, epoch, epochs)
             
-            # Validation
             val_metrics = None
             if val_loader:
                 val_metrics = self.validate(val_loader, epoch, epochs)
-                self.scheduler.step(val_metrics['loss'])
             
             epoch_time = time.time() - start_time
             
-            # Log metrics
             self.history['train_loss'].append(train_metrics['loss'])
             self.history['train_policy_loss'].append(train_metrics['policy_loss'])
             self.history['train_value_loss'].append(train_metrics['value_loss'])
             self.history['policy_accuracy'].append(train_metrics['accuracy'])
-            self.history['lr'].append(self.optimizer.param_groups[0]['lr'])
             
             if val_metrics:
                 self.history['val_loss'].append(val_metrics['loss'])
                 self.history['val_policy_loss'].append(val_metrics['policy_loss'])
                 self.history['val_value_loss'].append(val_metrics['value_loss'])
             
-            # Print progress
             print(f"Epoch {epoch:3d}/{epochs} | "
                   f"Train Loss: {train_metrics['loss']:.4f} "
                   f"(P: {train_metrics['policy_loss']:.4f}, V: {train_metrics['value_loss']:.4f}) | "
@@ -252,58 +211,19 @@ class GomokuTrainer:
                       f"Val Acc: {val_metrics['accuracy']*100:.1f}%", end="")
             
             print(f" | {epoch_time:.1f}s")
-            
-            # Save checkpoints
-            if epoch % save_every == 0:
-                self.save_checkpoint(save_path / f"checkpoint_epoch_{epoch}.pt", epoch)
-            
-            # Save best model and early stopping
-            if val_metrics:
-                if val_metrics['loss'] < best_val_loss:
-                    best_val_loss = val_metrics['loss']
-                    self.save_checkpoint(save_path / "best_model.pt", epoch)
-                    patience_counter = 0
-                    print(f"  -> New best model saved!")
-                else:
-                    patience_counter += 1
-                    if patience_counter >= early_stopping_patience:
-                        print(f"\nEarly stopping triggered after {epoch} epochs")
-                        break
         
-        # Save final model
-        self.save_checkpoint(save_path / "final_model.pt", epochs)
-        print(f"\nTraining complete. Models saved to {save_path}")
-        
+        print(f"\nTraining complete")
         return self.history
     
-    def save_checkpoint(self, path, epoch):
-        torch.save({
-            'epoch': epoch,
-            'model_state_dict': self.model.state_dict(),
-            'optimizer_state_dict': self.optimizer.state_dict(),
-            'scheduler_state_dict': self.scheduler.state_dict(),
-            'history': self.history
-        }, path)
-    
-    def load_checkpoint(self, path):
-        checkpoint = torch.load(path, map_location=self.device)
-        self.model.load_state_dict(checkpoint['model_state_dict'])
-        self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
-        self.history = checkpoint['history']
-        return checkpoint['epoch']
-    
     def plot_training_history(self, save_path=None):
-        """Plot training metrics using matplotlib and seaborn"""
+        """Plot training metrics"""
         sns.set_style("whitegrid")
         sns.set_palette("husl")
         
         epochs = range(1, len(self.history['train_loss']) + 1)
-        
         fig, axes = plt.subplots(2, 2, figsize=(14, 10))
         fig.suptitle('Training History', fontsize=16, fontweight='bold')
         
-        # Plot 1: Total Loss
         ax1 = axes[0, 0]
         ax1.plot(epochs, self.history['train_loss'], 'b-', label='Train Loss', linewidth=2)
         if self.history['val_loss']:
@@ -314,7 +234,6 @@ class GomokuTrainer:
         ax1.legend()
         ax1.set_xlim(1, len(epochs))
         
-        # Plot 2: Policy Loss
         ax2 = axes[0, 1]
         ax2.plot(epochs, self.history['train_policy_loss'], 'b-', label='Train Policy Loss', linewidth=2)
         if self.history['val_policy_loss']:
@@ -325,7 +244,6 @@ class GomokuTrainer:
         ax2.legend()
         ax2.set_xlim(1, len(epochs))
         
-        # Plot 3: Value Loss
         ax3 = axes[1, 0]
         ax3.plot(epochs, self.history['train_value_loss'], 'b-', label='Train Value Loss', linewidth=2)
         if self.history['val_value_loss']:
@@ -336,7 +254,6 @@ class GomokuTrainer:
         ax3.legend()
         ax3.set_xlim(1, len(epochs))
         
-        # Plot 4: Policy Accuracy
         ax4 = axes[1, 1]
         accuracy_percent = [acc * 100 for acc in self.history['policy_accuracy']]
         ax4.plot(epochs, accuracy_percent, 'g-', label='Train Accuracy', linewidth=2)
@@ -362,14 +279,12 @@ def create_data_loaders(data_loader, game_ids, batch_size=64, val_split=0.1, aug
     X, policy_y, value_y = data_loader.prepare_training_data(game_ids)
     print(f"Total samples: {len(X)}")
     
-    # Shuffle and split
     indices = np.random.permutation(len(X))
     val_size = int(len(X) * val_split)
     
     val_indices = indices[:val_size]
     train_indices = indices[val_size:]
     
-    # Augmentation only for training data
     train_dataset = GomokuDataset(X[train_indices], policy_y[train_indices], value_y[train_indices], augment=augment)
     val_dataset = GomokuDataset(X[val_indices], policy_y[val_indices], value_y[val_indices], augment=False)
     
@@ -395,6 +310,8 @@ def main():
                         help='Learning rate')
     parser.add_argument('--weight-decay', type=float, default=1e-4,
                         help='Weight decay for regularization')
+    parser.add_argument('--value-weight', type=float, default=0.1,
+                        help='Weight for value loss relative to policy loss')
     parser.add_argument('--dropout', type=float, default=0.3,
                         help='Dropout rate for regularization')
     parser.add_argument('--res-blocks', type=int, default=4,
@@ -405,17 +322,10 @@ def main():
                         help='Disable data augmentation')
     parser.add_argument('--no-plot', action='store_true',
                         help='Disable plotting training history')
-    parser.add_argument('--save-dir', type=str, default='checkpoints',
-                        help='Directory to save model checkpoints')
-    parser.add_argument('--save-every', type=int, default=10,
-                        help='Save checkpoint every N epochs')
-    parser.add_argument('--resume', type=str, default=None,
-                        help='Path to checkpoint to resume from')
     parser.add_argument('--device', type=str, default='auto',
                         help='Device to use (cuda/cpu/auto)')
     args = parser.parse_args()
     
-    # Set device
     if args.device == 'auto':
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
     else:
@@ -426,7 +336,6 @@ def main():
     print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"=" * 60)
     
-    # Load data
     data_loader = DataLoader(args.data_path)
     game_ids = list(range(args.num_games))
     train_loader, val_loader = create_data_loaders(
@@ -435,7 +344,6 @@ def main():
         augment=not args.no_augment
     )
     
-    # Create model
     model = GomokuNet(
         input_channels=7,
         num_res_blocks=args.res_blocks,
@@ -443,38 +351,22 @@ def main():
         dropout=args.dropout
     )
     
-    # Create trainer
     trainer = GomokuTrainer(
         model, 
         device=device,
         lr=args.lr,
-        weight_decay=args.weight_decay
+        weight_decay=args.weight_decay,
+        value_weight=args.value_weight
     )
     
-    # Resume from checkpoint if specified
-    start_epoch = 0
-    if args.resume:
-        print(f"Resuming from checkpoint: {args.resume}")
-        start_epoch = trainer.load_checkpoint(args.resume)
-        print(f"Resumed from epoch {start_epoch}")
-    
-    # Train
-    history = trainer.train(
-        train_loader,
-        val_loader,
-        epochs=args.epochs,
-        save_dir=args.save_dir,
-        save_every=args.save_every
-    )
+    history = trainer.train(train_loader, val_loader, epochs=args.epochs)
     
     print(f"\nFinal training loss: {history['train_loss'][-1]:.4f}")
     print(f"Final validation loss: {history['val_loss'][-1]:.4f}")
     print(f"Best validation loss: {min(history['val_loss']):.4f}")
     
-    # Plot training history
     if not args.no_plot:
-        plot_path = Path(args.save_dir) / "training_history.png"
-        trainer.plot_training_history(save_path=plot_path)
+        trainer.plot_training_history()
 
 
 if __name__ == '__main__':
