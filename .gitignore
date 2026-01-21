@@ -55,3 +55,4 @@ valgrind.log
 ext/*
 checkpoints/
 .env
+src/neural_network/__pycache__

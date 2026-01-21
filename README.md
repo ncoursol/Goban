@@ -39,7 +39,7 @@ int move_number (4 bytes)
 ## Detail of the game #235  
 ![Game 235 show](screenshots/Show.png)
 
-## Feature Extraction Protocol
+## Network Protocol
 
 ```
             INPUT: (batch, 7, 19, 19)
